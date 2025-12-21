@@ -1,0 +1,7 @@
+{
+  "name": "@peam/tsconfig",
+  "private": true,
+  "files": [
+    "tsconfig.base.json"
+  ]
+}
