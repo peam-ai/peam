@@ -1,6 +1,6 @@
 {
-  "name": "@peam/types",
-  "description": "Peam types",
+  "name": "@peam/next",
+  "description": "Peam Next.js integration",
   "private": true,
   "version": "0.1.0",
   "main": "./dist/index.js",
@@ -36,6 +36,8 @@
     "typescript-eslint": "^8.50.0"
   },
   "dependencies": {
-    "pino": "^9.9.0"
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
