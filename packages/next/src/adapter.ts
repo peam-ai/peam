@@ -1,5 +1,5 @@
-import { parseHTML, type StructuredPage } from '@peam/parser';
 import { loggers } from '@peam/logger';
+import { parseHTML, type StructuredPage } from '@peam/parser';
 import { mkdirSync, readFileSync, writeFileSync } from 'fs';
 import type { NextAdapter } from 'next';
 import { join } from 'path';

@@ -1,5 +1,5 @@
-import { JSDOM } from 'jsdom';
 import { loggers } from '@peam/logger';
+import { JSDOM } from 'jsdom';
 import { CssSelectorParser } from './parsers/cssSelectorParser';
 import { ParseOptions } from './parsers/parser';
 import { ReadabilityParser } from './parsers/readabilityParser';

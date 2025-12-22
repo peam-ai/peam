@@ -8,7 +8,7 @@ export interface StructuredPage {
   author?: string;
   direction?: string;
   language?: string;
-  
+
   siteName?: string;
   publishedTime?: string;
 

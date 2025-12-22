@@ -1,2 +1,2 @@
-export * from "./withPeam";
-export * from "./adapter";
+export * from './adapter';
+export * from './withPeam';
