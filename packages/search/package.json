@@ -1,0 +1,38 @@
+{
+  "name": "@peam/search",
+  "version": "0.1.0",
+  "description": "Vector database and search functionality for PEAM",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "homepage": "https://peam.ai",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist",
+    "lint": "eslint .",
+    "test": "jest"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@peam/logger": "*",
+    "@peam/parser": "*",
+    "flexsearch": "^0.7.43"
+  },
+  "devDependencies": {
+    "@peam/tsconfig": "*",
+    "@types/node": "^22.10.2",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4"
+  }
+}

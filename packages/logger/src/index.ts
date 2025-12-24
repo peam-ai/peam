@@ -13,4 +13,6 @@ export const loggers = {
   parser: createLogger('peam:parser'),
   adapter: createLogger('peam:adapter'),
   next: createLogger('peam:next'),
+  ai: createLogger('peam:ai'),
+  search: createLogger('peam:search'),
 };
