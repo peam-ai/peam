@@ -1,4 +1,4 @@
 import { createPeamAdapter } from './adapter';
-import { config } from './config';
+import { getConfig } from './config';
 
-export default createPeamAdapter(config());
+export default createPeamAdapter(getConfig());

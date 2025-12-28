@@ -1,14 +1,26 @@
+import { NextConfig } from 'next';
+
 export interface PeamAdapterConfig {
-  outputDir: string;
+  /**
+   * Directory where the search index and pages.json will be output
+   * @default '.peam'
+   */
+  outputDir?: string;
 }
 
-export const defaultConfig: PeamAdapterConfig = {
+export const defaultConfig = {
   outputDir: '.peam',
-};
+} satisfies PeamAdapterConfig;
 
-export const config = () => {
+export const getConfig = (): Required<PeamAdapterConfig> => {
   return {
-    ...defaultConfig,
-    outputDir: process.env.PEAM_OUTPUT_DIR || defaultConfig.outputDir,
+    outputDir: (typeof process !== 'undefined' && process.env.PEAM_OUTPUT_DIR) || defaultConfig.outputDir,
   };
 };
+
+export function setNextConfig(nextConfig: NextConfig, peamConfig: PeamAdapterConfig): void {
+  nextConfig.env = {
+    ...nextConfig.env,
+    PEAM_OUTPUT_DIR: peamConfig.outputDir,
+  };
+}

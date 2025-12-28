@@ -1,11 +1,38 @@
 import { loggers } from '@peam/logger';
 import { parseHTML, type StructuredPage } from '@peam/parser';
+import { SearchEngine } from '@peam/search';
 import { mkdirSync, readFileSync, writeFileSync } from 'fs';
 import type { NextAdapter } from 'next';
 import { join } from 'path';
 import { type PeamAdapterConfig } from './config';
 
 const log = loggers.adapter;
+
+function shouldIncludePath(pathname: string): boolean {
+  if (pathname.startsWith('/_not-found') || pathname.startsWith('/_global-error')) {
+    return false;
+  }
+
+  if (pathname.endsWith('.rsc')) {
+    return false;
+  }
+
+  if (pathname.includes('.segments/')) {
+    return false;
+  }
+
+  if (pathname.match(/\.(ico|png|jpg|jpeg|svg|gif|webp|txt|xml|json)$/i)) {
+    return false;
+  }
+
+  // Exclude Next.js special routes that start with underscore
+  const pathParts = pathname.split('/').filter(Boolean);
+  if (pathParts.some((part) => part.startsWith('_') && part !== '_app' && part !== '_document')) {
+    return false;
+  }
+
+  return true;
+}
 
 export function createPeamAdapter(config: PeamAdapterConfig): NextAdapter {
   return {
@@ -24,82 +51,60 @@ export function createPeamAdapter(config: PeamAdapterConfig): NextAdapter {
         runtime?: string;
       }> = [];
 
-      // Process app pages
-      for (const appPage of ctx.outputs.appPages) {
-        try {
-          // App pages have .rsc suffix, and HTML is typically in prerenders
-          log('Processing app page: %s', appPage.pathname);
-
-          const prerender = ctx.outputs.prerenders.find((p) => p.pathname === appPage.pathname.replace('.rsc', ''));
-
-          if (prerender && prerender.fallback) {
-            const htmlPath = prerender.fallback.filePath;
-
-            const html = readFileSync(htmlPath, 'utf-8');
-            const structuredPage = parseHTML(html);
-
-            if (!structuredPage) {
-              log(`No content extracted from ${appPage.pathname}`);
-              continue;
-            }
-
-            log('Successfully extracted content from %s', appPage.pathname);
-            pages.push({
-              path: appPage.pathname.replace('.rsc', ''),
-              htmlFile: htmlPath.replace(ctx.projectDir + '/', ''),
-              structuredPage,
-              type: 'app-page',
-              runtime: appPage.runtime,
-            });
-          }
-        } catch (error) {
-          log('Error processing %s: %O', appPage.pathname, error);
-        }
-      }
-
-      // Process prerenders that don't have corresponding app pages (like _not-found)
       for (const prerender of ctx.outputs.prerenders) {
-        if (prerender.fallback && !pages.find((p) => p.path === prerender.pathname)) {
-          try {
-            const htmlPath = prerender.fallback.filePath;
-            log('Reading prerender HTML from: %s', htmlPath);
+        if (!prerender.fallback) {
+          continue;
+        }
 
-            const html = readFileSync(htmlPath, 'utf-8');
-            const structuredPage = parseHTML(html);
+        const pathname = prerender.pathname;
 
-            if (!structuredPage) {
-              log('No content extracted from %s', prerender.pathname);
-              continue;
-            }
+        if (!shouldIncludePath(pathname)) {
+          continue;
+        }
 
-            log('Successfully extracted content from prerender %s', prerender.pathname);
-            pages.push({
-              path: prerender.pathname,
-              htmlFile: htmlPath.replace(ctx.projectDir + '/', ''),
-              structuredPage,
-              type: 'prerender',
-            });
-          } catch (error) {
-            log('Error processing prerender %s: %O', prerender.pathname, error);
+        try {
+          const htmlPath = prerender.fallback.filePath;
+          log('Reading HTML from: %s', htmlPath);
+
+          const html = readFileSync(htmlPath, 'utf-8');
+          const structuredPage = parseHTML(html);
+
+          if (!structuredPage) {
+            log('No content extracted from %s', pathname);
+            continue;
           }
+
+          log('Successfully extracted content from %s', pathname);
+          pages.push({
+            path: pathname,
+            htmlFile: htmlPath.replace(ctx.projectDir + '/', ''),
+            structuredPage,
+            type: 'page',
+          });
+        } catch (error) {
+          log('Error processing %s: %O', pathname, error);
         }
       }
 
-      const outputPath = join(ctx.projectDir, config.outputDir);
+      const outputPath = join(ctx.projectDir, config.outputDir || '.peam');
       mkdirSync(outputPath, { recursive: true });
 
-      const outputFile = join(outputPath, 'pages.json');
-      const outputData = {
-        extractedAt: new Date().toISOString(),
-        totalPages: pages.length,
-        buildId: ctx.buildId,
-        nextVersion: ctx.nextVersion,
-        pages,
-      };
+      log('Creating search index...');
+      const searchEngine = new SearchEngine();
+      await searchEngine.initialize();
 
-      writeFileSync(outputFile, JSON.stringify(outputData, null, 2));
+      for (const page of pages) {
+        if (page.structuredPage) {
+          await searchEngine.addPage(page.path, page.structuredPage);
+          log('Added page to search index: %s', page.path);
+        }
+      }
 
-      log('Saved content to: %s', outputFile);
+      const searchIndexData = await searchEngine.export();
+      const searchIndexFile = join(outputPath, 'search-index.json');
+      writeFileSync(searchIndexFile, JSON.stringify(searchIndexData));
+
+      log('Saved search index to: %s', searchIndexFile);
       log('Extraction complete! Total pages: %d', pages.length);
     },
   };

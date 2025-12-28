@@ -8,6 +8,13 @@ export default defineConfig([
     sourcemap: true,
   },
   {
+    entry: ['src/route.ts'],
+    format: ['cjs', 'esm'],
+    dts: false,
+    sourcemap: true,
+    external: ['@ai-sdk/openai', '@peam/ai', '@peam/search'],
+  },
+  {
     entry: ['src/adapter.ts'],
     format: ['cjs', 'esm'],
     dts: true,

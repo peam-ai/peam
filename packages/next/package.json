@@ -25,6 +25,10 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
+    "./route": {
+      "import": "./dist/route.mjs",
+      "require": "./dist/route.js"
+    },
     "./peam.adapter.js": "./dist/peam.adapter.js"
   },
   "devDependencies": {
