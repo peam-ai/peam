@@ -1,4 +1,4 @@
 import './global.css';
 
-export { AssistantModal } from './AssistantModal';
-export type { AssistantModalProps } from './AssistantModal';
+export { AskAIModal } from './components/AskAIModal';
+export type { AskAIModalProps } from './components/AskAIModal';
