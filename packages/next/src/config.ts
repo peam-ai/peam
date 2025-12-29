@@ -6,15 +6,22 @@ export interface PeamAdapterConfig {
    * @default '.peam'
    */
   outputDir?: string;
+  /**
+   * Filename for the search index
+   * @default 'index.json'
+   */
+  indexFilename?: string;
 }
 
 export const defaultConfig = {
   outputDir: '.peam',
+  indexFilename: 'index.json',
 } satisfies PeamAdapterConfig;
 
 export const getConfig = (): Required<PeamAdapterConfig> => {
   return {
-    outputDir: (typeof process !== 'undefined' && process.env.PEAM_OUTPUT_DIR) || defaultConfig.outputDir,
+    outputDir: process.env.PEAM_OUTPUT_DIR || defaultConfig.outputDir,
+    indexFilename: process.env.PEAM_INDEX_FILENAME || defaultConfig.indexFilename,
   };
 };
 
@@ -22,5 +29,6 @@ export function setNextConfig(nextConfig: NextConfig, peamConfig: PeamAdapterCon
   nextConfig.env = {
     ...nextConfig.env,
     PEAM_OUTPUT_DIR: peamConfig.outputDir,
+    PEAM_INDEX_FILENAME: peamConfig.indexFilename,
   };
 }

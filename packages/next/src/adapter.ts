@@ -34,7 +34,7 @@ function shouldIncludePath(pathname: string): boolean {
   return true;
 }
 
-export function createPeamAdapter(config: PeamAdapterConfig): NextAdapter {
+export function createPeamAdapter(config: Required<PeamAdapterConfig>): NextAdapter {
   return {
     name: 'peam-adapter',
 
@@ -86,7 +86,7 @@ export function createPeamAdapter(config: PeamAdapterConfig): NextAdapter {
         }
       }
 
-      const outputPath = join(ctx.projectDir, config.outputDir || '.peam');
+      const outputPath = join(ctx.projectDir, config.outputDir);
       mkdirSync(outputPath, { recursive: true });
 
       log('Creating search index...');
@@ -100,8 +100,17 @@ export function createPeamAdapter(config: PeamAdapterConfig): NextAdapter {
         }
       }
 
-      const searchIndexData = await searchEngine.export();
-      const searchIndexFile = join(outputPath, 'search-index.json');
+      const exportedData: Record<string, unknown> = {};
+      const result = await searchEngine.export(async (key: string, data: unknown) => {
+        exportedData[key] = data;
+      });
+      
+      const searchIndexData = {
+        keys: result.keys,
+        data: exportedData,
+      };
+      
+      const searchIndexFile = join(outputPath, config.indexFilename);
       writeFileSync(searchIndexFile, JSON.stringify(searchIndexData));
 
       log('Saved search index to: %s', searchIndexFile);

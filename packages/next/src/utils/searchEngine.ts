@@ -12,13 +12,17 @@ export async function getSearchEngine(): Promise<SearchEngine | undefined> {
 
   try {
     const config = getConfig();
-    log(`Loading search index from: ${config.outputDir}/search-index.json`);
-    
+    const indexPath = `${config.outputDir}/${config.indexFilename}`;
+    log(`Loading index from: ${indexPath}`);
+
     // Use @/ alias which Next.js resolves to the project root src directory
-    const searchIndexData = await import(`@/../${config.outputDir}/search-index.json`);
-    await searchEngine.import(searchIndexData);
-    
-    log(`Search index loaded successfully with ${searchEngine.getAllDocuments().length} documents`);
+    const indexFile = await import(`@/../${indexPath}`);
+
+    await searchEngine.import(async (key: string) => {
+      return indexFile.data[key];
+    }, indexFile.keys);
+
+    log(`Index loaded successfully with ${searchEngine.getAllDocuments().length} documents`);
     return searchEngine;
   } catch (error) {
     log(`Failed to load search index: ${error}`);
