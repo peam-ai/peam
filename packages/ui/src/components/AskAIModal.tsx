@@ -69,7 +69,7 @@ export function AskAIModal({ className = '', buttonClassName = '', contentClassN
               <X className="size-4" />
             </button>
 
-            <div className="border-b border-border px-4 py-3 shrink-0 flex items-center gap-2">
+            <div className="px-4 py-3 shrink-0 flex items-center gap-2">
               <BotMessageSquare className="size-5" />
               <h2 className="text-lg font-semibold">Ask AI</h2>
             </div>
