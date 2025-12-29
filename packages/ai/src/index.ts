@@ -1,1 +1,1 @@
-export { streamSearchText } from './streamSearchText';
+export { type CurrentPageMetadata, streamSearchText } from './streamSearchText';

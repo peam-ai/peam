@@ -1,61 +1,53 @@
-import { streamText, LanguageModel, ModelMessage, stepCountIs } from 'ai';
-import {
-  createSearchTool,
-  createGetDocumentTool,
-  createListDocumentsTool,
-} from './tools';
-import {generateSearchSystemPrompt} from './prompts/search';
 import { SearchEngine } from '@peam/search';
+import { 
+  LanguageModel, 
+  UIMessage,
+  stepCountIs, 
+  streamText, 
+  createUIMessageStream,
+  convertToModelMessages,
+} from 'ai';
+import { generateSearchSystemPrompt } from './prompts/search';
+import { createSearchTools } from './tools';
 
-type AsyncIterableStream<T> = AsyncIterable<T> & ReadableStream<T>;
+export type CurrentPageMetadata = {
+  origin: string;
+  path: string;
+  title?: string;
+};
 
-type SearchStreamTextProps = {
-  prompt: string;
+export type SearchStreamTextProps = {
   searchEngine: SearchEngine;
   model: LanguageModel;
-  messages: ModelMessage[];
-  currentPage: string,
-  siteName: string,
-  siteDomain: string,
-  onStepFinish: (step: any) => void;
+  messages: UIMessage[];
+  currentPage?: CurrentPageMetadata;
+  onStepFinish?: (step: any) => void;
 };
 
 export const streamSearchText = function ({
-    model,
-    prompt,
-    searchEngine,
-    messages,
-    currentPage,
-    siteName,
-    siteDomain,
-    onStepFinish,
-}: SearchStreamTextProps): AsyncIterableStream<string> {
+  model,
+  searchEngine,
+  messages,
+  currentPage,
+  onStepFinish,
+}: SearchStreamTextProps) {
+  const stream = createUIMessageStream({
+    originalMessages: messages,
+    execute: async ({ writer }) => {
+      const modelMessages = await convertToModelMessages(messages);
+      
+      const result = streamText({
+        model,
+        system: generateSearchSystemPrompt({ currentPage }),
+        messages: modelMessages,
+        stopWhen: stepCountIs(20),
+        tools: createSearchTools( { searchEngine, writer }),
+        onStepFinish,
+      });
 
-    const tools = {
-      search: createSearchTool({ searchEngine }),
-      getDocument: createGetDocumentTool({ searchEngine }),
-      listDocuments: createListDocumentsTool({ searchEngine }),
-    };
+      writer.merge(result.toUIMessageStream());
+    },
+  });
 
-    messages.push({
-      role: 'user',
-      content: `User query: ${prompt}`,
-    });
-
-    const { textStream } = streamText({
-      model,
-      system: generateSearchSystemPrompt({ currentPage, siteName, siteDomain }),
-      messages,
-      tools,
-       providerOptions: {
-          openai: {
-            textVerbosity: 'medium',
-            serviceTier: 'priority',
-          },
-        },
-      stopWhen: stepCountIs(10),
-      onStepFinish
-    });
-
-    return textStream;
+  return stream;
 };

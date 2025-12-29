@@ -1,24 +1,30 @@
 import { SearchEngine } from '@peam/search';
-import { tool } from 'ai';
+import { tool, ToolSet, type UIMessageStreamWriter } from 'ai';
 import { z } from 'zod';
 import { loggers } from '@peam/logger';
 
 const log = loggers.ai;
 
-export function createSearchTool({ searchEngine, limit = 5 }: { searchEngine: SearchEngine, limit?: number }) {
+export function createSearchTool({
+  searchEngine,
+  writer,
+  limit = 10,
+}: {
+  searchEngine: SearchEngine;
+  limit?: number;
+  writer: UIMessageStreamWriter;
+}) {
   return tool({
     description:
       'Search the website content for information. Use this tool to find relevant pages and content based on user queries. Returns matching documents with their titles, descriptions, and text content.',
     inputSchema: z.object({
-      query: z
-        .string()
-        .describe('The search query to find relevant content on the website')
+      query: z.string().describe('The search query to find relevant content on the website'),
     }),
     execute: async ({ query }) => {
       log(`Searching for: "${query}" with limit: ${limit}`);
 
       try {
-        const results = await searchEngine.search(query, { limit, suggest: true });
+        const results = await searchEngine.search(query, { limit });
 
         log(`Found ${results.length} results`);
 
@@ -30,9 +36,20 @@ export function createSearchTool({ searchEngine, limit = 5 }: { searchEngine: Se
           };
         }
 
+        for (const [index, doc] of results.entries()) {
+          writer.write({
+            type: 'source-url',
+            sourceId: `search-${index}-${doc.id}`,
+            url: doc.path,
+            title: doc.content.title,
+          });
+        }
+
         const formattedResults = results.map((doc, index) => ({
           rank: index + 1,
           id: doc.id,
+          title: doc.content.title,
+          url: doc.path,
         }));
 
         return {
@@ -52,12 +69,18 @@ export function createSearchTool({ searchEngine, limit = 5 }: { searchEngine: Se
   });
 }
 
-export function createGetDocumentTool({ searchEngine }: { searchEngine: SearchEngine }) {
+export function createGetDocumentTool({ 
+  searchEngine,
+  writer,
+}: { 
+  searchEngine: SearchEngine;
+  writer: UIMessageStreamWriter;
+}) {
   return tool({
     description:
-      'Get the full content of a specific page by its ID. Use this when you need complete details about a page that was found in search results.',
+      'Get the full content of a specific page by its ID (path). The ID must be the EXACT path returned from search results (e.g., "/contact", "/pricing", "/about"). Do not modify or shorten the path.',
     inputSchema: z.object({
-      id: z.string().describe('The document ID to retrieve'),
+      id: z.string().describe('The complete document path/ID to retrieve (e.g., "/contact", "/about")'),
     }),
     execute: async ({ id }: { id: string }) => {
       log(`Getting document: ${id}`);
@@ -73,6 +96,13 @@ export function createGetDocumentTool({ searchEngine }: { searchEngine: SearchEn
             document: null,
           };
         }
+
+        writer.write({
+          type: 'source-url',
+          sourceId: `doc-${doc.id}`,
+          url: doc.path,
+          title: doc.content.title,
+        });
 
         return {
           success: true,
@@ -105,7 +135,15 @@ export function createGetDocumentTool({ searchEngine }: { searchEngine: SearchEn
   });
 }
 
-export function createListDocumentsTool({ searchEngine, limit = 10 }: { searchEngine: SearchEngine, limit?: number }) {
+export function createListDocumentsTool({ 
+  searchEngine, 
+  limit = 10,
+  writer,
+}: { 
+  searchEngine: SearchEngine;
+  limit?: number;
+  writer: UIMessageStreamWriter;
+}) {
   return tool({
     description:
       'List all available web pages in the knowledge base. Use this to get an overview of what pages are available.',
@@ -122,6 +160,15 @@ export function createListDocumentsTool({ searchEngine, limit = 10 }: { searchEn
           title: doc.content.title,
           description: doc.content.description,
         }));
+
+        for (const [index, doc] of summary.entries()) {
+          writer.write({
+            type: 'source-url',
+            sourceId: `list-${index}-${doc.id}`,
+            url: doc.path,
+            title: doc.title,
+          });
+        }
 
         return {
           success: true,
@@ -141,3 +188,18 @@ export function createListDocumentsTool({ searchEngine, limit = 10 }: { searchEn
     },
   });
 }
+
+export const createSearchTools = ({
+  searchEngine,
+  writer
+}: {
+  searchEngine: SearchEngine;
+  writer: UIMessageStreamWriter;
+}) => {
+  return {
+    search: createSearchTool({ searchEngine, writer }),
+    getDocument: createGetDocumentTool({ searchEngine, writer }),
+    listDocuments: createListDocumentsTool({ searchEngine, writer }),
+  } satisfies ToolSet;
+};
+
