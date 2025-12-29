@@ -1,7 +1,7 @@
+import { loggers } from '@peam/logger';
 import { SearchEngine } from '@peam/search';
 import { tool, ToolSet, type UIMessageStreamWriter } from 'ai';
 import { z } from 'zod';
-import { loggers } from '@peam/logger';
 
 const log = loggers.ai;
 
@@ -67,10 +67,10 @@ export function createSearchTool({
   });
 }
 
-export function createGetDocumentTool({ 
+export function createGetDocumentTool({
   searchEngine,
   writer,
-}: { 
+}: {
   searchEngine: SearchEngine;
   writer: UIMessageStreamWriter;
 }) {
@@ -133,10 +133,10 @@ export function createGetDocumentTool({
   });
 }
 
-export function createListDocumentsTool({ 
-  searchEngine, 
+export function createListDocumentsTool({
+  searchEngine,
   writer,
-}: { 
+}: {
   searchEngine: SearchEngine;
   writer: UIMessageStreamWriter;
 }) {
@@ -187,7 +187,7 @@ export function createListDocumentsTool({
 
 export const createSearchTools = ({
   searchEngine,
-  writer
+  writer,
 }: {
   searchEngine: SearchEngine;
   writer: UIMessageStreamWriter;
@@ -198,4 +198,3 @@ export const createSearchTools = ({
     listDocuments: createListDocumentsTool({ searchEngine, writer }),
   } satisfies ToolSet;
 };
-

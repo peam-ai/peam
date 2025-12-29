@@ -15,7 +15,7 @@ export function AskAIModal({ className = '', buttonClassName = '', contentClassN
 
   const handleModalClick = () => {
     setIsOpen(!isOpen);
-  }
+  };
 
   const handleClose = () => {
     setIsOpen(false);
@@ -47,9 +47,7 @@ export function AskAIModal({ className = '', buttonClassName = '', contentClassN
             </button>
 
             <div className="border-b border-border px-4 py-3">
-              <h2 className="text-lg font-semibold">
-                Ask AI
-              </h2>
+              <h2 className="text-lg font-semibold">Ask AI</h2>
             </div>
 
             <Chat />

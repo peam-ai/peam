@@ -2,8 +2,8 @@ import { openai } from '@ai-sdk/openai';
 import { streamSearchText } from '@peam/ai';
 import { loggers } from '@peam/logger';
 import { createUIMessageStreamResponse, UIMessage, type LanguageModel } from 'ai';
-import { getSearchEngine } from './utils/searchEngine';
 import { getCurrentPage } from './utils/currentPage';
+import { getSearchEngine } from './utils/searchEngine';
 
 const log = loggers.next;
 
@@ -19,33 +19,30 @@ type RequestBody = {
  * // Custom model with custom config
  * import { createPOST } from '@peam/next/route';
  * import { anthropic } from '@ai-sdk/anthropic';
- * 
+ *
  * export const maxDuration = 60;
  * export const runtime = 'edge';
- * 
+ *
  * export const POST = createPOST({
  *   model: anthropic('claude-3-5-sonnet-20241022'),
  * });
  * ```
- * 
+ *
  * @example
  * ```typescript
  * // Using Google Gemini
  * import { createPOST } from '@peam/next/route';
  * import { google } from '@ai-sdk/google';
- * 
+ *
  * export const maxDuration = 45;
- * 
+ *
  * export const POST = createPOST({
  *   model: google('gemini-2.0-flash-exp'),
  * });
  * ```
  */
-export function createPOST(options: {
-  model: LanguageModel;
-}) {
+export function createPOST(options: { model: LanguageModel }) {
   const handler = async (req: Request) => {
-
     try {
       const { messages } = (await req.json()) as RequestBody;
 
@@ -105,7 +102,7 @@ export function createPOST(options: {
 
 /**
  * Default POST handler using GPT-4o.
- * 
+ *
  * @example
  * ```typescript
  * export { POST } from '@peam/next/route';

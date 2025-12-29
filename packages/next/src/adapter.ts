@@ -104,12 +104,12 @@ export function createPeamAdapter(config: Required<PeamAdapterConfig>): NextAdap
       const result = await searchEngine.export(async (key, data) => {
         exportedData[key] = data;
       });
-      
+
       const searchIndexData = {
         keys: result.keys,
         data: exportedData,
       };
-      
+
       const searchIndexFile = join(outputPath, config.indexFilename);
       writeFileSync(searchIndexFile, JSON.stringify(searchIndexData));
 

@@ -1,11 +1,7 @@
 import { CurrentPageMetadata } from '../streamSearchText';
 import { normalizeDomain } from '../utils/normalizeDomain';
 
-export const generateSearchSystemPrompt = ({
-  currentPage,
-}: {
-  currentPage?: CurrentPageMetadata;
-}) => {
+export const generateSearchSystemPrompt = ({ currentPage }: { currentPage?: CurrentPageMetadata }) => {
   const siteName = currentPage?.origin ? normalizeDomain(currentPage.origin) : 'unknown';
   const siteDomain = currentPage?.origin || 'unknown';
 

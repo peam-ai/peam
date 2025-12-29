@@ -1,8 +1,5 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useChat } from '@ai-sdk/react';
-import { BotMessageSquare, RefreshCcw, Copy, Check } from 'lucide-react';
 import {
   Conversation,
   ConversationContent,
@@ -11,27 +8,25 @@ import {
 } from '@/components/ai-elements/conversation';
 import {
   Message,
+  MessageAction,
+  MessageActions,
   MessageContent,
   MessageResponse,
-  MessageActions,
-  MessageAction,
 } from '@/components/ai-elements/message';
 import {
   PromptInput,
   PromptInputBody,
   PromptInputFooter,
-  PromptInputTextarea,
-  PromptInputSubmit,
-  type PromptInputMessage,
   PromptInputSpeechButton,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  type PromptInputMessage,
 } from '@/components/ai-elements/prompt-input';
-import {
-  Source,
-  Sources,
-  SourcesContent,
-  SourcesTrigger,
-} from '@/components/ai-elements/sources';
 import { Shimmer } from '@/components/ai-elements/shimmer';
+import { Source, Sources, SourcesContent, SourcesTrigger } from '@/components/ai-elements/sources';
+import { useChat } from '@ai-sdk/react';
+import { BotMessageSquare, Check, Copy, RefreshCcw } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 export const Chat = () => {
   const [input, setInput] = useState('');
@@ -83,10 +78,9 @@ export const Chat = () => {
 
     return 'An error occurred while processing your request.';
   };
-  
+
   return (
     <div className="flex h-full flex-col bg-background rounded-sm  min-h-1/2 max-h-1/2">
-
       <Conversation>
         <ConversationContent>
           {messages.length === 0 && !error ? (
@@ -103,12 +97,12 @@ export const Chat = () => {
                 const isAssistant = message.role === 'assistant';
                 const isStreaming = isLastMessage && status === 'streaming';
                 const isReady = !isStreaming;
-                
+
                 const textContent = message.parts
                   .filter((part) => part.type === 'text')
                   .map((part) => part.text)
                   .join('\n');
-                
+
                 const hasText = textContent.length > 0;
                 const showShimmer = isAssistant && isStreaming && !hasText;
                 const showActions = isAssistant && isReady && hasText;
@@ -141,17 +135,15 @@ export const Chat = () => {
                               return null;
                           }
                         })}
-                        
-                        {showShimmer && (
-                          <Shimmer>Thinking...</Shimmer>
-                        )}
+
+                        {showShimmer && <Shimmer>Thinking...</Shimmer>}
                       </MessageContent>
-                      
+
                       {showActions && (
                         <MessageActions>
                           <MessageAction
                             onClick={() => handleCopy(message.id, textContent)}
-                            tooltip={copiedMessageId === message.id ? "Copied!" : "Copy"}
+                            tooltip={copiedMessageId === message.id ? 'Copied!' : 'Copy'}
                             label="Copy"
                           >
                             {copiedMessageId === message.id ? (
@@ -160,8 +152,8 @@ export const Chat = () => {
                               <Copy className="size-4" />
                             )}
                           </MessageAction>
-                          <MessageAction 
-                            onClick={() => regenerate({ messageId: message.id })} 
+                          <MessageAction
+                            onClick={() => regenerate({ messageId: message.id })}
                             tooltip="Regenerate"
                             label="Regenerate"
                           >
@@ -177,15 +169,13 @@ export const Chat = () => {
               {error && (
                 <Message from="assistant">
                   <MessageContent>
-                        <div className="font-semibold text-destructive">
-                          {getErrorMessage(error)}
-                        </div>
+                    <div className="font-semibold text-destructive">{getErrorMessage(error)}</div>
                   </MessageContent>
-                    <MessageActions>
-                      <MessageAction onClick={() => regenerate()} tooltip="Retry" label="Retry">
-                        <RefreshCcw className="size-4" />
-                      </MessageAction>
-                    </MessageActions>
+                  <MessageActions>
+                    <MessageAction onClick={() => regenerate()} tooltip="Retry" label="Retry">
+                      <RefreshCcw className="size-4" />
+                    </MessageAction>
+                  </MessageActions>
                 </Message>
               )}
             </>
@@ -212,4 +202,4 @@ export const Chat = () => {
       </div>
     </div>
   );
-}
+};

@@ -1,12 +1,5 @@
 import { SearchEngine } from '@peam/search';
-import { 
-  LanguageModel, 
-  UIMessage,
-  stepCountIs, 
-  streamText, 
-  createUIMessageStream,
-  convertToModelMessages,
-} from 'ai';
+import { LanguageModel, UIMessage, convertToModelMessages, createUIMessageStream, stepCountIs, streamText } from 'ai';
 import { generateSearchSystemPrompt } from './prompts/search';
 import { createSearchTools } from './tools';
 
@@ -35,13 +28,13 @@ export const streamSearchText = function ({
     originalMessages: messages,
     execute: async ({ writer }) => {
       const modelMessages = await convertToModelMessages(messages);
-      
+
       const result = streamText({
         model,
         system: generateSearchSystemPrompt({ currentPage }),
         messages: modelMessages,
         stopWhen: stepCountIs(20),
-        tools: createSearchTools( { searchEngine, writer }),
+        tools: createSearchTools({ searchEngine, writer }),
         onStepFinish,
       });
 

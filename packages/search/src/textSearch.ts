@@ -1,5 +1,5 @@
-import { Charset, Document } from "flexsearch";
 import { loggers } from '@peam/logger';
+import { Charset, Document } from 'flexsearch';
 import type { StructuredPageDocumentData } from './types';
 
 export interface TextSearchOptions {
