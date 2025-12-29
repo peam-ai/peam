@@ -52,12 +52,16 @@ export class SearchEngine {
     return this.textSearch.search(query, options);
   }
 
+  count(): number {
+    return this.textSearch.count();
+  }
+
   getDocument(path: string) {
     return this.textSearch.getDocument(path);
   }
 
-  getAllDocuments(): StructuredPageDocumentData[] {
-    return this.textSearch.getAllDocuments();
+  getAllDocuments(limit?: number): StructuredPageDocumentData[] {
+    return this.textSearch.getAllDocuments(limit);
   }
 
   clear(): void {

@@ -22,7 +22,8 @@ export async function getSearchEngine(): Promise<SearchEngine | undefined> {
       return indexFile.data[key];
     }, indexFile.keys);
 
-    log(`Index loaded successfully with ${searchEngine.getAllDocuments().length} documents`);
+    const totalDocs = searchEngine.count();
+    log(`Index loaded successfully with ${totalDocs} documents`);
     return searchEngine;
   } catch (error) {
     log(`Failed to load search index: ${error}`);

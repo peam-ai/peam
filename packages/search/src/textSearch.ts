@@ -100,21 +100,32 @@ export class TextSearch {
     return pagedResults;
   }
 
+  count(): number {
+    return this.documentIds.size;
+  }
+
   getDocument(path: string) {
     return this.index.get(path);
   }
 
-  getAllDocuments(): StructuredPageDocumentData[] {
+  getAllDocuments(limit?: number): StructuredPageDocumentData[] {
     const documents: StructuredPageDocumentData[] = [];
+    let count = 0;
+    limit = limit || 25;
 
     for (const id of this.documentIds) {
+      if (count >= limit) {
+        break;
+      }
+
       const doc = this.index.get(id);
       if (doc) {
         documents.push(doc);
+        count++;
       }
     }
 
-    log('Retrieved %d documents from store', documents.length);
+    log('Retrieved %d documents from store (limit: %d)', documents.length, limit);
     return documents;
   }
 

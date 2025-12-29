@@ -137,11 +137,9 @@ export function createGetDocumentTool({
 
 export function createListDocumentsTool({ 
   searchEngine, 
-  limit = 10,
   writer,
 }: { 
   searchEngine: SearchEngine;
-  limit?: number;
   writer: UIMessageStreamWriter;
 }) {
   return tool({
@@ -154,7 +152,7 @@ export function createListDocumentsTool({
       try {
         const documents = searchEngine.getAllDocuments();
 
-        const summary = documents.slice(0, limit).map((doc) => ({
+        const summary = documents.map((doc) => ({
           id: doc.id,
           path: doc.path,
           title: doc.content.title,
