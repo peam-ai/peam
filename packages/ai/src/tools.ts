@@ -8,7 +8,6 @@ const log = loggers.ai;
 export function createSearchTool({
   searchEngine,
   writer,
-  limit = 10,
 }: {
   searchEngine: SearchEngine;
   limit?: number;
@@ -21,10 +20,10 @@ export function createSearchTool({
       query: z.string().describe('The search query to find relevant content on the website'),
     }),
     execute: async ({ query }) => {
-      log(`Searching for: "${query}" with limit: ${limit}`);
+      log(`Searching for: "${query}"`);
 
       try {
-        const results = await searchEngine.search(query, { limit });
+        const results = await searchEngine.search(query);
 
         log(`Found ${results.length} results`);
 
@@ -45,8 +44,7 @@ export function createSearchTool({
           });
         }
 
-        const formattedResults = results.map((doc, index) => ({
-          rank: index + 1,
+        const formattedResults = results.map((doc) => ({
           id: doc.id,
           title: doc.content.title,
           url: doc.path,

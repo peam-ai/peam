@@ -9,6 +9,7 @@ export interface TextSearchOptions {
 }
 
 const PEAM_DOCUMENT_IDS_KEY = 'peam.documentIds';
+const MAX_DOCUMENTS_RETRIEVE = 25;
 const log = loggers.search;
 
 export class TextSearch {
@@ -67,7 +68,7 @@ export class TextSearch {
       throw new Error('TextSearch not initialized. Call initialize() first.');
     }
 
-    const limit = options.limit || 10;
+    const limit = options.limit || MAX_DOCUMENTS_RETRIEVE;
     const offset = options.offset || 0;
 
     log('Searching for: "%s"', query);
@@ -111,7 +112,7 @@ export class TextSearch {
   getAllDocuments(limit?: number): StructuredPageDocumentData[] {
     const documents: StructuredPageDocumentData[] = [];
     let count = 0;
-    limit = limit || 25;
+    limit = limit || MAX_DOCUMENTS_RETRIEVE;
 
     for (const id of this.documentIds) {
       if (count >= limit) {
