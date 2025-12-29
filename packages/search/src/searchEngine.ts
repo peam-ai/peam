@@ -1,9 +1,7 @@
 import { loggers } from '@peam/logger';
 import type { StructuredPage } from '@peam/parser';
 import { TextSearch, type TextSearchOptions } from './textSearch';
-import type {
-  IndexedDocument
-} from './types';
+import type { StructuredPageDocumentData } from './types';
 
 const log = loggers.search;
 
@@ -35,7 +33,7 @@ export class SearchEngine {
       throw new Error('Search engine not initialized. Call initialize() first.');
     }
 
-    const document: IndexedDocument = {
+    const document: StructuredPageDocumentData = {
       id: path,
       path,
       content,
@@ -45,7 +43,7 @@ export class SearchEngine {
     log('Page added to search engine: %s', path);
   }
 
-  async search(query: string, options: TextSearchOptions = {}): Promise<IndexedDocument[]> {
+  async search(query: string, options: TextSearchOptions = {}): Promise<StructuredPageDocumentData[]> {
     if (!this.initialized) {
       throw new Error('Search engine not initialized. Call initialize() first.');
     }
@@ -54,11 +52,11 @@ export class SearchEngine {
     return this.textSearch.search(query, options);
   }
 
-  getDocument(path: string): IndexedDocument | undefined {
+  getDocument(path: string) {
     return this.textSearch.getDocument(path);
   }
 
-  getAllDocuments(): IndexedDocument[] {
+  getAllDocuments(): StructuredPageDocumentData[] {
     return this.textSearch.getAllDocuments();
   }
 
@@ -66,11 +64,13 @@ export class SearchEngine {
     this.textSearch.clear();
   }
 
-  async export(): Promise<any> {
-    return this.textSearch.export();
+  async export(handler: (key: string, data: string) => Promise<void>): Promise<{ keys: string[] }> {
+    return this.textSearch.export(handler);
   }
 
-  async import(data: any): Promise<void> {
-    await this.textSearch.import(data);
+  async import(handler: (key: string) => Promise<string>, keys: string[]): Promise<void> {
+    await this.textSearch.import(handler, keys);
+    this.initialized = true;
+    log('Search engine initialized from imported data');
   }
 }

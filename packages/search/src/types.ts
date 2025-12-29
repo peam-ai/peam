@@ -1,7 +1,8 @@
 import type { StructuredPage } from '@peam/parser';
 
-export interface IndexedDocument {
+export type StructuredPageDocumentData = {
   id: string;
   path: string;
   content: StructuredPage;
-}
+  [key: string]: any
+};

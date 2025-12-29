@@ -100,8 +100,8 @@ export function createPeamAdapter(config: Required<PeamAdapterConfig>): NextAdap
         }
       }
 
-      const exportedData: Record<string, unknown> = {};
-      const result = await searchEngine.export(async (key: string, data: unknown) => {
+      const exportedData: Record<string, string> = {};
+      const result = await searchEngine.export(async (key, data) => {
         exportedData[key] = data;
       });
       
@@ -114,7 +114,7 @@ export function createPeamAdapter(config: Required<PeamAdapterConfig>): NextAdap
       writeFileSync(searchIndexFile, JSON.stringify(searchIndexData));
 
       log('Saved search index to: %s', searchIndexFile);
-      log('Extraction complete! Total pages: %d', pages.length);
+      log('Extraction complete with total pages: %d', pages.length);
     },
   };
 }

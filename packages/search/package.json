@@ -1,7 +1,7 @@
 {
   "name": "@peam/search",
   "version": "0.1.0",
-  "description": "Vector database and search functionality for PEAM",
+  "description": "Vector database and search functionality for Peam",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -27,7 +27,7 @@
   "dependencies": {
     "@peam/logger": "*",
     "@peam/parser": "*",
-    "flexsearch": "^0.7.43"
+    "flexsearch": "^0.8.212"
   },
   "devDependencies": {
     "@peam/tsconfig": "*",

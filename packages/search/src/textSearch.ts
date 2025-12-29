@@ -1,6 +1,6 @@
-import FlexSearch from 'flexsearch';
+import { Charset, Document } from "flexsearch";
 import { loggers } from '@peam/logger';
-import type { IndexedDocument } from './types';
+import type { StructuredPageDocumentData } from './types';
 
 export interface TextSearchOptions {
   limit?: number;
@@ -8,37 +8,38 @@ export interface TextSearchOptions {
   suggest?: boolean;
 }
 
+const PEAM_DOCUMENT_IDS_KEY = 'peam.documentIds';
 const log = loggers.search;
 
 export class TextSearch {
-  private index: FlexSearch.Document<IndexedDocument, true>;
-  private documents: Map<string, IndexedDocument>;
+  private index: Document<StructuredPageDocumentData>;
   private initialized: boolean;
+  private documentIds: Set<string>;
 
   constructor() {
-    this.documents = new Map();
     this.initialized = false;
+    this.index = this.getIndex();
+    this.documentIds = new Set();
+  }
 
-    this.index = new FlexSearch.Document<IndexedDocument, true>({
+  private getIndex() {
+    return new Document<StructuredPageDocumentData>({
+      worker: false,
       document: {
         id: 'path',
-        index: [
-          'content:title',
-          'content:description',
-          'content:textContent',
-          'content:author',
-          'content:keywords',
-        ],
+        index: ['content:title', 'content:description', 'content:textContent', 'content:author', 'content:keywords'],
         store: true,
       },
-      tokenize: 'forward',
+      tokenize: 'strict',
+      resolution: 9,
       context: {
-        resolution: 9,
-        depth: 3,
+        resolution: 3,
+        depth: 2,
         bidirectional: true,
       },
-      charset: 'latin:extra',
-    } as any);
+      cache: 100,
+      encoder: Charset.LatinExtra,
+    });
   }
 
   async initialize(): Promise<void> {
@@ -50,20 +51,20 @@ export class TextSearch {
     this.initialized = true;
   }
 
-  async addDocument(document: IndexedDocument): Promise<void> {
+  async addDocument(document: StructuredPageDocumentData): Promise<void> {
     if (!this.initialized) {
-      throw new Error('Text search not initialized. Call initialize() first.');
+      throw new Error('TextSearch not initialized. Call initialize() first.');
     }
 
     log('Adding document to text search: %s', document.path);
 
-    this.documents.set(document.path, document);
     this.index.add(document);
+    this.documentIds.add(document.path);
   }
 
-  async search(query: string, options: TextSearchOptions = {}): Promise<IndexedDocument[]> {
+  async search(query: string, options: TextSearchOptions = {}): Promise<StructuredPageDocumentData[]> {
     if (!this.initialized) {
-      throw new Error('Text search not initialized. Call initialize() first.');
+      throw new Error('TextSearch not initialized. Call initialize() first.');
     }
 
     const limit = options.limit || 10;
@@ -71,72 +72,97 @@ export class TextSearch {
 
     log('Searching for: "%s"', query);
 
-    const results = this.index.search(query, {
+    const results = await this.index.search(query, {
       limit: limit + offset,
       suggest: options.suggest,
+      enrich: true,
     });
 
     const pathSet = new Set<string>();
-    const documents: IndexedDocument[] = [];
+    const documents: StructuredPageDocumentData[] = [];
 
     for (const fieldResults of results) {
       if (Array.isArray(fieldResults.result)) {
-        for (const path of fieldResults.result) {
-          if (!pathSet.has(path as string)) {
-            pathSet.add(path as string);
-            const doc = this.documents.get(path as string);
-            if (doc) {
-              documents.push(doc);
-            }
+        for (const result of fieldResults.result) {
+          const id = typeof result === 'object' && 'id' in result ? result.id : result;
+          const doc = typeof result === 'object' && 'doc' in result ? result.doc : null;
+
+          if (!pathSet.has(id as string) && doc) {
+            pathSet.add(id as string);
+            documents.push(doc);
           }
         }
       }
     }
 
     const pagedResults = documents.slice(offset, offset + limit);
-  
+
     return pagedResults;
   }
 
-  getDocument(path: string): IndexedDocument | undefined {
-    return this.documents.get(path);
+  getDocument(path: string) {
+    return this.index.get(path);
   }
 
-  getAllDocuments(): IndexedDocument[] {
-    return Array.from(this.documents.values());
+  getAllDocuments(): StructuredPageDocumentData[] {
+    const documents: StructuredPageDocumentData[] = [];
+
+    for (const id of this.documentIds) {
+      const doc = this.index.get(id);
+      if (doc) {
+        documents.push(doc);
+      }
+    }
+
+    log('Retrieved %d documents from store', documents.length);
+    return documents;
   }
 
   clear(): void {
-    this.documents.clear();
-    // Recreate the index
-    this.index = new FlexSearch.Document<IndexedDocument, true>({
-      document: {
-        id: 'path',
-        index: [
-          'content:title',
-          'content:description',
-          'content:textContent',
-          'content:author',
-          'content:keywords',
-        ],
-        store: true,
-      },
-      tokenize: 'forward',
-      context: {
-        resolution: 9,
-        depth: 3,
-        bidirectional: true,
-      },
-      charset: 'latin:extra',
-    } as any);
-    log('Text search cleared');
+    this.index.clear();
+    this.index = this.getIndex();
+    this.documentIds.clear();
   }
 
-  async export(): Promise<any> {
-    return (this.index as any).export();
+  async export(handler: (key: string, data: string) => Promise<void>): Promise<{ keys: string[] }> {
+    const keys: string[] = [];
+
+    await handler(PEAM_DOCUMENT_IDS_KEY, JSON.stringify(Array.from(this.documentIds)));
+    keys.push(PEAM_DOCUMENT_IDS_KEY);
+
+    await this.index.export(async (key: string, data: string) => {
+      keys.push(key);
+      await handler(key, data);
+    });
+
+    log('Exported %d keys', keys.length);
+
+    return { keys };
   }
 
-  async import(data: any): Promise<void> {
-    (this.index as any).import(data);
+  async import(handler: (key: string) => Promise<string>, keys: string[]): Promise<void> {
+    const documentIdsData = await handler(PEAM_DOCUMENT_IDS_KEY);
+    if (documentIdsData) {
+      const parsed = typeof documentIdsData === 'string' ? JSON.parse(documentIdsData) : documentIdsData;
+      this.documentIds = new Set(parsed);
+    }
+
+    for (const key of keys) {
+      if (key === PEAM_DOCUMENT_IDS_KEY) {
+        continue;
+      }
+
+      try {
+        const data = await handler(key);
+        if (data) {
+          this.index.import(key, data);
+        }
+      } catch (error) {
+        log('Error importing key %s: %s', key, error);
+      }
+    }
+
+    this.initialized = true;
+    log('Import completed with %d keys', keys.length);
   }
 }
