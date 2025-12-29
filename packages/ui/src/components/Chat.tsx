@@ -80,14 +80,14 @@ export const Chat = () => {
   };
 
   return (
-    <div className="flex h-full flex-col bg-background rounded-sm  min-h-1/2 max-h-1/2">
+    <div className="flex flex-col h-full bg-background rounded-sm">
       <Conversation>
         <ConversationContent>
           {messages.length === 0 && !error ? (
             <ConversationEmptyState
               icon={<BotMessageSquare className="size-12" />}
               title="Ask me anything"
-              description="I can help you find information about this website"
+              description="How can I help you today?"
             />
           ) : (
             <>
@@ -184,7 +184,7 @@ export const Chat = () => {
         <ConversationScrollButton />
       </Conversation>
 
-      <div className="border-t border-border p-4">
+      <div className="border-t border-border p-4 shrink-0">
         <PromptInput onSubmit={handleSubmit}>
           <PromptInputBody>
             <PromptInputTextarea

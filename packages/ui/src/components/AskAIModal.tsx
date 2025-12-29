@@ -1,7 +1,7 @@
 'use client';
 
 import { BotMessageSquare, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Chat } from './Chat';
 
 export interface AskAIModalProps {
@@ -21,6 +21,31 @@ export function AskAIModal({ className = '', buttonClassName = '', contentClassN
     setIsOpen(false);
   };
 
+  useEffect(() => {
+    const handleKeyboard = (event: KeyboardEvent) => {
+      const isEscape = event.key === 'Escape' || event.key === 'Esc' || event.keyCode === 27;
+      if (isEscape && isOpen) {
+        handleClose();
+        return;
+      }
+
+      const isIKey = event.key === 'i' || event.key === 'I' || event.keyCode === 73;
+      const hasModifier = event.metaKey || event.ctrlKey;
+
+      if (hasModifier && isIKey) {
+        event.preventDefault();
+        event.stopPropagation();
+        setIsOpen(!isOpen);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyboard);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyboard);
+    };
+  }, [isOpen]);
+
   return (
     <div className="peam-root">
       <button
@@ -33,10 +58,8 @@ export function AskAIModal({ className = '', buttonClassName = '', contentClassN
 
       {isOpen && (
         <>
-          <div className="fixed inset-0" onClick={handleClose} />
-
           <div
-            className={`fixed right-4 bottom-20 z-50 w-[400px] rounded-sm border border-border bg-background shadow-xl ${contentClassName}`}
+            className={`fixed right-4 bottom-20 z-50 h-[500px] w-[400px] rounded-sm border border-border bg-background shadow-xl flex flex-col ${contentClassName}`}
           >
             <button
               onClick={handleClose}
@@ -46,11 +69,14 @@ export function AskAIModal({ className = '', buttonClassName = '', contentClassN
               <X className="size-4" />
             </button>
 
-            <div className="border-b border-border px-4 py-3">
+            <div className="border-b border-border px-4 py-3 shrink-0 flex items-center gap-2">
+              <BotMessageSquare className="size-5" />
               <h2 className="text-lg font-semibold">Ask AI</h2>
             </div>
 
-            <Chat />
+            <div className="flex-1 min-h-0">
+              <Chat />
+            </div>
           </div>
         </>
       )}
