@@ -30,7 +30,7 @@ export function AskAIModal({ className = '', buttonClassName = '', contentClassN
       }
 
       const isIKey = event.key === 'i' || event.key === 'I' || event.keyCode === 73;
-      const hasModifier = event.metaKey || event.ctrlKey;
+      const hasModifier = event.metaKey;
 
       if (hasModifier && isIKey) {
         event.preventDefault();
