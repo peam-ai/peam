@@ -8,9 +8,14 @@ export interface AskAIModalProps {
   className?: string;
   buttonClassName?: string;
   contentClassName?: string;
+  suggestedPrompts?: string[];
 }
-
-export function AskAIModal({ className = '', buttonClassName = '', contentClassName = '' }: AskAIModalProps = {}) {
+export function AskAIModal({
+  className = '',
+  buttonClassName = '',
+  contentClassName = '',
+  suggestedPrompts,
+}: AskAIModalProps = {}) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleModalClick = () => {
@@ -75,7 +80,7 @@ export function AskAIModal({ className = '', buttonClassName = '', contentClassN
             </div>
 
             <div className="flex-1 min-h-0">
-              <Chat />
+              <Chat suggestedPrompts={suggestedPrompts} />
             </div>
           </div>
         </>

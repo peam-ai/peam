@@ -24,46 +24,77 @@ import {
 } from '@/components/ai-elements/prompt-input';
 import { Shimmer } from '@/components/ai-elements/shimmer';
 import { Source, Sources, SourcesContent, SourcesTrigger } from '@/components/ai-elements/sources';
+import { SuggestedPrompts } from '@/components/SuggestedPrompts';
 import { useChat } from '@ai-sdk/react';
 import { BotMessageSquare, Check, Copy, RefreshCcw } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-export const Chat = () => {
+export interface ChatProps {
+  suggestedPrompts?: string[];
+}
+
+export const Chat = ({ suggestedPrompts }: ChatProps) => {
   const [input, setInput] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
-  const { messages, sendMessage, status, error, regenerate } = useChat();
+  const { messages, sendMessage: _sendMessage, status, error, regenerate } = useChat();
+
+  const sendMessage = useCallback(
+    (message: { text: string }) => {
+      _sendMessage({
+        ...message,
+        ...{
+          metadata: {
+            currentPage: {
+              title: window.document.title,
+              origin: window.location.origin,
+              path: window.location.pathname,
+            },
+          },
+        },
+      });
+    },
+    [_sendMessage]
+  );
 
   useEffect(() => {
     textareaRef?.current?.focus();
   }, [textareaRef]);
 
-  const handleSubmit = (message: PromptInputMessage) => {
-    const hasText = Boolean(message.text);
+  const handleSubmit = useCallback(
+    (message: PromptInputMessage) => {
+      const hasText = Boolean(message.text);
 
-    if (!hasText) {
-      return;
-    }
+      if (!hasText) {
+        return;
+      }
 
-    sendMessage({
-      text: message.text,
-      metadata: {
-        currentPage: {
-          title: window.document.title,
-          origin: window.location.origin,
-          path: window.location.pathname,
-        },
-      },
-    });
-    setInput('');
-  };
+      sendMessage({
+        text: message.text,
+      });
+      setInput('');
+    },
+    [sendMessage, setInput]
+  );
 
-  const handleCopy = async (messageId: string, text: string) => {
-    await navigator.clipboard.writeText(text);
-    setCopiedMessageId(messageId);
-    setTimeout(() => setCopiedMessageId(null), 2000);
-  };
+  const handleSuggestedPromptClick = useCallback(
+    (prompt: string) => {
+      sendMessage({
+        text: prompt,
+      });
+    },
+    [sendMessage]
+  );
+
+  const handleCopy = useCallback(
+    async (messageId: string, text: string) => {
+      await navigator.clipboard.writeText(text);
+      setCopiedMessageId(messageId);
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    },
+    [setCopiedMessageId]
+  );
 
   const getErrorMessage = (error: Error) => {
     try {
@@ -84,11 +115,14 @@ export const Chat = () => {
       <Conversation>
         <ConversationContent>
           {messages.length === 0 && !error ? (
-            <ConversationEmptyState
-              icon={<BotMessageSquare className="size-12" />}
-              title="Ask me anything"
-              description="How can I help you today?"
-            />
+            <>
+              <ConversationEmptyState
+                icon={<BotMessageSquare className="size-12" />}
+                title="Ask me anything"
+                description="How can I help you today?"
+              />
+              <SuggestedPrompts prompts={suggestedPrompts} onPromptClick={handleSuggestedPromptClick} />
+            </>
           ) : (
             <>
               {messages.map((message, index) => {
