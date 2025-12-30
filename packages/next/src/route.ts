@@ -5,6 +5,7 @@ import { createUIMessageStreamResponse, UIMessage, type LanguageModel } from 'ai
 import { getCurrentPage } from './utils/currentPage';
 import { getSearchEngine } from './utils/searchEngine';
 
+const MAX_MESSAGE_LENGTH = 1000;
 const log = loggers.next;
 
 type RequestBody = {
@@ -56,6 +57,25 @@ export function createPOST(options: { model: LanguageModel }) {
             headers: { 'Content-Type': 'application/json' },
           }
         );
+      }
+
+      for (const message of messages) {
+        const messageContent = message.parts
+          .filter((part) => part.type === 'text')
+          .map((part) => ('text' in part ? part.text : ''))
+          .join('');
+
+        if (messageContent.length > MAX_MESSAGE_LENGTH) {
+          return new Response(
+            JSON.stringify({
+              error: `Message exceeds maximum length of ${MAX_MESSAGE_LENGTH} characters`,
+            }),
+            {
+              status: 400,
+              headers: { 'Content-Type': 'application/json' },
+            }
+          );
+        }
       }
 
       const lastMessage = messages[messages.length - 1];
