@@ -281,7 +281,7 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef }: ChatProp
         <ConversationScrollButton />
       </Conversation>
 
-      <div className="border-t border-border p-4 shrink-0">
+      <div className="p-4 shrink-0">
         <PromptInput onSubmit={handleSubmit}>
           <PromptInputBody>
             <PromptInputTextarea
@@ -289,11 +289,12 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef }: ChatProp
               ref={textareaRef}
               placeholder="Type your question..."
               onChange={(e) => setInput(e.currentTarget.value)}
+              maxLength={1000}
             />
           </PromptInputBody>
           <PromptInputFooter>
             <PromptInputSpeechButton onTranscriptionChange={setInput} textareaRef={textareaRef} />
-            <PromptInputSubmit status={status} disabled={!input.trim() && !status} />
+            <PromptInputSubmit status={status} disabled={!input.trim() && status !== 'streaming'} />
           </PromptInputFooter>
         </PromptInput>
       </div>
