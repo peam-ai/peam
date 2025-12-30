@@ -1,7 +1,7 @@
 'use client';
 
-import { BotMessageSquare, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { BotMessageSquare, Trash2, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { Chat } from './Chat';
 
 export interface AskAIModalProps {
@@ -17,6 +17,7 @@ export function AskAIModal({
   suggestedPrompts,
 }: AskAIModalProps = {}) {
   const [isOpen, setIsOpen] = useState(false);
+  const chatClearRef = useRef<(() => void) | null>(null);
 
   const handleModalClick = () => {
     setIsOpen(!isOpen);
@@ -24,6 +25,12 @@ export function AskAIModal({
 
   const handleClose = () => {
     setIsOpen(false);
+  };
+
+  const handleClear = () => {
+    if (chatClearRef.current) {
+      chatClearRef.current();
+    }
   };
 
   useEffect(() => {
@@ -66,13 +73,22 @@ export function AskAIModal({
           <div
             className={`fixed right-4 bottom-20 z-50 h-[500px] w-[400px] rounded-sm border border-border bg-background shadow-xl flex flex-col ${contentClassName}`}
           >
-            <button
-              onClick={handleClose}
-              className="absolute top-3 right-3 p-1 z-10 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
-              aria-label="Close Ask AI"
-            >
-              <X className="size-4" />
-            </button>
+            <div className="absolute top-3 right-3 z-10 flex gap-1">
+              <button
+                onClick={handleClear}
+                className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
+                aria-label="Clear chat history"
+              >
+                <Trash2 className="size-4" />
+              </button>
+              <button
+                onClick={handleClose}
+                className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
+                aria-label="Close Ask AI"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
 
             <div className="px-4 py-3 shrink-0 flex items-center gap-2">
               <BotMessageSquare className="size-5" />
@@ -80,7 +96,7 @@ export function AskAIModal({
             </div>
 
             <div className="flex-1 min-h-0">
-              <Chat suggestedPrompts={suggestedPrompts} />
+              <Chat suggestedPrompts={suggestedPrompts} onClearRef={(clearFn) => (chatClearRef.current = clearFn)} />
             </div>
           </div>
         </>

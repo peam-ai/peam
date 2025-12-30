@@ -25,20 +25,62 @@ import {
 import { Shimmer } from '@/components/ai-elements/shimmer';
 import { Source, Sources, SourcesContent, SourcesTrigger } from '@/components/ai-elements/sources';
 import { SuggestedPrompts } from '@/components/SuggestedPrompts';
+import { useChatPersistence } from '@/hooks/useChatPersistence';
 import { useChat } from '@ai-sdk/react';
+import { createLogger } from '@peam/logger';
 import { BotMessageSquare, Check, Copy, RefreshCcw } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+const logger = createLogger('peam:ui:chat');
+
 export interface ChatProps {
   suggestedPrompts?: string[];
+  onClearRef?: (clearFn: () => void) => void;
 }
 
-export const Chat = ({ suggestedPrompts }: ChatProps) => {
+export const Chat = ({ suggestedPrompts, onClearRef }: ChatProps) => {
   const [input, setInput] = useState('');
+  const [isInitialized, setIsInitialized] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  const isSyncing = useRef(false);
+  const lastSavedMessageCount = useRef(0);
 
-  const { messages, sendMessage: _sendMessage, status, error, regenerate } = useChat();
+  const { initialMessages, isLoading, saveMessages, clearMessages } = useChatPersistence();
+
+  const { messages, sendMessage: _sendMessage, status, error, regenerate, setMessages } = useChat();
+
+  useEffect(() => {
+    if (!(isLoading || isInitialized) && initialMessages.length > 0) {
+      setMessages(initialMessages);
+      lastSavedMessageCount.current = initialMessages.length;
+      setIsInitialized(true);
+    } else if (!(isLoading || isInitialized)) {
+      setIsInitialized(true);
+    }
+  }, [isLoading, initialMessages, isInitialized, setMessages]);
+
+  useEffect(() => {
+    const isIdle = status !== 'submitted' && status !== 'streaming';
+    if (isInitialized && !isLoading && !isSyncing.current && isIdle) {
+      if (initialMessages.length !== lastSavedMessageCount.current) {
+        isSyncing.current = true;
+        setMessages(initialMessages);
+        lastSavedMessageCount.current = initialMessages.length;
+        setTimeout(() => {
+          isSyncing.current = false;
+        }, 100);
+      }
+    }
+  }, [initialMessages, isInitialized, isLoading, setMessages, status]);
+
+  useEffect(() => {
+    const isIdle = status !== 'submitted' && status !== 'streaming';
+    if (isInitialized && messages.length >= 0 && !isSyncing.current && isIdle) {
+      saveMessages(messages);
+      lastSavedMessageCount.current = messages.length;
+    }
+  }, [messages, saveMessages, isInitialized, status]);
 
   const sendMessage = useCallback(
     (message: { text: string }) => {
@@ -96,6 +138,21 @@ export const Chat = ({ suggestedPrompts }: ChatProps) => {
     [setCopiedMessageId]
   );
 
+  const handleClearChat = useCallback(async () => {
+    try {
+      await clearMessages();
+      setMessages([]);
+    } catch (error) {
+      logger('Failed to clear chat history: %O', error);
+    }
+  }, [clearMessages, setMessages]);
+
+  useEffect(() => {
+    if (onClearRef) {
+      onClearRef(handleClearChat);
+    }
+  }, [onClearRef, handleClearChat]);
+
   const getErrorMessage = (error: Error) => {
     try {
       const parsed = JSON.parse(error.message);
@@ -114,7 +171,13 @@ export const Chat = ({ suggestedPrompts }: ChatProps) => {
     <div className="flex flex-col h-full bg-background rounded-sm">
       <Conversation>
         <ConversationContent>
-          {messages.length === 0 && !error ? (
+          {isLoading ? (
+            <ConversationEmptyState
+              icon={<BotMessageSquare className="size-12 animate-pulse" />}
+              title="Loading chat history..."
+              description="Please wait"
+            />
+          ) : messages.length === 0 && !error ? (
             <>
               <ConversationEmptyState
                 icon={<BotMessageSquare className="size-12" />}
