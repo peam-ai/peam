@@ -2,6 +2,7 @@
 
 import { BotMessageSquare, Trash2, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { useChatPersistence } from '../hooks/useChatPersistence';
 import { Chat } from './Chat';
 
 export interface AskAIModalProps {
@@ -18,6 +19,7 @@ export function AskAIModal({
 }: AskAIModalProps = {}) {
   const [isOpen, setIsOpen] = useState(false);
   const chatClearRef = useRef<(() => void) | null>(null);
+  const chatPersistence = useChatPersistence();
 
   const handleModalClick = () => {
     setIsOpen(!isOpen);
@@ -71,7 +73,7 @@ export function AskAIModal({
       {isOpen && (
         <>
           <div
-            className={`fixed right-4 bottom-20 z-50 h-[500px] w-[400px] rounded-sm border border-border bg-background shadow-xl flex flex-col ${contentClassName}`}
+            className={`fixed right-4 bottom-20 z-50 h-125 w-100 rounded-sm border border-border bg-background shadow-xl flex flex-col ${contentClassName}`}
           >
             <div className="absolute top-3 right-3 z-10 flex gap-1">
               <button
@@ -96,7 +98,11 @@ export function AskAIModal({
             </div>
 
             <div className="flex-1 min-h-0">
-              <Chat suggestedPrompts={suggestedPrompts} onClearRef={(clearFn) => (chatClearRef.current = clearFn)} />
+              <Chat
+                chatPersistence={chatPersistence}
+                suggestedPrompts={suggestedPrompts}
+                onClearRef={(clearFn) => (chatClearRef.current = clearFn)}
+              />
             </div>
           </div>
         </>

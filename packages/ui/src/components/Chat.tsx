@@ -34,19 +34,19 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 const log = loggers.ui;
 
 export interface ChatProps {
+  chatPersistence: ReturnType<typeof useChatPersistence>;
   suggestedPrompts?: string[];
   onClearRef?: (clearFn: () => void) => void;
 }
 
-export const Chat = ({ suggestedPrompts, onClearRef }: ChatProps) => {
+export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef }: ChatProps) => {
   const [input, setInput] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const isSyncing = useRef(false);
   const lastSavedMessageCount = useRef(0);
-
-  const { initialMessages, isLoading, saveMessages, clearMessages } = useChatPersistence();
+  const { initialMessages, isLoading, saveMessages, clearMessages } = chatPersistence;
 
   const { messages, sendMessage: _sendMessage, status, error, regenerate, setMessages } = useChat();
 
