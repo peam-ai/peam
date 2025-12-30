@@ -27,11 +27,11 @@ import { Source, Sources, SourcesContent, SourcesTrigger } from '@/components/ai
 import { SuggestedPrompts } from '@/components/SuggestedPrompts';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
 import { useChat } from '@ai-sdk/react';
-import { createLogger } from '@peam/logger';
+import { loggers } from '@peam/logger';
 import { BotMessageSquare, Check, Copy, RefreshCcw } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-const logger = createLogger('peam:ui:chat');
+const log = loggers.ui;
 
 export interface ChatProps {
   suggestedPrompts?: string[];
@@ -143,7 +143,7 @@ export const Chat = ({ suggestedPrompts, onClearRef }: ChatProps) => {
       await clearMessages();
       setMessages([]);
     } catch (error) {
-      logger('Failed to clear chat history: %O', error);
+      log('Failed to clear chat history: %O', error);
     }
   }, [clearMessages, setMessages]);
 
