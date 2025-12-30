@@ -14,12 +14,12 @@ export const SuggestedPrompts = ({ prompts = DEFAULT_SUGGESTED_PROMPTS, onPrompt
 
   return (
     <div className="flex flex-col justify-center gap-3 w-full">
-      <div className="mt-3 flex flex-col gap-1 text-xs items-start">
+      <div className="flex flex-col gap-1 text-xs items-start">
         {prompts.map((prompt, index) => (
           <button
             key={index}
             onClick={() => onPromptClick(prompt)}
-            className="animate-in fade-in duration-500 delay-100 text-primary hover:underline cursor-pointer text-left"
+            className="text-primary hover:underline cursor-pointer text-left starting:opacity-0 transition-opacity duration-200 delay-100"
           >
             {prompt}
           </button>
