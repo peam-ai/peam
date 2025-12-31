@@ -72,8 +72,16 @@ export function AskAIModal({
 
       {isOpen && (
         <>
+          {/* Mobile backdrop */}
+          <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={handleClose} aria-hidden="true" />
+
+          {/* Modal container */}
           <div
-            className={`fixed right-4 bottom-20 z-50 h-125 w-100 rounded-sm border border-border bg-background shadow-xl flex flex-col ${contentClassName}`}
+            className={`fixed z-50 bg-background shadow-xl flex flex-col
+              inset-x-0 bottom-0 h-[66vh] md:h-125 md:inset-auto
+              md:right-4 md:bottom-20 md:w-100 md:rounded-sm
+              border-t md:border border-border
+              ${contentClassName}`}
           >
             <div className="absolute top-3 right-3 z-10 flex gap-1">
               <button
@@ -97,7 +105,7 @@ export function AskAIModal({
               <h2 className="text-lg font-semibold">Ask AI</h2>
             </div>
 
-            <div className="flex-1 min-h-0">
+            <div className="flex-1 min-h-0 h-0">
               <Chat
                 chatPersistence={chatPersistence}
                 suggestedPrompts={suggestedPrompts}
