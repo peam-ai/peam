@@ -170,7 +170,9 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef }: ChatProp
   return (
     <div className="flex flex-col h-full bg-background rounded-sm">
       <Conversation>
-        <ConversationContent className={messages.length === 0 && !error && !isLoading ? 'justify-between min-h-full' : ''}>
+        <ConversationContent
+          className={messages.length === 0 && !error && !isLoading ? 'justify-between min-h-full' : ''}
+        >
           {isLoading ? (
             <div className="flex items-center justify-center flex-1">
               <ConversationEmptyState

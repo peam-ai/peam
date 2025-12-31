@@ -73,14 +73,20 @@ export function AskAIModal({
       {isOpen && (
         <>
           {/* Mobile backdrop */}
-          <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={handleClose} aria-hidden="true" />
+          <div
+            className="fixed inset-0 z-40 bg-black/50 md:hidden animate-in fade-in duration-200"
+            onClick={handleClose}
+            aria-hidden="true"
+          />
 
           {/* Modal container */}
           <div
-            className={`fixed z-50 bg-background shadow-xl flex flex-col
+            className={`fixed z-50 bg-background flex flex-col
               inset-x-0 bottom-0 h-[66vh] md:h-125 md:inset-auto
               md:right-4 md:bottom-20 md:w-100 md:rounded-sm
               border-t md:border border-border
+              shadow-[0_-4px_20px_rgba(0,0,0,0.25)] md:shadow-xl
+              animate-in slide-in-from-bottom duration-300 md:duration-0
               ${contentClassName}`}
           >
             <div className="absolute top-3 right-3 z-10 flex gap-1">
