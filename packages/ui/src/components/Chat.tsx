@@ -170,20 +170,24 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef }: ChatProp
   return (
     <div className="flex flex-col h-full bg-background rounded-sm">
       <Conversation>
-        <ConversationContent>
+        <ConversationContent className={messages.length === 0 && !error && !isLoading ? 'justify-between min-h-full' : ''}>
           {isLoading ? (
-            <ConversationEmptyState
-              icon={<BotMessageSquare className="size-12 animate-pulse" />}
-              title="Loading chat history..."
-              description="Please wait"
-            />
+            <div className="flex items-center justify-center flex-1">
+              <ConversationEmptyState
+                icon={<BotMessageSquare className="size-12 animate-pulse" />}
+                title="Loading chat history..."
+                description="Please wait"
+              />
+            </div>
           ) : messages.length === 0 && !error ? (
             <>
-              <ConversationEmptyState
-                icon={<BotMessageSquare className="size-12" />}
-                title="Ask me anything"
-                description="How can I help you today?"
-              />
+              <div className="flex items-center justify-center flex-1">
+                <ConversationEmptyState
+                  icon={<BotMessageSquare className="size-12" />}
+                  title="Ask me anything"
+                  description="How can I help you today?"
+                />
+              </div>
               <SuggestedPrompts prompts={suggestedPrompts} onPromptClick={handleSuggestedPromptClick} />
             </>
           ) : (
