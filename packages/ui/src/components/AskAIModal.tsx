@@ -84,13 +84,15 @@ export function AskAIModal({
               ${contentClassName}`}
           >
             <div className="absolute top-3 right-3 z-10 flex gap-1">
-              <button
-                onClick={handleClear}
-                className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
-                aria-label="Clear chat history"
-              >
-                <Trash2 className="size-4" />
-              </button>
+              {chatPersistence.initialMessages.length > 0 && (
+                <button
+                  onClick={handleClear}
+                  className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
+                  aria-label="Clear chat history"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              )}
               <button
                 onClick={handleClose}
                 className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
