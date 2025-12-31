@@ -35,10 +35,10 @@ export function createSearchTool({
           };
         }
 
-        for (const [index, doc] of results.entries()) {
+        for (const doc of results.values()) {
           writer.write({
             type: 'source-url',
-            sourceId: `search-${index}-${doc.id}`,
+            sourceId: doc.id,
             url: doc.path,
             title: doc.content.title,
           });
@@ -97,7 +97,7 @@ export function createGetDocumentTool({
 
         writer.write({
           type: 'source-url',
-          sourceId: `doc-${doc.id}`,
+          sourceId: doc.id,
           url: doc.path,
           title: doc.content.title,
         });
@@ -157,10 +157,10 @@ export function createListDocumentsTool({
           description: doc.content.description,
         }));
 
-        for (const [index, doc] of summary.entries()) {
+        for (const doc of summary) {
           writer.write({
             type: 'source-url',
-            sourceId: `list-${index}-${doc.id}`,
+            sourceId: doc.id,
             url: doc.path,
             title: doc.title,
           });

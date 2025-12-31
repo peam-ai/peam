@@ -189,7 +189,9 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef }: ChatProp
           ) : (
             <>
               {messages.map((message, index) => {
-                const sourceCount = message.parts.filter((part) => part.type === 'source-url').length;
+                const sourceParts = message.parts.filter((part) => part.type === 'source-url');
+                const uniqueSources = Array.from(new Map(sourceParts.map((part) => [part.sourceId, part])).values());
+                const uniqueSourceCount = uniqueSources.length;
                 const isLastMessage = index === messages.length - 1;
                 const isAssistant = message.role === 'assistant';
                 const isStreaming = isLastMessage && status === 'streaming';
@@ -206,18 +208,15 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef }: ChatProp
 
                 return (
                   <div key={message.id}>
-                    {isAssistant && sourceCount > 0 && (
+                    {isAssistant && uniqueSourceCount > 0 && (
                       <Sources>
-                        <SourcesTrigger count={sourceCount} />
-                        {message.parts.map((part, i) => {
-                          if (part.type === 'source-url') {
-                            return (
-                              <SourcesContent key={`${message.id}-source-${i}`}>
-                                <Source href={part.url} title={part.title || part.url} />
-                              </SourcesContent>
-                            );
-                          }
-                          return null;
+                        <SourcesTrigger count={uniqueSourceCount} />
+                        {uniqueSources.map((part) => {
+                          return (
+                            <SourcesContent key={`${message.id}-source-${part.sourceId}`}>
+                              <Source href={part.url} title={part.title || part.url} />
+                            </SourcesContent>
+                          );
                         })}
                       </Sources>
                     )}
