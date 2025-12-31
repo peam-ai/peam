@@ -4,11 +4,22 @@ import { SearchEngine } from '@peam/search';
 import { mkdirSync, readFileSync, writeFileSync } from 'fs';
 import type { NextAdapter } from 'next';
 import { join } from 'path';
-import { type PeamAdapterConfig } from './config';
+import robotsParser from 'robots-parser';
+import { type ResolvedPeamAdapterConfig } from './config';
+import { matchesExcludePattern } from './utils/excludePatterns';
+import { isPathAllowedByRobots, loadRobotsTxt } from './utils/robotsParser';
 
 const log = loggers.adapter;
 
-function shouldIncludePath(pathname: string): boolean {
+// Type for the robots-parser instance
+type RobotsParser = ReturnType<typeof robotsParser>;
+
+function shouldIncludePath(
+  pathname: string,
+  robots: RobotsParser | null,
+  excludePatterns: string[],
+  respectRobotsTxt: boolean
+): boolean {
   if (pathname.startsWith('/_not-found') || pathname.startsWith('/_global-error')) {
     return false;
   }
@@ -25,23 +36,32 @@ function shouldIncludePath(pathname: string): boolean {
     return false;
   }
 
-  // Exclude Next.js special routes that start with underscore
-  const pathParts = pathname.split('/').filter(Boolean);
-  if (pathParts.some((part) => part.startsWith('_') && part !== '_app' && part !== '_document')) {
+  // Check robots.txt rules if enabled
+  if (respectRobotsTxt && !isPathAllowedByRobots(pathname, robots)) {
+    log('Path excluded by robots.txt: %s', pathname);
+    return false;
+  }
+
+  // Check user-defined exclude patterns
+  if (matchesExcludePattern(pathname, excludePatterns)) {
+    log('Path excluded by user pattern: %s', pathname);
     return false;
   }
 
   return true;
 }
 
-export function createPeamAdapter(config: Required<PeamAdapterConfig>): NextAdapter {
+export function createPeamAdapter(config: ResolvedPeamAdapterConfig): NextAdapter {
   return {
     name: 'peam-adapter',
 
     async onBuildComplete(ctx) {
       log('Extracting page content via adapter');
-      log('Total app pages: %d', ctx.outputs.appPages.length);
       log('Total prerenders: %d', ctx.outputs.prerenders.length);
+
+      const robots = config.respectRobotsTxt
+        ? loadRobotsTxt(ctx.projectDir, ctx.outputs.prerenders, config.robotsTxtPath)
+        : null;
 
       const pages: Array<{
         path: string;
@@ -58,7 +78,7 @@ export function createPeamAdapter(config: Required<PeamAdapterConfig>): NextAdap
 
         const pathname = prerender.pathname;
 
-        if (!shouldIncludePath(pathname)) {
+        if (!shouldIncludePath(pathname, robots, config.exclude, config.respectRobotsTxt)) {
           continue;
         }
 

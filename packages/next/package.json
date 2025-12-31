@@ -43,9 +43,11 @@
   "dependencies": {
     "@peam/logger": "*",
     "@peam/parser": "*",
+    "matcher": "^6.0.0",
     "next": ">=15.0.0",
     "react": ">=18.2.0",
-    "react-dom": ">=18.2.0"
+    "react-dom": ">=18.2.0",
+    "robots-parser": "^3.0.1"
   },
   "peerDependencies": {
     "next": ">=15.0.0",
