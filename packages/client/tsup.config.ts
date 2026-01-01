@@ -9,5 +9,7 @@ export default defineConfig({
   clean: true,
   external: ['react', 'react-dom'],
   treeshake: true,
+  minify: true,
   injectStyle: true,
+  onSuccess: 'node ./build/injectClientHeaders.js',
 });

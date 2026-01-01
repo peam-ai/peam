@@ -1,7 +1,7 @@
 {
-  "name": "@peam/ui",
+  "name": "@peam/client",
   "version": "0.1.0",
-  "description": "UI components for Peam",
+  "description": "Client side components for Peam",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -74,7 +74,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^4.1.18",
-    "tsup": "^8.2.4",
+    "tsup": "^8.5.1",
     "typescript": "^5.5.4"
   },
   "peerDependencies": {

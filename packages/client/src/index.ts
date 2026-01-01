@@ -1,3 +1,5 @@
+"use client";
+
 import './global.css';
 
 export { AskAI } from './components/AskAI';
