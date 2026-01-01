@@ -28,6 +28,7 @@ import { SuggestedPrompts } from '@/components/SuggestedPrompts';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
 import { useChat } from '@ai-sdk/react';
 import { loggers } from '@peam/logger';
+import { DefaultChatTransport, HttpChatTransport, UIMessage } from 'ai';
 import { BotMessageSquare, Check, Copy, RefreshCcw } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -37,9 +38,10 @@ export interface ChatProps {
   chatPersistence: ReturnType<typeof useChatPersistence>;
   suggestedPrompts?: string[];
   onClearRef?: (clearFn: () => void) => void;
+  chatTransport?: HttpChatTransport<UIMessage>;
 }
 
-export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef }: ChatProps) => {
+export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransport }: ChatProps) => {
   const [input, setInput] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -48,7 +50,20 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef }: ChatProp
   const lastSavedMessageCount = useRef(0);
   const { initialMessages, isLoading, saveMessages, clearMessages } = chatPersistence;
 
-  const { messages, sendMessage: _sendMessage, status, error, regenerate, setMessages } = useChat();
+  const {
+    messages,
+    sendMessage: _sendMessage,
+    status,
+    error,
+    regenerate,
+    setMessages,
+  } = useChat({
+    transport:
+      chatTransport ??
+      new DefaultChatTransport({
+        api: '/api/peam',
+      }),
+  });
 
   useEffect(() => {
     if (!(isLoading || isInitialized) && initialMessages.length > 0) {

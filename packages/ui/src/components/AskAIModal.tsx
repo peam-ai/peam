@@ -6,15 +6,9 @@ import { useChatPersistence } from '../hooks/useChatPersistence';
 import { Chat } from './Chat';
 
 export interface AskAIModalProps {
-  className?: string;
-  buttonClassName?: string;
-  contentClassName?: string;
   suggestedPrompts?: string[];
 }
 export function AskAIModal({
-  className = '',
-  buttonClassName = '',
-  contentClassName = '',
   suggestedPrompts,
 }: AskAIModalProps = {}) {
   const [isOpen, setIsOpen] = useState(false);
@@ -64,7 +58,7 @@ export function AskAIModal({
     <div className="peam-root">
       <button
         onClick={handleModalClick}
-        className={`fixed right-4 bottom-4 z-50 rounded-full bg-primary shadow-lg hover:scale-110 active:scale-90 transition-transform flex items-center justify-center text-primary-foreground size-11 ${buttonClassName} ${className}`}
+        className={`fixed right-4 bottom-4 z-50 rounded-full bg-primary shadow-lg hover:scale-110 active:scale-90 transition-transform flex items-center justify-center text-primary-foreground size-11`}
         aria-label="Ask AI"
       >
         {isOpen ? <X className="size-6" /> : <BotMessageSquare className="size-6" />}
@@ -86,8 +80,7 @@ export function AskAIModal({
               md:right-4 md:bottom-20 md:w-100 md:rounded-sm
               border-t md:border border-border
               shadow-[0_-4px_20px_rgba(0,0,0,0.25)] md:shadow-xl
-              animate-in slide-in-from-bottom duration-300 md:duration-0
-              ${contentClassName}`}
+              animate-in slide-in-from-bottom duration-300 md:duration-0`}
           >
             <div className="absolute top-3 right-3 z-10 flex gap-1">
               {chatPersistence.initialMessages.length > 0 && (
