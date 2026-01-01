@@ -1,7 +1,7 @@
 'use client';
 
-import { AskAIDialog, type AskAIDialogProps } from './AskAIDialog';
 import { AskAIChat, type AskAIChatProps } from './AskAIChat';
+import { AskAIDialog, type AskAIDialogProps } from './AskAIDialog';
 import { AskAISidepane, type AskAISidepaneProps } from './AskAISidepane';
 
 export type AskAIType = 'chat' | 'dialog' | 'sidepane';

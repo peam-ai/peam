@@ -2,8 +2,8 @@
 
 import { BotMessageSquare, Trash2, X } from 'lucide-react';
 import { useAskAI } from '../hooks/useAskAI';
-import { Chat } from './Chat';
 import type { AskAIBaseProps } from './AskAI';
+import { Chat } from './Chat';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface AskAIDialogProps extends AskAIBaseProps {}
