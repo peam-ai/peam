@@ -1,62 +1,21 @@
 'use client';
 
 import { BotMessageSquare, Trash2, X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import { useChatPersistence } from '../hooks/useChatPersistence';
+import { useAskAI } from '../hooks/useAskAI';
+import type { AskAIBaseProps } from './AskAI';
 import { Chat } from './Chat';
 
-export interface AskAIChatProps {
-  suggestedPrompts?: string[];
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface AskAIChatProps extends AskAIBaseProps {}
+
 export function AskAIChat({ suggestedPrompts }: AskAIChatProps = {}) {
-  const [isOpen, setIsOpen] = useState(false);
-  const chatClearRef = useRef<(() => void) | null>(null);
-  const chatPersistence = useChatPersistence();
-
-  const handleModalClick = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
-  const handleClear = () => {
-    if (chatClearRef.current) {
-      chatClearRef.current();
-    }
-  };
-
-  useEffect(() => {
-    const handleKeyboard = (event: KeyboardEvent) => {
-      const isEscape = event.key === 'Escape' || event.key === 'Esc' || event.keyCode === 27;
-      if (isEscape && isOpen) {
-        handleClose();
-        return;
-      }
-
-      const isIKey = event.key === 'i' || event.key === 'I' || event.keyCode === 73;
-      const hasModifier = event.metaKey;
-
-      if (hasModifier && isIKey) {
-        event.preventDefault();
-        event.stopPropagation();
-        setIsOpen(!isOpen);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyboard);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyboard);
-    };
-  }, [isOpen]);
+  const { isOpen, chatClearRef, chatPersistence, handleToggle, handleClose, handleClear } = useAskAI();
 
   return (
     <div className="peam-root">
       <button
-        onClick={handleModalClick}
-        className={`fixed right-4 bottom-4 z-50 rounded-full bg-primary shadow-lg hover:scale-110 active:scale-90 transition-transform flex items-center justify-center text-primary-foreground size-11`}
+        onClick={handleToggle}
+        className={`fixed right-4 bottom-4 z-50 rounded-full bg-primary shadow-lg hover:scale-110 active:scale-90 transition-transform flex items-center justify-center text-primary-foreground size-11 cursor-pointer`}
         aria-label="Ask AI"
       >
         {isOpen ? <X className="size-6" /> : <BotMessageSquare className="size-6" />}
@@ -66,12 +25,12 @@ export function AskAIChat({ suggestedPrompts }: AskAIChatProps = {}) {
         <>
           {/* Mobile backdrop */}
           <div
-            className="fixed inset-0 z-40 bg-black/50 md:hidden animate-in fade-in duration-200"
+            className="fixed inset-0 z-40 bg-black/50 md:hidden animate-in fade-in duration-200 cursor-pointer"
             onClick={handleClose}
             aria-hidden="true"
           />
 
-          {/* Modal container */}
+          {/* Container */}
           <div
             className={`fixed z-50 bg-background flex flex-col
               inset-x-0 bottom-0 h-[66vh] md:h-125 md:inset-auto

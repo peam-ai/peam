@@ -1,67 +1,20 @@
 'use client';
 
 import { BotMessageSquare, Trash2, X } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import { useChatPersistence } from '../hooks/useChatPersistence';
+import { useAskAI } from '../hooks/useAskAI';
 import { Chat } from './Chat';
+import type { AskAIBaseProps } from './AskAI';
 
-export interface AskAIDialogProps {
-  suggestedPrompts?: string[];
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface AskAIDialogProps extends AskAIBaseProps {}
 
 export function AskAIDialog({ suggestedPrompts }: AskAIDialogProps = {}) {
-  const [isOpen, setIsOpen] = useState(false);
-  const chatClearRef = useRef<(() => void) | null>(null);
-  const chatPersistence = useChatPersistence();
-  const dialogRef = useRef<HTMLDivElement>(null);
-
-  const handleModalClick = () => {
-    if (isOpen) {
-      setIsOpen(false);
-    } else {
-      setIsOpen(true);
-    }
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
-  const handleClear = () => {
-    if (chatClearRef.current) {
-      chatClearRef.current();
-    }
-  };
-
-  useEffect(() => {
-    const handleKeyboard = (event: KeyboardEvent) => {
-      const isEscape = event.key === 'Escape' || event.key === 'Esc' || event.keyCode === 27;
-      if (isEscape && isOpen) {
-        handleClose();
-        return;
-      }
-
-      const isIKey = event.key === 'i' || event.key === 'I' || event.keyCode === 73;
-      const hasModifier = event.metaKey;
-
-      if (hasModifier && isIKey) {
-        event.preventDefault();
-        event.stopPropagation();
-        setIsOpen(!isOpen);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyboard);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyboard);
-    };
-  }, [isOpen]);
+  const { isOpen, chatClearRef, chatPersistence, handleToggle, handleClose, handleClear } = useAskAI();
 
   return (
     <div className="peam-root">
       <button
-        onClick={handleModalClick}
+        onClick={handleToggle}
         className="fixed right-4 bottom-4 z-60 rounded-full bg-primary shadow-lg hover:scale-110 active:scale-90 transition-transform flex items-center justify-center text-primary-foreground size-11 cursor-pointer"
         aria-label="Ask AI"
         aria-expanded={isOpen}
@@ -82,7 +35,6 @@ export function AskAIDialog({ suggestedPrompts }: AskAIDialogProps = {}) {
             onClick={handleClose}
           >
             <div
-              ref={dialogRef}
               role="dialog"
               aria-modal="true"
               aria-labelledby="ask-ai-dialog-title"

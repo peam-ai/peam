@@ -6,6 +6,10 @@ import { AskAISidepane, type AskAISidepaneProps } from './AskAISidepane';
 
 export type AskAIType = 'chat' | 'dialog' | 'sidepane';
 
+export interface AskAIBaseProps {
+  suggestedPrompts?: string[];
+}
+
 export type AskAIProps =
   | ({ type?: 'chat' } & AskAIChatProps)
   | ({ type: 'dialog' } & AskAIDialogProps)

@@ -3,7 +3,7 @@
 import './global.css';
 
 export { AskAI } from './components/AskAI';
-export type { AskAIProps, AskAIType } from './components/AskAI';
+export type { AskAIProps, AskAIType, AskAIBaseProps } from './components/AskAI';
 export { AskAIChat } from './components/AskAIChat';
 export type { AskAIChatProps } from './components/AskAIChat';
 export { AskAIDialog } from './components/AskAIDialog';
