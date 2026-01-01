@@ -8,5 +8,7 @@ export { AskAIDialog } from './components/AskAIDialog';
 export type { AskAIDialogProps } from './components/AskAIDialog';
 export { AskAIModal } from './components/AskAIModal';
 export type { AskAIModalProps } from './components/AskAIModal';
+export { AskAISidepane } from './components/AskAISidepane';
+export type { AskAISidepaneProps } from './components/AskAISidepane';
 export { Chat } from './components/Chat';
 export type { ChatProps } from './components/Chat';
