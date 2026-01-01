@@ -8,9 +8,7 @@ import { Chat } from './Chat';
 export interface AskAIModalProps {
   suggestedPrompts?: string[];
 }
-export function AskAIModal({
-  suggestedPrompts,
-}: AskAIModalProps = {}) {
+export function AskAIModal({ suggestedPrompts }: AskAIModalProps = {}) {
   const [isOpen, setIsOpen] = useState(false);
   const chatClearRef = useRef<(() => void) | null>(null);
   const chatPersistence = useChatPersistence();
