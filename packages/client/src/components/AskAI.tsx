@@ -1,24 +1,24 @@
 'use client';
 
 import { AskAIDialog, type AskAIDialogProps } from './AskAIDialog';
-import { AskAIModal, type AskAIModalProps } from './AskAIModal';
+import { AskAIChat, type AskAIChatProps } from './AskAIChat';
 import { AskAISidepane, type AskAISidepaneProps } from './AskAISidepane';
 
-export type AskAIType = 'modal' | 'dialog' | 'sidepane';
+export type AskAIType = 'chat' | 'dialog' | 'sidepane';
 
 export type AskAIProps =
-  | ({ type?: 'modal' } & AskAIModalProps)
+  | ({ type?: 'chat' } & AskAIChatProps)
   | ({ type: 'dialog' } & AskAIDialogProps)
   | ({ type: 'sidepane' } & AskAISidepaneProps);
 
-export function AskAI({ type = 'modal', ...props }: AskAIProps) {
+export function AskAI({ type = 'chat', ...props }: AskAIProps) {
   switch (type) {
     case 'dialog':
       return <AskAIDialog {...props} />;
     case 'sidepane':
       return <AskAISidepane {...props} />;
-    case 'modal':
+    case 'chat':
     default:
-      return <AskAIModal {...props} />;
+      return <AskAIChat {...props} />;
   }
 }

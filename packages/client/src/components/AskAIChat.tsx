@@ -5,10 +5,10 @@ import { useEffect, useRef, useState } from 'react';
 import { useChatPersistence } from '../hooks/useChatPersistence';
 import { Chat } from './Chat';
 
-export interface AskAIModalProps {
+export interface AskAIChatProps {
   suggestedPrompts?: string[];
 }
-export function AskAIModal({ suggestedPrompts }: AskAIModalProps = {}) {
+export function AskAIChat({ suggestedPrompts }: AskAIChatProps = {}) {
   const [isOpen, setIsOpen] = useState(false);
   const chatClearRef = useRef<(() => void) | null>(null);
   const chatPersistence = useChatPersistence();
