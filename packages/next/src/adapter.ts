@@ -11,8 +11,22 @@ import { isPathAllowedByRobots, loadRobotsTxt } from './utils/robotsParser';
 
 const log = loggers.adapter;
 
-// Type for the robots-parser instance
 type RobotsParser = ReturnType<typeof robotsParser>;
+
+interface PrerenderOutput {
+  pathname: string;
+  fallback?: {
+    filePath: string;
+  };
+}
+
+interface NextJS15Output extends PrerenderOutput {
+  type: string;
+}
+
+interface NextJS16Outputs {
+  prerenders: Array<PrerenderOutput>;
+}
 
 function shouldIncludePath(
   pathname: string,
@@ -57,11 +71,21 @@ export function createPeamAdapter(config: ResolvedPeamAdapterConfig): NextAdapte
 
     async onBuildComplete(ctx) {
       log('Extracting page content via adapter');
-      log('Total prerenders: %d', ctx.outputs.prerenders.length);
 
-      const robots = config.respectRobotsTxt
-        ? loadRobotsTxt(ctx.projectDir, ctx.outputs.prerenders, config.robotsTxtPath)
-        : null;
+      const outputs = ctx.outputs as NextJS15Output[] | NextJS16Outputs;
+      let prerenders: PrerenderOutput[];
+
+      if (Array.isArray(outputs)) {
+        prerenders = outputs.filter((output: NextJS15Output) => output.type === 'PRERENDER');
+      } else {
+        prerenders = outputs.prerenders || [];
+      }
+
+      log('Total prerenders: %d', prerenders.length);
+
+      const projectDir = ctx.projectDir || process.cwd();
+
+      const robots = config.respectRobotsTxt ? loadRobotsTxt(projectDir, prerenders, config.robotsTxtPath) : null;
 
       const pages: Array<{
         path: string;
@@ -71,22 +95,27 @@ export function createPeamAdapter(config: ResolvedPeamAdapterConfig): NextAdapte
         runtime?: string;
       }> = [];
 
-      for (const prerender of ctx.outputs.prerenders) {
-        if (!prerender.fallback) {
+      for (const prerender of prerenders) {
+        const pathname = prerender.pathname;
+        let fallbackFilePath = prerender.fallback?.filePath;
+
+        if (!fallbackFilePath) {
           continue;
         }
 
-        const pathname = prerender.pathname;
+        // Fix for Next.js 15
+        if (fallbackFilePath?.endsWith('/.html')) {
+          fallbackFilePath = fallbackFilePath.replace('/.html', '/index.html');
+        }
 
         if (!shouldIncludePath(pathname, robots, config.exclude, config.respectRobotsTxt)) {
           continue;
         }
 
         try {
-          const htmlPath = prerender.fallback.filePath;
-          log('Reading HTML from: %s', htmlPath);
+          log('Reading HTML from: %s', fallbackFilePath);
 
-          const html = readFileSync(htmlPath, 'utf-8');
+          const html = readFileSync(fallbackFilePath, 'utf-8');
           const structuredPage = parseHTML(html);
 
           if (!structuredPage) {
@@ -97,7 +126,7 @@ export function createPeamAdapter(config: ResolvedPeamAdapterConfig): NextAdapte
           log('Successfully extracted content from %s', pathname);
           pages.push({
             path: pathname,
-            htmlFile: htmlPath.replace(ctx.projectDir + '/', ''),
+            htmlFile: fallbackFilePath.replace(projectDir + '/', ''),
             structuredPage,
             type: 'page',
           });
@@ -106,7 +135,7 @@ export function createPeamAdapter(config: ResolvedPeamAdapterConfig): NextAdapte
         }
       }
 
-      const outputPath = join(ctx.projectDir, config.outputDir);
+      const outputPath = join(projectDir, config.outputDir);
       mkdirSync(outputPath, { recursive: true });
 
       log('Creating search index...');
