@@ -38,21 +38,17 @@
     "eslint": "^9.9.0",
     "tsup": "^8.2.4",
     "typescript": "^5.5.4",
-    "typescript-eslint": "^8.50.0"
+    "typescript-eslint": "^8.50.0",
+    "next": ">=15.0.0"
   },
   "dependencies": {
     "@peam/logger": "*",
     "@peam/parser": "*",
     "@peam/server": "*",
     "matcher": "^6.0.0",
-    "next": ">=15.0.0",
-    "react": ">=18.2.0",
-    "react-dom": ">=18.2.0",
     "robots-parser": "^3.0.1"
   },
   "peerDependencies": {
-    "next": ">=15.0.0",
-    "react": ">=18.2.0",
-    "react-dom": ">=18.2.0"
+    "next": ">=15.0.0"
   }
 }
