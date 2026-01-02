@@ -12,7 +12,7 @@ export default defineConfig([
     format: ['cjs', 'esm'],
     dts: false,
     sourcemap: true,
-    external: ['@ai-sdk/openai', '@peam/ai', '@peam/search'],
+    external: ['@ai-sdk/openai', '@peam/ai', '@peam/search', '@peam/server'],
   },
   {
     entry: ['src/adapter.ts'],

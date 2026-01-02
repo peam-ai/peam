@@ -1,0 +1,40 @@
+{
+  "name": "@peam/server",
+  "description": "Server handler for Peam",
+  "private": true,
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "homepage": "https://peam.ai",
+  "scripts": {
+    "build": "tsup",
+    "clean": "rm -rf dist",
+    "dev": "tsup --watch",
+    "test:eslint": "eslint \"src/**/*.ts*\"",
+    "test:prettier": "prettier --check \"src/**/*.ts*\"",
+    "test": "run-p test:*"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@peam/ai": "*",
+    "@peam/logger": "*",
+    "@peam/search": "*",
+    "ai": "^6.0.1"
+  },
+  "devDependencies": {
+    "@peam/tsconfig": "*",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4"
+  }
+}
