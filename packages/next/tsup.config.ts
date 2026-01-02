@@ -28,11 +28,6 @@ export default defineConfig([
     target: 'es2020',
     clean: true,
     treeshake: true,
-    external: ['@peam/parser', '@peam/search', '@peam/server'],
-    esbuildOptions(options) {
-      options.footer = {
-        js: 'module.exports = peam_adapter_default;',
-      };
-    },
+    external: ['@peam/parser', '@peam/search', '@peam/server']
   },
 ]);
