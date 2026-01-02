@@ -30,8 +30,9 @@ export type GetSearchEngine = () => Promise<SearchEngine | undefined>;
 export interface CreateHandlerOptions {
   /**
    * The language model to use for generating responses.
+   * Defaults to OpenAI GPT-4o if not provided.
    */
-  model: LanguageModel;
+  model?: LanguageModel;
   /**
    * Function to retrieve the search engine instance.
    * If not provided, the handler will return an error when no search engine is available.

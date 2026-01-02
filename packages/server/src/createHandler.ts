@@ -1,3 +1,4 @@
+import { openai } from '@ai-sdk/openai';
 import { streamSearchText } from '@peam/ai';
 import { loggers } from '@peam/logger';
 import { createUIMessageStreamResponse } from 'ai';
@@ -26,7 +27,9 @@ const log = loggers.server;
  * });
  * ```
  */
-export function createHandler(options: CreateHandlerOptions) {
+export function createHandler(options: CreateHandlerOptions = {}) {
+  const model = options.model || openai('gpt-4o');
+
   const handler = async (req: Request): Promise<Response> => {
     try {
       const { messages } = (await req.json()) as ChatRequestBody;
@@ -81,7 +84,7 @@ export function createHandler(options: CreateHandlerOptions) {
       }
 
       const stream = streamSearchText({
-        model: options.model,
+        model,
         searchEngine,
         messages,
         currentPage,
