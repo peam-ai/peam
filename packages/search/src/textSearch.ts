@@ -31,7 +31,7 @@ export class TextSearch {
         index: ['content:title', 'content:description', 'content:textContent', 'content:author', 'content:keywords'],
         store: true,
       },
-      tokenize: 'strict',
+      tokenize: 'forward',
       resolution: 9,
       context: {
         resolution: 3,
