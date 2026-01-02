@@ -4,6 +4,7 @@ import { BotMessageSquare, Trash2, X } from 'lucide-react';
 import { useAskAI } from '../hooks/useAskAI';
 import type { AskAIBaseProps } from './AskAI';
 import { Chat } from './Chat';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface AskAIDialogProps extends AskAIBaseProps {}
@@ -13,14 +14,19 @@ export function AskAIDialog({ suggestedPrompts }: AskAIDialogProps = {}) {
 
   return (
     <div className="peam-root">
-      <button
-        onClick={handleToggle}
-        className="fixed right-4 bottom-4 z-60 rounded-full bg-primary shadow-lg hover:scale-110 active:scale-90 transition-transform flex items-center justify-center text-primary-foreground size-11 cursor-pointer"
-        aria-label="Ask AI"
-        aria-expanded={isOpen}
-      >
-        {isOpen ? <X className="size-6" /> : <BotMessageSquare className="size-6" />}
-      </button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            onClick={handleToggle}
+            className="fixed right-4 bottom-4 z-60 rounded-full bg-primary shadow-lg hover:scale-110 active:scale-90 transition-transform flex items-center justify-center text-primary-foreground size-11 cursor-pointer"
+            aria-label="Ask AI"
+            aria-expanded={isOpen}
+          >
+            {isOpen ? <X className="size-6" /> : <BotMessageSquare className="size-6" />}
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="left">Ask AI</TooltipContent>
+      </Tooltip>
 
       {isOpen && (
         <>
