@@ -3,6 +3,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['cjs', 'esm'],
+  target: 'ES2015',
   dts: true,
   splitting: false,
   sourcemap: true,
