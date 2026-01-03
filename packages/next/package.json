@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsup",
     "clean": "rm -rf dist",
+    "dev": "tsup --watch",
     "test:eslint": "eslint \"src/**/*.ts*\"",
     "test:prettier": "prettier --check \"src/**/*.ts*\"",
     "test:jest": "jest",
@@ -44,6 +45,7 @@
   "dependencies": {
     "@peam/logger": "*",
     "@peam/parser": "*",
+    "@peam/search": "*",
     "@peam/server": "*",
     "matcher": "^6.0.0",
     "robots-parser": "^3.0.1"
