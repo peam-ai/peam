@@ -35,6 +35,8 @@
   "dependencies": {
     "@mozilla/readability": "^0.5.0",
     "@peam/logger": "*",
-    "jsdom": "^27.3.0"
+    "jsdom": "^27.3.0",
+    "matcher": "^6.0.0",
+    "robots-parser": "^3.0.1"
   }
 }
