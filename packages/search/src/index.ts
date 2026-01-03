@@ -1,3 +1,4 @@
+export { buildSearchIndex, type PageToIndex, type SearchIndexData } from './indexBuilder';
 export { SearchEngine } from './searchEngine';
 export { TextSearch } from './textSearch';
 
