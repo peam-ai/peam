@@ -5,19 +5,15 @@
  * parses them into structured pages, and creates a searchable index.
  */
 
-import { parseHTML, type StructuredPage } from '@peam/parser';
-import { SearchEngine } from '@peam/search';
+import { filePathToPathname, loadRobotsTxt, parseHTML, shouldIncludePath, type StructuredPage } from '@peam/parser';
+import { buildSearchIndex } from '@peam/search';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import fg from 'fast-glob';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { isMatch } from 'matcher';
-import { join, relative, sep } from 'path';
-import robotsParser from 'robots-parser';
+import { join, relative } from 'path';
 
 const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
-
-type RobotsParser = ReturnType<typeof robotsParser>;
 
 interface IndexerConfig {
   source: string;
@@ -58,118 +54,6 @@ const log = {
   green: (text: string) => chalk.green(text),
 };
 
-function matchesExcludePattern(path: string, patterns: string[]): boolean {
-  if (!patterns || patterns.length === 0) {
-    return false;
-  }
-
-  const normalize = (p: string) => (p.startsWith('/') ? p : `/${p}`);
-  const normalizedPath = normalize(path);
-  const normalizedPatterns = patterns.map(normalize);
-
-  return isMatch(normalizedPath, normalizedPatterns);
-}
-
-function isPathAllowedByRobots(path: string, robots: RobotsParser | null): boolean {
-  if (!robots) {
-    return true;
-  }
-
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-  const testUrl = `https://robots.invalid${normalizedPath}`;
-  const isAllowed = robots.isAllowed(testUrl, '*');
-
-  return isAllowed !== false;
-}
-
-function loadRobotsTxt(projectDir: string, sourceDir: string, robotsTxtPath?: string): RobotsParser | null {
-  let robotsContent: string | null = null;
-
-  try {
-    if (robotsTxtPath) {
-      const customPath = join(projectDir, robotsTxtPath);
-      if (existsSync(customPath)) {
-        robotsContent = readFileSync(customPath, 'utf-8');
-        log.success(`Loaded robots.txt from ${log.cyan(relative(projectDir, customPath))}`);
-      }
-    }
-
-    if (!robotsContent) {
-      const possiblePaths = [
-        join(projectDir, sourceDir, 'robots.txt'),
-        join(projectDir, 'public', 'robots.txt'),
-        join(projectDir, 'robots.txt'),
-      ];
-
-      for (const path of possiblePaths) {
-        if (existsSync(path)) {
-          robotsContent = readFileSync(path, 'utf-8');
-          log.success(`Found robots.txt at ${log.cyan(relative(projectDir, path))}`);
-          break;
-        }
-      }
-    }
-
-    if (!robotsContent) {
-      log.info('No robots.txt found, all paths will be indexed');
-      return null;
-    }
-
-    return robotsParser('https://robots.invalid/robots.txt', robotsContent);
-  } catch (error) {
-    log.warn('Error loading robots.txt: ' + error);
-    return null;
-  }
-}
-
-/**
- * Convert file path to URL pathname
- *
- * Examples:
- *   index.html -> /
- *   about.html -> /about
- *   about/index.html -> /about/
- *   blog/post-1.html -> /blog/post-1
- *   blog/post-1/index.html -> /blog/post-1/
- *   server/pages/contact.html -> /contact
- *   server/app/about.html -> /about
- */
-function filePathToPathname(filePath: string): string {
-  let pathname = filePath.split(sep).join('/');
-
-  const artifactPrefixes = [
-    'server/pages/',
-    'server/app/',
-    'static/chunks/app/',
-    'static/chunks/pages/',
-    'static/',
-    'server/',
-  ];
-
-  for (const prefix of artifactPrefixes) {
-    if (pathname.startsWith(prefix)) {
-      pathname = pathname.substring(prefix.length);
-      break;
-    }
-  }
-
-  pathname = pathname.replace(/\.html?$/, '');
-
-  if (pathname === 'index' || pathname === '') {
-    return '/';
-  }
-
-  if (pathname.endsWith('/index')) {
-    pathname = pathname.slice(0, -5);
-  }
-
-  if (!pathname.startsWith('/')) {
-    pathname = '/' + pathname;
-  }
-
-  return pathname;
-}
-
 async function discoverHtmlFiles(
   sourceDir: string,
   globPattern: string,
@@ -205,52 +89,6 @@ async function discoverHtmlFiles(
   return pages;
 }
 
-function shouldIncludePath(
-  pathname: string,
-  robots: RobotsParser | null,
-  excludePatterns: string[],
-  respectRobotsTxt: boolean
-): boolean {
-  // Exclude routes with dynamic parameters (e.g., /session/[session_id])
-  if (pathname.includes('[') && pathname.includes(']')) {
-    return false;
-  }
-
-  // Exclude Next.js internal routes
-  if (pathname.startsWith('/_not-found') || pathname.startsWith('/_global-error')) {
-    return false;
-  }
-
-  // Exclude RSC files
-  if (pathname.endsWith('.rsc')) {
-    return false;
-  }
-
-  // Exclude segment files
-  if (pathname.includes('.segments/')) {
-    return false;
-  }
-
-  // Exclude static assets
-  if (pathname.match(/\.(ico|png|jpg|jpeg|svg|gif|webp|txt|xml|json|css|js|woff|woff2|ttf|eot)$/i)) {
-    return false;
-  }
-
-  // Check robots.txt rules
-  if (respectRobotsTxt && !isPathAllowedByRobots(pathname, robots)) {
-    log.error(`Excluded by robots.txt: ${pathname}`);
-    return false;
-  }
-
-  // Check user-defined exclude patterns
-  if (matchesExcludePattern(pathname, excludePatterns)) {
-    log.error(`Excluded by pattern: ${pathname}`);
-    return false;
-  }
-
-  return true;
-}
-
 async function indexPages(config: IndexerConfig): Promise<void> {
   log.text('\n' + log.bold(log.cyan('Peam Static Site Indexer')) + '\n');
   log.text(log.bold('Configuration:'));
@@ -272,7 +110,17 @@ async function indexPages(config: IndexerConfig): Promise<void> {
     process.exit(1);
   }
 
-  const robots = config.respectRobotsTxt ? loadRobotsTxt(config.projectDir, config.source, config.robotsTxtPath) : null;
+  const searchPaths = [join(config.source, 'robots.txt'), 'public/robots.txt', 'robots.txt'];
+
+  const robotsResult = config.respectRobotsTxt
+    ? loadRobotsTxt(config.projectDir, searchPaths, config.robotsTxtPath)
+    : null;
+
+  if (robotsResult && config.respectRobotsTxt) {
+    log.info(`robots.txt loaded from ${log.cyan(relative(config.projectDir, robotsResult.path))}`);
+  } else if (config.respectRobotsTxt) {
+    log.info('No robots.txt found, all paths will be indexed');
+  }
 
   log.text(log.bold('Discovering HTML files...'));
   log.text('');
@@ -311,7 +159,15 @@ async function indexPages(config: IndexerConfig): Promise<void> {
   }> = [];
 
   for (const [pathname, page] of uniquePages) {
-    if (!shouldIncludePath(pathname, robots, config.exclude, config.respectRobotsTxt)) {
+    const result = shouldIncludePath(pathname, robotsResult?.parser ?? null, config.exclude, config.respectRobotsTxt);
+
+    if (!result.included) {
+      // Log the specific reason for exclusion
+      if (result.reason === 'robots-txt') {
+        log.error(`Excluded by robots.txt: ${pathname}`);
+      } else if (result.reason === 'exclude-pattern') {
+        log.error(`Excluded by pattern: ${pathname}`);
+      }
       continue;
     }
 
@@ -343,12 +199,7 @@ async function indexPages(config: IndexerConfig): Promise<void> {
   log.text(log.bold('Creating search index...'));
   log.text('');
 
-  const searchEngine = new SearchEngine();
-  await searchEngine.initialize();
-
-  for (const page of processedPages) {
-    await searchEngine.addPage(page.path, page.structuredPage);
-  }
+  const searchIndexData = await buildSearchIndex(processedPages);
 
   log.success(`Added ${log.bold(processedPages.length.toString())} pages to search index`);
   log.text('');
@@ -357,16 +208,6 @@ async function indexPages(config: IndexerConfig): Promise<void> {
 
   const outputPath = join(config.projectDir, config.outputDir);
   mkdirSync(outputPath, { recursive: true });
-
-  const exportedData: Record<string, string> = {};
-  const result = await searchEngine.export(async (key, data) => {
-    exportedData[key] = data;
-  });
-
-  const searchIndexData = {
-    keys: result.keys,
-    data: exportedData,
-  };
 
   const searchIndexFile = join(outputPath, config.indexFilename);
   writeFileSync(searchIndexFile, JSON.stringify(searchIndexData));

@@ -46,9 +46,7 @@
     "@peam/logger": "*",
     "@peam/parser": "*",
     "@peam/search": "*",
-    "@peam/server": "*",
-    "matcher": "^6.0.0",
-    "robots-parser": "^3.0.1"
+    "@peam/server": "*"
   },
   "peerDependencies": {
     "next": ">=15.0.0"
