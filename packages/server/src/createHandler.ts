@@ -1,11 +1,11 @@
 import { openai } from '@ai-sdk/openai';
-import { streamSearchText } from '@peam/ai';
+import { streamSearchText, streamSummarize } from '@peam/ai';
 import { loggers } from '@peam/logger';
 import { createUIMessageStreamResponse } from 'ai';
-import { type ChatRequestBody, type CreateHandlerOptions } from './types';
+import { type CreateHandlerOptions, type HandlerRequestBody } from './types';
 import { getCurrentPage } from './utils/getCurrentPage';
 
-const MAX_MESSAGE_LENGTH = 1000;
+const MAX_MESSAGE_LENGTH = 30000;
 const log = loggers.server;
 
 /**
@@ -32,9 +32,10 @@ export function createHandler(options: CreateHandlerOptions = {}) {
 
   const handler = async (req: Request): Promise<Response> => {
     try {
-      const { messages } = (await req.json()) as ChatRequestBody;
+      const body = (await req.json()) as HandlerRequestBody;
+      const { messages, mode } = body;
 
-      if (messages.length === 0) {
+      if (!messages || messages.length === 0) {
         return new Response(
           JSON.stringify({
             error: 'No messages provided',
@@ -46,6 +47,7 @@ export function createHandler(options: CreateHandlerOptions = {}) {
         );
       }
 
+      // Validate message length
       for (const message of messages) {
         const messageContent = message.parts
           .filter((part) => part.type === 'text')
@@ -65,6 +67,20 @@ export function createHandler(options: CreateHandlerOptions = {}) {
         }
       }
 
+      // Handle summarization
+      if (mode === 'summarize') {
+        const { previousSummary } = body;
+        const stream = streamSummarize({
+          model,
+          messages,
+          previousSummary,
+        });
+
+        return createUIMessageStreamResponse({ stream });
+      }
+
+      // Handle chat
+      const { summary } = body;
       const lastMessage = messages[messages.length - 1];
       const currentPage = getCurrentPage({ request: req, message: lastMessage });
 
@@ -88,6 +104,7 @@ export function createHandler(options: CreateHandlerOptions = {}) {
         searchEngine,
         messages,
         currentPage,
+        summary,
       });
 
       return createUIMessageStreamResponse({ stream });

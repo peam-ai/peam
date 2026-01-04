@@ -29,7 +29,7 @@ export type GetSearchEngine = () => Promise<SearchEngine | undefined>;
  */
 export interface CreateHandlerOptions {
   /**
-   * The language model to use for generating responses.
+   * The language model to use for generating responses and summarization.
    * Defaults to OpenAI GPT-4o if not provided.
    */
   model?: LanguageModel;
@@ -44,5 +44,21 @@ export interface CreateHandlerOptions {
  * Request body structure for chat API.
  */
 export interface ChatRequestBody {
+  mode?: 'chat';
   messages: UIMessage[];
+  summary?: string;
 }
+
+/**
+ * Request body structure for summarization API.
+ */
+export interface SummarizeRequestBody {
+  mode: 'summarize';
+  messages: UIMessage[];
+  previousSummary?: string;
+}
+
+/**
+ * Conditional request body type based on mode.
+ */
+export type HandlerRequestBody = ChatRequestBody | SummarizeRequestBody;
