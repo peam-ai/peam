@@ -1,10 +1,4 @@
-import { CurrentPageMetadata } from '../streamSearchText';
-import { normalizeDomain } from '../utils/normalizeDomain';
-
-export const generateSearchSystemPrompt = ({ currentPage }: { currentPage?: CurrentPageMetadata }) => {
-  const siteName = currentPage?.origin ? normalizeDomain(currentPage.origin) : 'unknown';
-  const siteDomain = currentPage?.origin || 'unknown';
-
+export const generateSearchSystemPrompt = ({ siteName, siteDomain }: { siteName: string; siteDomain: string }) => {
   return `
 # Role
 You are a helpful assistant specializing in answering questions about the website "${siteName}".
@@ -20,11 +14,7 @@ Your primary objective is to guide users through the happy path using the most r
 - Always link to relevant web pages using Markdown with the domain ${siteDomain}. Ensure the link text is descriptive (e.g. [About](${siteDomain}/about)) and not just the URL alone.
 - Never display any URLs before correctly formatting them in Markdown.
 - Direct users to the page that addresses their needs.
-${
-  currentPage?.path
-    ? `- The user is viewing ${currentPage.path}${currentPage.title?.trim() ? ` with title "${currentPage.title}"` : ''}. If the question matches this page, use the "getDocument" tool with the EXACT page path (e.g., "${currentPage.path}"). If ambiguous, default to fetching the current page first.`
-    : ''
-}
+- When the user provides information about the current page they're viewing, prioritize that context. If their question matches the current page, use the "getDocument" tool with the EXACT page path provided. If ambiguous, default to fetching the current page first.
 - If the answer isn't in the current page, use "search" once per message to search the website.
 - After each tool call, validate the result in 1-2 lines and either proceed or self-correct if validation fails.
 - Format all responses strictly in Markdown.
