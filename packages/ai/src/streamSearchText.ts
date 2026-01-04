@@ -1,5 +1,13 @@
 import { SearchEngine } from '@peam/search';
-import { LanguageModel, UIMessage, convertToModelMessages, createUIMessageStream, stepCountIs, streamText } from 'ai';
+import {
+  LanguageModel,
+  ModelMessage,
+  UIMessage,
+  convertToModelMessages,
+  createUIMessageStream,
+  stepCountIs,
+  streamText,
+} from 'ai';
 import { generateSearchSystemPrompt } from './prompts/search';
 import { createSearchTools } from './tools';
 import { normalizeDomain } from './utils/normalizeDomain';
@@ -15,14 +23,19 @@ export type SearchStreamTextProps = {
   model: LanguageModel;
   messages: UIMessage[];
   currentPage?: CurrentPageMetadata;
+  summary?: string;
   onStepFinish?: (step: any) => void;
 };
 
+/**
+ * Streams a response using the search engine to retrieve relevant information.
+ */
 export const streamSearchText = function ({
   model,
   searchEngine,
   messages,
   currentPage,
+  summary,
   onStepFinish,
 }: SearchStreamTextProps) {
   const siteName = currentPage?.origin ? normalizeDomain(currentPage.origin) : 'unknown';
@@ -33,31 +46,26 @@ export const streamSearchText = function ({
     execute: async ({ writer }) => {
       let modelMessages = await convertToModelMessages(messages);
 
-      if (currentPage?.path && modelMessages.length > 0) {
-        const lastMessage = modelMessages[modelMessages.length - 1];
-        if (lastMessage.role === 'user') {
-          const userQuestion =
-            typeof lastMessage.content === 'string'
-              ? lastMessage.content
-              : Array.isArray(lastMessage.content)
-                ? lastMessage.content
-                    .filter((part) => part.type === 'text')
-                    .map((part) => part.text)
-                    .join('\n')
-                : '';
+      if (modelMessages.length === 0) {
+        return;
+      }
 
-          const contextText = `User is currently viewing the page at ${currentPage.path}${currentPage.title?.trim() ? ` with title "${currentPage.title}"` : ''}]
+      if (currentPage?.path) {
+        const currentPageContextMessage: ModelMessage = {
+          role: 'system',
+          content: `The user is currently viewing the page at ${currentPage.path}${
+            currentPage.title?.trim() ? ` with title "${currentPage.title}"` : ''
+          }.`,
+        };
+        modelMessages = [currentPageContextMessage, ...modelMessages];
+      }
 
-User question: ${userQuestion}`;
-
-          modelMessages = [
-            ...modelMessages.slice(0, -1),
-            {
-              ...lastMessage,
-              content: contextText,
-            },
-          ];
-        }
+      if (summary) {
+        const summaryMessage: ModelMessage = {
+          role: 'system',
+          content: `Context summary of previous conversation: ${summary}`,
+        };
+        modelMessages = [summaryMessage, ...modelMessages];
       }
 
       const result = streamText({
