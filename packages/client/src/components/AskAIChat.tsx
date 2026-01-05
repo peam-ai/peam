@@ -6,7 +6,7 @@ import type { AskAIBaseProps } from './AskAI';
 import { Chat } from './Chat';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAIChatProps extends AskAIBaseProps {}
 
 export function AskAIChat({ suggestedPrompts }: AskAIChatProps = {}) {

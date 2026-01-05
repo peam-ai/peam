@@ -3,13 +3,8 @@ import { useChatPersistence } from './useChatPersistence';
 
 export function useAskAI() {
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const chatClearRef = useRef<(() => void) | null>(null);
   const chatPersistence = useChatPersistence();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
@@ -56,7 +51,6 @@ export function useAskAI() {
 
   return {
     isOpen,
-    mounted,
     chatClearRef,
     chatPersistence,
     handleToggle,

@@ -7,11 +7,11 @@ import type { AskAIBaseProps } from './AskAI';
 import { Chat } from './Chat';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAISidepaneProps extends AskAIBaseProps {}
 
 export function AskAISidepane({ suggestedPrompts }: AskAISidepaneProps = {}) {
-  const { isOpen, mounted, chatClearRef, chatPersistence, handleToggle, handleClose, handleClear } = useAskAI();
+  const { isOpen, chatClearRef, chatPersistence, handleToggle, handleClose, handleClear } = useAskAI();
   const originalBodyStyles = useRef<{ marginRight: string; transition: string } | null>(null);
 
   useEffect(() => {
@@ -57,7 +57,6 @@ export function AskAISidepane({ suggestedPrompts }: AskAISidepaneProps = {}) {
         </Tooltip>
       )}
 
-      {mounted && (
         <div
           role="dialog"
           aria-modal="true"
@@ -65,7 +64,7 @@ export function AskAISidepane({ suggestedPrompts }: AskAISidepaneProps = {}) {
           className={`fixed z-50 right-0 top-0 h-full w-full md:w-100 lg:w-120 bg-background flex flex-col border-l border-border transition-transform duration-300 ${
             isOpen
               ? 'translate-x-0 cursor-default pointer-events-auto shadow-2xl'
-              : 'translate-x-full cursor-default pointer-events-none'
+              : 'invisible translate-x-full cursor-default pointer-events-none'
           }`}
         >
           <div className="absolute top-3 right-3 z-10 flex gap-1">
@@ -104,7 +103,6 @@ export function AskAISidepane({ suggestedPrompts }: AskAISidepaneProps = {}) {
             </div>
           )}
         </div>
-      )}
     </div>
   );
 }
