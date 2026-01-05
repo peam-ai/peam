@@ -10,7 +10,7 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
-    "lint": "eslint .",
+    "lint": "eslint ./src",
     "test": "jest"
   },
   "files": [
@@ -64,10 +64,15 @@
     "use-stick-to-bottom": "^1.1.1"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@tailwindcss/postcss": "^4.1.18",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "autoprefixer": "^10.4.23",
+    "eslint": "^9.39.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^17.0.0",
     "postcss": "^8.5.6",
     "postcss-cli": "^11.0.1",
     "postcss-prefix-selector": "^2.1.1",
