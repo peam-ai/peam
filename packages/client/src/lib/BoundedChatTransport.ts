@@ -1,4 +1,5 @@
-import { DefaultChatTransport, type UIMessage } from 'ai';
+import type { UIMessage } from '@ai-sdk/react';
+import { DefaultChatTransport } from 'ai';
 import { getRecentMessages } from './messageWindow';
 
 export interface BoundedChatTransportOptions {
@@ -6,14 +7,17 @@ export interface BoundedChatTransportOptions {
 }
 
 /**
- * Chat transport that only sends recent messages to the backend.
+ * Custom chat transport that implements bounded context.
+ * Sends only: summary + recent messages after lastSummarizedMessageId
+ * This prevents unbounded payload growth as conversations get longer.
  */
 export class BoundedChatTransport extends DefaultChatTransport<UIMessage> {
   constructor(options: BoundedChatTransportOptions) {
     super({
       api: options.api,
       prepareSendMessagesRequest: ({ messages, body }) => {
-        const recentMessages = getRecentMessages(messages);
+        const lastSummarizedMessageId = body?.lastSummarizedMessageId;
+        const recentMessages = getRecentMessages(messages, lastSummarizedMessageId);
 
         return {
           body: {

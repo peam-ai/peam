@@ -52,7 +52,7 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
   const lastSavedMessageCount = useRef(0);
 
   const { initialMessages, isLoading, saveMessages, clearMessages } = chatPersistence;
-  const { summary, maybeTriggerSummarization } = useSummarization();
+  const { summary, lastSummarizedMessageId, maybeTriggerSummarization } = useSummarization();
 
   const {
     messages,
@@ -75,6 +75,7 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
     if (!(isLoading || isInitialized) && initialMessages.length > 0) {
       setMessages(initialMessages);
       lastSavedMessageCount.current = initialMessages.length;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsInitialized(true);
     } else if (!(isLoading || isInitialized)) {
       setIsInitialized(true);
@@ -130,11 +131,11 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
           },
         },
         {
-          body: { summary },
+          body: { summary, lastSummarizedMessageId },
         }
       );
     },
-    [_sendMessage, summary]
+    [_sendMessage, summary, lastSummarizedMessageId]
   );
 
   useEffect(() => {

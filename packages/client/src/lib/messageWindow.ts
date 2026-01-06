@@ -1,71 +1,64 @@
-import type { UIMessage } from '@ai-sdk/react';
+import { UIMessage } from 'ai';
 
 /**
- * Maximum number of recent messages to send to the backend.
- * This includes both user and assistant messages.
- *
- * 10 messages = 5 turns of conversation
+ * Maximum number of messages before triggering summarization
  */
-const MAX_RECENT_MESSAGES = 10;
+export const MAX_MESSAGES = 5;
 
 /**
- * Number of new messages required before triggering another summarization.
- * After summarizing, we wait until this many new messages accumulate.
- *
- * 20 messages = 10 turns of conversation before summarizing
+ * Get messages to send to backend after the last summarized message.
+ * If lastSummarizedMessageId is not found (corrupted DB), send last MAX_MESSAGES as recovery.
  */
-const NEW_MESSAGES_THRESHOLD = 20;
-
-/**
- * Gets the recent messages to send to the backend.
- */
-export function getRecentMessages(messages: UIMessage[]): UIMessage[] {
-  console.log('>> getRecentMessages called with %d messages', messages.length);
-  if (messages.length <= MAX_RECENT_MESSAGES) {
-    return messages;
+export function getRecentMessages(messages: UIMessage[], lastSummarizedMessageId: string | undefined): UIMessage[] {
+  if (!lastSummarizedMessageId) {
+    // No summary yet - send last MAX_MESSAGES messages
+    return messages.slice(-MAX_MESSAGES);
   }
-  return messages.slice(-MAX_RECENT_MESSAGES);
+
+  const lastSummarizedIndex = messages.findIndex((m) => m.id === lastSummarizedMessageId);
+
+  if (lastSummarizedIndex === -1) {
+    return messages.slice(-MAX_MESSAGES);
+  }
+
+  const recentMessages = messages.slice(lastSummarizedIndex + 1);
+  return recentMessages.slice(-MAX_MESSAGES);
 }
 
 /**
- * Gets only the new messages that haven't been summarized yet.
- * These are the messages after the last summarized message.
- *
- * If the last summarized message ID is not found (corrupted state),
- * it returns messages up to the current window to recover and fix the state.
+ * Determine if we should trigger summarization.
  */
-export function getMessagesToSummarize(messages: UIMessage[], lastSummarizedId?: string): UIMessage[] {
-  if (!lastSummarizedId) {
-    return messages;
+export function shouldSummarize(messages: UIMessage[], lastSummarizedMessageId: string | undefined): boolean {
+  if (!lastSummarizedMessageId) {
+    return messages.length >= MAX_MESSAGES;
   }
 
-  const lastSummarizedIndex = messages.findIndex((m) => m.id === lastSummarizedId);
+  const lastSummarizedIndex = messages.findIndex((m) => m.id === lastSummarizedMessageId);
 
-  // If we can't find the last summarized message, the DB is corrupted or messages were cleared
-  // Recover by summarizing messages up to the recent window boundary
-  if (lastSummarizedIndex < 0) {
-    // If we have more messages than the recent window, summarize everything except the recent ones
-    if (messages.length > MAX_RECENT_MESSAGES + NEW_MESSAGES_THRESHOLD) {
-      const endIndex = messages.length - MAX_RECENT_MESSAGES;
-      return messages.slice(0, endIndex);
-    }
-
-    // Otherwise return empty to wait for more messages
-    return [];
+  if (lastSummarizedIndex === -1) {
+    return messages.length >= MAX_MESSAGES;
   }
 
-  // else return all messages after the last summarized one
+  const messagesSinceLastSummary = messages.length - lastSummarizedIndex - 1;
+  return messagesSinceLastSummary >= MAX_MESSAGES;
+}
+
+/**
+ * Get all messages to include in the summarization.
+ */
+export function getMessagesToSummarize(
+  messages: UIMessage[],
+  lastSummarizedMessageId: string | undefined
+): UIMessage[] {
+  if (!lastSummarizedMessageId) {
+    return messages.slice(-MAX_MESSAGES);
+  }
+
+  const lastSummarizedIndex = messages.findIndex((m) => m.id === lastSummarizedMessageId);
+
+  if (lastSummarizedIndex === -1) {
+    return messages.slice(-MAX_MESSAGES);
+  }
+
   return messages.slice(lastSummarizedIndex + 1);
-}
-
-/**
- * Checks if summarization should be triggered.
- */
-export function shouldSummarize(messages: UIMessage[], lastSummarizedId?: string): boolean {
-  if (!messages || messages.length === 0) {
-    return false;
-  }
-
-  const newMessages = getMessagesToSummarize(messages, lastSummarizedId);
-  return newMessages.length >= NEW_MESSAGES_THRESHOLD;
 }

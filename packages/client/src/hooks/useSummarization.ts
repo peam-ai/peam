@@ -160,5 +160,9 @@ export function useSummarization(options: UseSummarizationOptions = {}) {
      * The current summary text from persistence
      */
     summary,
+    /**
+     * The ID of the last message that was summarized
+     */
+    lastSummarizedMessageId,
   };
 }
