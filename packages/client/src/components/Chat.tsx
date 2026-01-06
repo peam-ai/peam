@@ -26,11 +26,13 @@ import { Shimmer } from '@/components/ai-elements/shimmer';
 import { Source, Sources, SourcesContent, SourcesTrigger } from '@/components/ai-elements/sources';
 import { SuggestedPrompts } from '@/components/SuggestedPrompts';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
+import { useSummarization } from '@/hooks/useSummarization';
+import { BoundedChatTransport } from '@/lib/BoundedChatTransport';
 import { useChat } from '@ai-sdk/react';
 import { loggers } from '@peam/logger';
-import { DefaultChatTransport, HttpChatTransport, UIMessage } from 'ai';
+import { HttpChatTransport, UIMessage } from 'ai';
 import { BotMessageSquare, Check, Copy, RefreshCcw } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const log = loggers.ui;
 
@@ -48,7 +50,9 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const isSyncing = useRef(false);
   const lastSavedMessageCount = useRef(0);
+
   const { initialMessages, isLoading, saveMessages, clearMessages } = chatPersistence;
+  const { summary, maybeTriggerSummarization } = useSummarization();
 
   const {
     messages,
@@ -60,10 +64,12 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
   } = useChat({
     transport:
       chatTransport ??
-      new DefaultChatTransport({
+      new BoundedChatTransport({
         api: '/api/peam',
       }),
   });
+
+  const isIdle = useMemo(() => status !== 'submitted' && status !== 'streaming', [status]);
 
   useEffect(() => {
     if (!(isLoading || isInitialized) && initialMessages.length > 0) {
@@ -76,7 +82,6 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
   }, [isLoading, initialMessages, isInitialized, setMessages]);
 
   useEffect(() => {
-    const isIdle = status !== 'submitted' && status !== 'streaming';
     if (isInitialized && !isLoading && !isSyncing.current && isIdle) {
       if (initialMessages.length !== lastSavedMessageCount.current) {
         isSyncing.current = true;
@@ -87,32 +92,49 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
         }, 100);
       }
     }
-  }, [initialMessages, isInitialized, isLoading, setMessages, status]);
+  }, [initialMessages, isInitialized, isLoading, setMessages, isIdle]);
 
   useEffect(() => {
-    const isIdle = status !== 'submitted' && status !== 'streaming';
     if (isInitialized && messages.length >= 0 && !isSyncing.current && isIdle) {
       saveMessages(messages);
       lastSavedMessageCount.current = messages.length;
     }
-  }, [messages, saveMessages, isInitialized, status]);
+  }, [messages, saveMessages, isInitialized, isIdle]);
+
+  // Trigger summarization
+  useEffect(() => {
+    if (!isIdle || !isInitialized) {
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      maybeTriggerSummarization(messages);
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [messages, isIdle, isInitialized, maybeTriggerSummarization]);
 
   const sendMessage = useCallback(
     (message: { text: string }) => {
-      _sendMessage({
-        ...message,
-        ...{
-          metadata: {
-            currentPage: {
-              title: window.document.title,
-              origin: window.location.origin,
-              path: window.location.pathname,
+      _sendMessage(
+        {
+          ...message,
+          ...{
+            metadata: {
+              currentPage: {
+                title: window.document.title,
+                origin: window.location.origin,
+                path: window.location.pathname,
+              },
             },
           },
         },
-      });
+        {
+          body: { summary },
+        }
+      );
     },
-    [_sendMessage]
+    [_sendMessage, summary]
   );
 
   useEffect(() => {

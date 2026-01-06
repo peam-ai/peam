@@ -57,52 +57,52 @@ export function AskAISidepane({ suggestedPrompts }: AskAISidepaneProps = {}) {
         </Tooltip>
       )}
 
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="ask-ai-sidepane-title"
-          className={`fixed z-50 right-0 top-0 h-full w-full md:w-100 lg:w-120 bg-background flex flex-col border-l border-border transition-transform duration-300 ${
-            isOpen
-              ? 'translate-x-0 cursor-default pointer-events-auto shadow-2xl'
-              : 'invisible translate-x-full cursor-default pointer-events-none'
-          }`}
-        >
-          <div className="absolute top-3 right-3 z-10 flex gap-1">
-            {!chatPersistence.isLoading && chatPersistence.initialMessages.length > 0 && (
-              <button
-                onClick={handleClear}
-                className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
-                aria-label="Clear chat history"
-              >
-                <Trash2 className="size-4" />
-              </button>
-            )}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ask-ai-sidepane-title"
+        className={`fixed z-50 right-0 top-0 h-full w-full md:w-100 lg:w-120 bg-background flex flex-col border-l border-border transition-transform duration-300 ${
+          isOpen
+            ? 'translate-x-0 cursor-default pointer-events-auto shadow-2xl'
+            : 'invisible translate-x-full cursor-default pointer-events-none'
+        }`}
+      >
+        <div className="absolute top-3 right-3 z-10 flex gap-1">
+          {!chatPersistence.isLoading && chatPersistence.initialMessages.length > 0 && (
             <button
-              onClick={handleClose}
+              onClick={handleClear}
               className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
-              aria-label="Close sidepane"
+              aria-label="Clear chat history"
             >
-              <X className="size-4" />
+              <Trash2 className="size-4" />
             </button>
-          </div>
-
-          <div className="px-4 py-3 shrink-0 flex items-center gap-2">
-            <BotMessageSquare className="size-5" />
-            <h2 id="ask-ai-sidepane-title" className="text-lg font-semibold">
-              Ask AI
-            </h2>
-          </div>
-
-          {isOpen && (
-            <div className="flex-1 min-h-0 h-0">
-              <Chat
-                chatPersistence={chatPersistence}
-                suggestedPrompts={suggestedPrompts}
-                onClearRef={(clearFn) => (chatClearRef.current = clearFn)}
-              />
-            </div>
           )}
+          <button
+            onClick={handleClose}
+            className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
+            aria-label="Close sidepane"
+          >
+            <X className="size-4" />
+          </button>
         </div>
+
+        <div className="px-4 py-3 shrink-0 flex items-center gap-2">
+          <BotMessageSquare className="size-5" />
+          <h2 id="ask-ai-sidepane-title" className="text-lg font-semibold">
+            Ask AI
+          </h2>
+        </div>
+
+        {isOpen && (
+          <div className="flex-1 min-h-0 h-0">
+            <Chat
+              chatPersistence={chatPersistence}
+              suggestedPrompts={suggestedPrompts}
+              onClearRef={(clearFn) => (chatClearRef.current = clearFn)}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
