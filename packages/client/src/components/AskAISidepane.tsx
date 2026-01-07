@@ -1,10 +1,11 @@
 'use client';
 
-import { BotMessageSquare, Trash2, X } from 'lucide-react';
+import { Trash2, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useAskAI } from '../hooks/useAskAI';
 import type { AskAIBaseProps } from './AskAI';
 import { Chat } from './Chat';
+import { PeamIcon } from './icons/peam';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -46,11 +47,11 @@ export function AskAISidepane({ suggestedPrompts }: AskAISidepaneProps = {}) {
           <TooltipTrigger asChild>
             <button
               onClick={handleToggle}
-              className="fixed right-4 bottom-4 z-60 rounded-full bg-primary shadow-lg hover:scale-110 active:scale-90 transition-transform flex items-center justify-center text-primary-foreground size-11 cursor-pointer"
+              className="fixed right-4 bottom-4 z-60 hover:scale-110 active:scale-90 transition-transform flex items-center justify-center cursor-pointer bg-transparent border-0 p-0"
               aria-label="Ask AI"
               aria-expanded={isOpen}
             >
-              <BotMessageSquare className="size-6" />
+              <PeamIcon className="size-10 drop-shadow-lg" />
             </button>
           </TooltipTrigger>
           <TooltipContent side="left">Ask AI</TooltipContent>
@@ -87,7 +88,7 @@ export function AskAISidepane({ suggestedPrompts }: AskAISidepaneProps = {}) {
         </div>
 
         <div className="px-4 py-3 shrink-0 flex items-center gap-2">
-          <BotMessageSquare className="size-5" />
+          <PeamIcon className="size-5" />
           <h2 id="ask-ai-sidepane-title" className="text-lg font-semibold">
             Ask AI
           </h2>

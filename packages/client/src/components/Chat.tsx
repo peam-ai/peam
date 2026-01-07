@@ -31,8 +31,9 @@ import { BoundedChatTransport } from '@/lib/BoundedChatTransport';
 import { useChat } from '@ai-sdk/react';
 import { loggers } from '@peam/logger';
 import { HttpChatTransport, UIMessage } from 'ai';
-import { BotMessageSquare, Check, Copy, RefreshCcw } from 'lucide-react';
+import { Check, Copy, RefreshCcw } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { PeamIcon } from './icons/peam';
 
 const log = loggers.ui;
 
@@ -214,7 +215,7 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
           {isLoading ? (
             <div className="flex items-center justify-center flex-1">
               <ConversationEmptyState
-                icon={<BotMessageSquare className="size-12 animate-pulse" />}
+                icon={<PeamIcon className="size-12 animate-pulse" />}
                 title="Loading chat history..."
                 description="Please wait"
               />
@@ -223,7 +224,7 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
             <>
               <div className="flex items-center justify-center flex-1">
                 <ConversationEmptyState
-                  icon={<BotMessageSquare className="size-12" />}
+                  icon={<PeamIcon className="size-12" />}
                   title="Ask me anything"
                   description="How can I help you today?"
                 />
