@@ -10,28 +10,32 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAIDialogProps extends AskAIBaseProps {}
 
-export function AskAIDialog({ suggestedPrompts }: AskAIDialogProps = {}) {
-  const { isOpen, chatClearRef, chatPersistence, handleToggle, handleClose, handleClear } = useAskAI();
+export function AskAIDialog({ suggestedPrompts, button }: AskAIDialogProps = {}) {
+  const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
 
   return (
     <div className="peam-root">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <button
-            onClick={handleToggle}
-            className="fixed right-4 bottom-4 z-60 hover:scale-110 active:scale-90 transition-transform flex items-center justify-center cursor-pointer bg-transparent border-0 p-0"
-            aria-label="Ask AI"
-            aria-expanded={isOpen}
-          >
-            {isOpen ? (
-              <PeamCloseIcon className="size-10 drop-shadow-lg" />
-            ) : (
-              <PeamIcon className="size-10 drop-shadow-lg" />
-            )}
-          </button>
-        </TooltipTrigger>
-        <TooltipContent side="left">Ask AI</TooltipContent>
-      </Tooltip>
+      {button ? (
+        button({ isOpen, toggle: handleToggle, open: handleOpen, close: handleClose })
+      ) : (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={handleToggle}
+              className="fixed right-4 bottom-4 z-60 hover:scale-110 active:scale-90 transition-transform flex items-center justify-center cursor-pointer bg-transparent border-0 p-0"
+              aria-label="Ask AI"
+              aria-expanded={isOpen}
+            >
+              {isOpen ? (
+                <PeamCloseIcon className="size-10 drop-shadow-lg" />
+              ) : (
+                <PeamIcon className="size-10 drop-shadow-lg" />
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="left">Ask AI</TooltipContent>
+        </Tooltip>
+      )}
 
       {isOpen && (
         <>

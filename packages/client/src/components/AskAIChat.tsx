@@ -10,27 +10,31 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAIChatProps extends AskAIBaseProps {}
 
-export function AskAIChat({ suggestedPrompts }: AskAIChatProps = {}) {
-  const { isOpen, chatClearRef, chatPersistence, handleToggle, handleClose, handleClear } = useAskAI();
+export function AskAIChat({ suggestedPrompts, button }: AskAIChatProps = {}) {
+  const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
 
   return (
     <div className="peam-root">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <button
-            onClick={handleToggle}
-            className="fixed right-4 bottom-4 z-50 hover:scale-110 active:scale-90 transition-transform flex items-center justify-center cursor-pointer bg-transparent border-0 p-0"
-            aria-label="Ask AI"
-          >
-            {isOpen ? (
-              <PeamCloseIcon className="size-10 drop-shadow-lg" />
-            ) : (
-              <PeamIcon className="size-10 drop-shadow-lg" />
-            )}
-          </button>
-        </TooltipTrigger>
-        <TooltipContent side="left">Ask AI</TooltipContent>
-      </Tooltip>
+      {button ? (
+        button({ isOpen, toggle: handleToggle, open: handleOpen, close: handleClose })
+      ) : (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={handleToggle}
+              className="fixed right-4 bottom-4 z-50 hover:scale-110 active:scale-90 transition-transform flex items-center justify-center cursor-pointer bg-transparent border-0 p-0"
+              aria-label="Ask AI"
+            >
+              {isOpen ? (
+                <PeamCloseIcon className="size-10 drop-shadow-lg" />
+              ) : (
+                <PeamIcon className="size-10 drop-shadow-lg" />
+              )}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="left">Ask AI</TooltipContent>
+        </Tooltip>
+      )}
 
       {isOpen && (
         <>
@@ -45,7 +49,7 @@ export function AskAIChat({ suggestedPrompts }: AskAIChatProps = {}) {
           <div
             className={`fixed z-50 bg-background flex flex-col
               inset-x-0 bottom-0 h-[66vh] md:h-125 md:inset-auto
-              md:right-4 md:bottom-20 md:w-100 md:rounded-sm
+              md:right-4 ${button ? 'md:bottom-4' : 'md:bottom-20'} md:w-100 md:rounded-sm
               border-t md:border border-border
               shadow-[0_-4px_20px_rgba(0,0,0,0.25)] md:shadow-xl
               animate-in slide-in-from-bottom duration-300 md:duration-0`}

@@ -11,8 +11,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAISidepaneProps extends AskAIBaseProps {}
 
-export function AskAISidepane({ suggestedPrompts }: AskAISidepaneProps = {}) {
-  const { isOpen, chatClearRef, chatPersistence, handleToggle, handleClose, handleClear } = useAskAI();
+export function AskAISidepane({ suggestedPrompts, button }: AskAISidepaneProps = {}) {
+  const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
   const originalBodyStyles = useRef<{ marginRight: string; transition: string } | null>(null);
 
   useEffect(() => {
@@ -42,7 +42,11 @@ export function AskAISidepane({ suggestedPrompts }: AskAISidepaneProps = {}) {
 
   return (
     <div className="peam-root">
-      {!isOpen && (
+      {button ? (
+        button({ isOpen, toggle: handleToggle, open: handleOpen, close: handleClose })
+      ) : isOpen ? (
+        <></>
+      ) : (
         <Tooltip>
           <TooltipTrigger asChild>
             <button
