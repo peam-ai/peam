@@ -16,21 +16,36 @@ export function AskAISidepane({ suggestedPrompts, button, maxMessages }: AskAISi
   const originalBodyStyles = useRef<{ marginRight: string; transition: string } | null>(null);
 
   useEffect(() => {
-    if (isOpen && !originalBodyStyles.current) {
-      originalBodyStyles.current = {
-        marginRight: document.body.style.marginRight,
-        transition: document.body.style.transition,
-      };
-    }
+    const handleBodyMargin = () => {
+      const isDesktop = window.innerWidth >= 768;
 
-    if (isOpen) {
-      const width = window.innerWidth >= 1024 ? '480px' : window.innerWidth >= 768 ? '400px' : '100vw';
-      document.body.style.marginRight = width;
-      document.body.style.transition = 'margin-right 300ms ease-in-out';
-    } else if (originalBodyStyles.current) {
-      document.body.style.marginRight = originalBodyStyles.current.marginRight;
-      document.body.style.transition = originalBodyStyles.current.transition;
-    }
+      if (!isDesktop) {
+        if (originalBodyStyles.current) {
+          document.body.style.marginRight = originalBodyStyles.current.marginRight;
+          document.body.style.transition = originalBodyStyles.current.transition;
+        }
+        return;
+      }
+
+      // Desktop behavior
+      if (isOpen) {
+        if (!originalBodyStyles.current) {
+          originalBodyStyles.current = {
+            marginRight: document.body.style.marginRight,
+            transition: document.body.style.transition,
+          };
+        }
+
+        const width = window.innerWidth >= 1024 ? '480px' : '400px';
+        document.body.style.marginRight = width;
+        document.body.style.transition = 'margin-right 300ms ease-in-out';
+      } else if (originalBodyStyles.current) {
+        document.body.style.marginRight = originalBodyStyles.current.marginRight;
+        document.body.style.transition = originalBodyStyles.current.transition;
+      }
+    };
+
+    handleBodyMargin();
 
     return () => {
       if (originalBodyStyles.current) {
@@ -62,53 +77,63 @@ export function AskAISidepane({ suggestedPrompts, button, maxMessages }: AskAISi
         </Tooltip>
       )}
 
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="ask-ai-sidepane-title"
-        className={`fixed z-50 right-0 top-0 h-full w-full md:w-100 lg:w-120 bg-background flex flex-col border-l border-border transition-transform duration-300 ${
-          isOpen
-            ? 'translate-x-0 cursor-default pointer-events-auto shadow-2xl'
-            : 'invisible translate-x-full cursor-default pointer-events-none'
-        }`}
-      >
-        <div className="absolute top-3 right-3 z-10 flex gap-1">
-          {!chatPersistence.isLoading && chatPersistence.initialMessages.length > 0 && (
-            <button
-              onClick={handleClear}
-              className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
-              aria-label="Clear chat history"
-            >
-              <Trash2 className="size-4" />
-            </button>
-          )}
-          <button
+      {isOpen && (
+        <>
+          {/* Mobile backdrop */}
+          <div
+            className="fixed inset-0 z-40 bg-black/50 md:hidden animate-in fade-in duration-200 cursor-pointer"
             onClick={handleClose}
-            className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
-            aria-label="Close sidepane"
+            aria-hidden="true"
+          />
+
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ask-ai-sidepane-title"
+            className={`fixed z-50 bg-background flex flex-col
+              inset-x-0 bottom-0 h-[66vh] md:inset-auto
+              md:right-0 md:top-0 md:h-full md:w-100 lg:w-120
+              border-t md:border-t-0 md:border-l border-border
+              shadow-[0_-4px_20px_rgba(0,0,0,0.25)] md:shadow-2xl
+              animate-in slide-in-from-bottom md:slide-in-from-right duration-300`}
           >
-            <X className="size-4" />
-          </button>
-        </div>
+            <div className="absolute top-3 right-3 z-10 flex gap-1">
+              {!chatPersistence.isLoading && chatPersistence.initialMessages.length > 0 && (
+                <button
+                  onClick={handleClear}
+                  className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
+                  aria-label="Clear chat history"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              )}
+              <button
+                onClick={handleClose}
+                className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
+                aria-label="Close sidepane"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
 
-        <div className="px-4 py-3 shrink-0 flex items-center gap-2">
-          <PeamIcon className="size-5" />
-          <h2 id="ask-ai-sidepane-title" className="text-lg font-semibold">
-            Ask AI
-          </h2>
-        </div>
+            <div className="px-4 py-3 shrink-0 flex items-center gap-2">
+              <PeamIcon className="size-5" />
+              <h2 id="ask-ai-sidepane-title" className="text-lg font-semibold">
+                Ask AI
+              </h2>
+            </div>
 
-        {isOpen && (
-          <div className="flex-1 min-h-0 h-0">
-            <Chat
-              chatPersistence={chatPersistence}
-              suggestedPrompts={suggestedPrompts}
-              onClearRef={(clearFn) => (chatClearRef.current = clearFn)}
-              maxMessages={maxMessages}
-            />
+            <div className="flex-1 min-h-0 h-0">
+              <Chat
+                chatPersistence={chatPersistence}
+                suggestedPrompts={suggestedPrompts}
+                onClearRef={(clearFn) => (chatClearRef.current = clearFn)}
+                maxMessages={maxMessages}
+              />
+            </div>
           </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 }

@@ -49,7 +49,7 @@ export function AskAIChat({ suggestedPrompts, button, maxMessages }: AskAIChatPr
           <div
             className={`fixed z-50 bg-background flex flex-col
               inset-x-0 bottom-0 h-[66vh] md:h-125 md:inset-auto
-              md:right-4 ${button ? 'md:bottom-4' : 'md:bottom-20'} md:w-100 md:rounded-sm
+              md:right-4 ${button ? 'md:bottom-4' : 'md:bottom-18'} md:w-100 md:rounded-sm
               border-t md:border border-border
               shadow-[0_-4px_20px_rgba(0,0,0,0.25)] md:shadow-xl
               animate-in slide-in-from-bottom duration-300 md:duration-0`}
