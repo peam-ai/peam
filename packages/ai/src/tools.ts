@@ -1,5 +1,5 @@
-import { loggers } from '@peam/logger';
-import { SearchEngine } from '@peam/search';
+import { loggers } from '@peam-ai/logger';
+import { SearchEngine } from '@peam-ai/search';
 import { tool, ToolSet, type UIMessageStreamWriter } from 'ai';
 import { z } from 'zod';
 

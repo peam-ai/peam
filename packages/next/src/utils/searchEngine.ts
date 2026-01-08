@@ -1,5 +1,5 @@
-import { loggers } from '@peam/logger';
-import { SearchEngine } from '@peam/search';
+import { loggers } from '@peam-ai/logger';
+import { SearchEngine } from '@peam-ai/search';
 import { getConfig } from '../config';
 
 const log = loggers.next;

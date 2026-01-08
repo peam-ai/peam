@@ -5,8 +5,8 @@
  * parses them into structured pages, and creates a searchable index.
  */
 
-import { filePathToPathname, loadRobotsTxt, parseHTML, shouldIncludePath, type StructuredPage } from '@peam/parser';
-import { buildSearchIndex } from '@peam/search';
+import { filePathToPathname, loadRobotsTxt, parseHTML, shouldIncludePath, type StructuredPage } from '@peam-ai/parser';
+import { buildSearchIndex } from '@peam-ai/search';
 import chalk from 'chalk';
 import { Command } from 'commander';
 import fg from 'fast-glob';
@@ -269,7 +269,7 @@ Examples:
   # Exclude patterns
   $ peam --exclude "/admin/**,/api/*,/private-*"
 
-For Next.js 15+, the @peam/next integration is recommended for production use.
+For Next.js 15+, the @peam-ai/next integration is recommended for production use.
 
 More information: https://peam.ai
     `

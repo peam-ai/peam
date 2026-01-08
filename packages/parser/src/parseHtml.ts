@@ -1,4 +1,4 @@
-import { loggers } from '@peam/logger';
+import { loggers } from '@peam-ai/logger';
 import { JSDOM } from 'jsdom';
 import { CssSelectorParser } from './parsers/cssSelectorParser';
 import { ParseOptions } from './parsers/parser';

@@ -1,7 +1,7 @@
 'use client';
 
 import type { UIMessage } from '@ai-sdk/react';
-import { loggers } from '@peam/logger';
+import { loggers } from '@peam-ai/logger';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useCallback } from 'react';
 import { db } from '../lib/db';

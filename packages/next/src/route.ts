@@ -1,4 +1,4 @@
-import { createHandler as serverCreateHandler } from '@peam/server';
+import { createHandler as serverCreateHandler } from '@peam-ai/server';
 import { type LanguageModel } from 'ai';
 import { getSearchEngine } from './utils/searchEngine';
 
@@ -8,7 +8,7 @@ import { getSearchEngine } from './utils/searchEngine';
  * @example
  * ```typescript
  * // Custom model with custom config
- * import { createHandler } from '@peam/next/route';
+ * import { createHandler } from '@peam-ai/next/route';
  * import { anthropic } from '@ai-sdk/anthropic';
  *
  * export const maxDuration = 60;
@@ -22,7 +22,7 @@ import { getSearchEngine } from './utils/searchEngine';
  * @example
  * ```typescript
  * // Using Google Gemini
- * import { createHandler } from '@peam/next/route';
+ * import { createHandler } from '@peam-ai/next/route';
  * import { google } from '@ai-sdk/google';
  *
  * export const maxDuration = 45;
@@ -45,7 +45,7 @@ export function createHandler(options?: { model?: LanguageModel }) {
  *
  * @example
  * ```typescript
- * export { POST } from '@peam/next/route';
+ * export { POST } from '@peam-ai/next/route';
  * ```
  */
 export const POST = createHandler();

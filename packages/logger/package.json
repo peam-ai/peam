@@ -1,10 +1,21 @@
 {
-  "name": "@peam/logger",
+  "name": "@peam-ai/logger",
   "version": "0.1.0",
   "description": "Logger utilities for Peam",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "homepage": "https://peam.ai",
+  "author": "Afshin Mehrabani",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/peam-ai/peam.git",
+    "directory": "packages/logger"
+  },
+  "bugs": {
+    "url": "https://github.com/peam-ai/peam/issues"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -22,7 +33,7 @@
     "debug": "^4.3.7"
   },
   "devDependencies": {
-    "@peam/tsconfig": "*",
+    "@peam-ai/tsconfig": "*",
     "@types/debug": "^4.1.12",
     "@types/node": "^22.10.2",
     "tsup": "^8.2.4",

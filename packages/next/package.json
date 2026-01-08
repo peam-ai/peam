@@ -1,5 +1,5 @@
 {
-  "name": "@peam/next",
+  "name": "@peam-ai/next",
   "description": "Peam Next.js integration",
   "private": true,
   "version": "0.1.0",
@@ -7,6 +7,16 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "homepage": "https://peam.ai",
+  "author": "Afshin Mehrabani",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/peam-ai/peam.git",
+    "directory": "packages/next"
+  },
+  "bugs": {
+    "url": "https://github.com/peam-ai/peam/issues"
+  },
   "scripts": {
     "build": "tsup",
     "clean": "rm -rf dist",
@@ -34,7 +44,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
-    "@peam/tsconfig": "*",
+    "@peam-ai/tsconfig": "*",
     "@types/eslint__js": "^8.42.3",
     "eslint": "^9.9.0",
     "tsup": "^8.2.4",
@@ -43,10 +53,10 @@
     "next": ">=15.0.0"
   },
   "dependencies": {
-    "@peam/logger": "*",
-    "@peam/parser": "*",
-    "@peam/search": "*",
-    "@peam/server": "*"
+    "@peam-ai/logger": "*",
+    "@peam-ai/parser": "*",
+    "@peam-ai/search": "*",
+    "@peam-ai/server": "*"
   },
   "peerDependencies": {
     "next": ">=15.0.0"

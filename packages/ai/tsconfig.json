@@ -1,5 +1,5 @@
 {
-  "extends": "@peam/tsconfig/tsconfig.base.json",
+  "extends": "@peam-ai/tsconfig/tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src"

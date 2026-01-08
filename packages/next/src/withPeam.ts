@@ -7,7 +7,7 @@ import { defaultConfig, PeamAdapterConfig, setNextConfig } from './config';
  * @example
  * ```typescript
  * // next.config.ts
- * import { withPeam } from '@peam/next';
+ * import { withPeam } from '@peam-ai/next';
  *
  * export default withPeam()({
  *   // your Next.js config

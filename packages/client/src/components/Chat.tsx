@@ -29,7 +29,7 @@ import { useChatPersistence } from '@/hooks/useChatPersistence';
 import { useSummarization } from '@/hooks/useSummarization';
 import { BoundedChatTransport } from '@/lib/BoundedChatTransport';
 import { useChat } from '@ai-sdk/react';
-import { loggers } from '@peam/logger';
+import { loggers } from '@peam-ai/logger';
 import { HttpChatTransport, UIMessage } from 'ai';
 import { Check, Copy, RefreshCcw } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';

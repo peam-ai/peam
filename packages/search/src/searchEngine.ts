@@ -1,5 +1,5 @@
-import { loggers } from '@peam/logger';
-import type { StructuredPage } from '@peam/parser';
+import { loggers } from '@peam-ai/logger';
+import type { StructuredPage } from '@peam-ai/parser';
 import { TextSearch, type TextSearchOptions } from './textSearch';
 import type { StructuredPageDocumentData } from './types';
 

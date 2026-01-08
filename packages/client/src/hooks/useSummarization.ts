@@ -1,6 +1,6 @@
 import type { UIMessage } from '@ai-sdk/react';
 import { useChat } from '@ai-sdk/react';
-import { loggers } from '@peam/logger';
+import { loggers } from '@peam-ai/logger';
 import { DefaultChatTransport } from 'ai';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getMessagesToSummarize, shouldSummarize } from '../lib/messageWindow';

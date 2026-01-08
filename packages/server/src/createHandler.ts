@@ -1,6 +1,6 @@
 import { openai } from '@ai-sdk/openai';
-import { streamSearchText, streamSummarize } from '@peam/ai';
-import { loggers } from '@peam/logger';
+import { streamSearchText, streamSummarize } from '@peam-ai/ai';
+import { loggers } from '@peam-ai/logger';
 import { createUIMessageStreamResponse } from 'ai';
 import { type CreateHandlerOptions, type HandlerRequestBody } from './types';
 import { getCurrentPage } from './utils/getCurrentPage';
@@ -18,7 +18,7 @@ const log = loggers.server;
  * @example
  * ```typescript
  * // Next.js
- * import { createHandler } from '@peam/server';
+ * import { createHandler } from 'peam/server';
  * import { openai } from '@ai-sdk/openai';
  *
  * export const POST = createHandler({

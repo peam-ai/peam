@@ -25,6 +25,6 @@ export default defineConfig([
     sourcemap: false,
     clean: true,
     treeshake: true,
-    external: ['@peam/parser', '@peam/search', '@peam/server'],
+    external: ['@peam-ai/parser', '@peam-ai/search', '@peam-ai/server'],
   },
 ]);

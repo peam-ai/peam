@@ -1,4 +1,4 @@
-import { loggers } from '@peam/logger';
+import { loggers } from '@peam-ai/logger';
 import { Charset, Document } from 'flexsearch';
 import type { StructuredPageDocumentData } from './types';
 

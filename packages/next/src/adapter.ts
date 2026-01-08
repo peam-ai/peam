@@ -1,4 +1,4 @@
-import { loggers } from '@peam/logger';
+import { loggers } from '@peam-ai/logger';
 import {
   loadRobotsTxt as baseLoadRobotsTxt,
   createRobotsParser,
@@ -6,8 +6,8 @@ import {
   shouldIncludePath,
   type RobotsTxtResult,
   type StructuredPage,
-} from '@peam/parser';
-import { buildSearchIndex } from '@peam/search';
+} from '@peam-ai/parser';
+import { buildSearchIndex } from '@peam-ai/search';
 import { mkdirSync, readFileSync, writeFileSync } from 'fs';
 import type { NextAdapter } from 'next';
 import { join } from 'path';

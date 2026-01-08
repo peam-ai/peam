@@ -22,4 +22,22 @@ export default defineConfig([
       js: '#!/usr/bin/env node',
     },
   },
+  {
+    entry: ['src/client.ts'],
+    format: ['cjs', 'esm'],
+    dts: true,
+    sourcemap: true,
+    clean: false,
+    treeshake: true,
+    outDir: 'dist',
+  },
+  {
+    entry: ['src/server.ts'],
+    format: ['cjs', 'esm'],
+    dts: true,
+    sourcemap: true,
+    clean: false,
+    treeshake: true,
+    outDir: 'dist',
+  },
 ]);

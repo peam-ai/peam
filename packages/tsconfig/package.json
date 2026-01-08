@@ -1,5 +1,5 @@
 {
-  "name": "@peam/tsconfig",
+  "name": "@peam-ai/tsconfig",
   "private": true,
   "files": [
     "tsconfig.base.json"

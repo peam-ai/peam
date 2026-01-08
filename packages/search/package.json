@@ -1,11 +1,21 @@
 {
-  "name": "@peam/search",
+  "name": "@peam-ai/search",
   "version": "0.1.0",
   "description": "Vector database and search functionality for Peam",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "homepage": "https://peam.ai",
+  "author": "Afshin Mehrabani",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/peam-ai/peam.git",
+    "directory": "packages/search"
+  },
+  "bugs": {
+    "url": "https://github.com/peam-ai/peam/issues"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -25,12 +35,12 @@
     }
   },
   "dependencies": {
-    "@peam/logger": "*",
-    "@peam/parser": "*",
+    "@peam-ai/logger": "*",
+    "@peam-ai/parser": "*",
     "flexsearch": "^0.8.212"
   },
   "devDependencies": {
-    "@peam/tsconfig": "*",
+    "@peam-ai/tsconfig": "*",
     "@types/node": "^22.10.2",
     "tsup": "^8.2.4",
     "typescript": "^5.5.4"

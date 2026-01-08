@@ -1,4 +1,4 @@
-import { SearchEngine } from '@peam/search';
+import { SearchEngine } from '@peam-ai/search';
 import {
   LanguageModel,
   ModelMessage,

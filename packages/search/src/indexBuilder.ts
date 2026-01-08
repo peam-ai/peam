@@ -1,4 +1,4 @@
-import type { StructuredPage } from '@peam/parser';
+import type { StructuredPage } from '@peam-ai/parser';
 import { SearchEngine } from './searchEngine';
 
 export interface PageToIndex {

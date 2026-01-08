@@ -1,4 +1,4 @@
-import type { StructuredPage } from '@peam/parser';
+import type { StructuredPage } from '@peam-ai/parser';
 
 export type StructuredPageDocumentData = {
   id: string;
