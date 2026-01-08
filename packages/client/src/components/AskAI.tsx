@@ -13,6 +13,11 @@ export interface AskAIBaseProps {
    */
   suggestedPrompts?: string[];
   /**
+   * Maximum number of messages to keep in context before summarizing.
+   * @default 10
+   */
+  maxMessages?: number;
+  /**
    * Custom button component.
    *
    * @example

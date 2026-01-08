@@ -42,9 +42,10 @@ export interface ChatProps {
   suggestedPrompts?: string[];
   onClearRef?: (clearFn: () => void) => void;
   chatTransport?: HttpChatTransport<UIMessage>;
+  maxMessages?: number;
 }
 
-export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransport }: ChatProps) => {
+export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransport, maxMessages }: ChatProps) => {
   const [input, setInput] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -53,7 +54,7 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
   const lastSavedMessageCount = useRef(0);
 
   const { initialMessages, isLoading, saveMessages, clearMessages } = chatPersistence;
-  const { summary, lastSummarizedMessageId, maybeTriggerSummarization } = useSummarization();
+  const { summary, lastSummarizedMessageId, maybeTriggerSummarization } = useSummarization({ maxMessages });
 
   const {
     messages,
@@ -67,6 +68,7 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
       chatTransport ??
       new BoundedChatTransport({
         api: '/api/peam',
+        maxMessages,
       }),
   });
 

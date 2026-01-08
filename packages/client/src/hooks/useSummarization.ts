@@ -10,13 +10,14 @@ const log = loggers.ui;
 
 export interface UseSummarizationOptions {
   api?: string;
+  maxMessages?: number;
 }
 
 /**
  * Hook for summarizing messages history with automatic saving.
  */
 export function useSummarization(options: UseSummarizationOptions = {}) {
-  const { api = '/api/peam' } = options;
+  const { api = '/api/peam', maxMessages } = options;
 
   const { summary, saveSummary, lastSummarizedMessageId } = useChatPersistence();
   const [isSummarizing, setIsSummarizing] = useState(false);
@@ -116,7 +117,7 @@ export function useSummarization(options: UseSummarizationOptions = {}) {
         return false;
       }
 
-      const messagesToSummarize = getMessagesToSummarize(allMessages, lastSummarizedMessageId);
+      const messagesToSummarize = getMessagesToSummarize(allMessages, lastSummarizedMessageId, maxMessages);
 
       if (messagesToSummarize.length === 0) {
         return false;
@@ -125,7 +126,7 @@ export function useSummarization(options: UseSummarizationOptions = {}) {
       summarize(messagesToSummarize, previousSummary);
       return true;
     },
-    [summarize, isSummarizing]
+    [summarize, isSummarizing, maxMessages]
   );
 
   /**
@@ -142,13 +143,13 @@ export function useSummarization(options: UseSummarizationOptions = {}) {
         return false;
       }
 
-      if (!shouldSummarize(allMessages, lastSummarizedMessageId)) {
+      if (!shouldSummarize(allMessages, lastSummarizedMessageId, maxMessages)) {
         return false;
       }
 
       return triggerSummarization(allMessages, lastSummarizedMessageId, summary);
     },
-    [isSummarizing, triggerSummarization, summary, lastSummarizedMessageId]
+    [isSummarizing, triggerSummarization, summary, lastSummarizedMessageId, maxMessages]
   );
 
   return {

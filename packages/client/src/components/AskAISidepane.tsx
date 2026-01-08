@@ -11,7 +11,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAISidepaneProps extends AskAIBaseProps {}
 
-export function AskAISidepane({ suggestedPrompts, button }: AskAISidepaneProps = {}) {
+export function AskAISidepane({ suggestedPrompts, button, maxMessages }: AskAISidepaneProps = {}) {
   const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
   const originalBodyStyles = useRef<{ marginRight: string; transition: string } | null>(null);
 
@@ -104,6 +104,7 @@ export function AskAISidepane({ suggestedPrompts, button }: AskAISidepaneProps =
               chatPersistence={chatPersistence}
               suggestedPrompts={suggestedPrompts}
               onClearRef={(clearFn) => (chatClearRef.current = clearFn)}
+              maxMessages={maxMessages}
             />
           </div>
         )}

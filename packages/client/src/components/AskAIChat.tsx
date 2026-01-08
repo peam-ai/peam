@@ -10,7 +10,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAIChatProps extends AskAIBaseProps {}
 
-export function AskAIChat({ suggestedPrompts, button }: AskAIChatProps = {}) {
+export function AskAIChat({ suggestedPrompts, button, maxMessages }: AskAIChatProps = {}) {
   const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
 
   return (
@@ -83,6 +83,7 @@ export function AskAIChat({ suggestedPrompts, button }: AskAIChatProps = {}) {
                 chatPersistence={chatPersistence}
                 suggestedPrompts={suggestedPrompts}
                 onClearRef={(clearFn) => (chatClearRef.current = clearFn)}
+                maxMessages={maxMessages}
               />
             </div>
           </div>
