@@ -24,7 +24,6 @@ export type SearchStreamTextProps = {
   messages: UIMessage[];
   currentPage?: CurrentPageMetadata;
   summary?: string;
-  onStepFinish?: (step: any) => void;
 };
 
 /**
@@ -36,7 +35,6 @@ export const streamSearchText = function ({
   messages,
   currentPage,
   summary,
-  onStepFinish,
 }: SearchStreamTextProps) {
   const siteName = currentPage?.origin ? normalizeDomain(currentPage.origin) : 'unknown';
   const siteDomain = currentPage?.origin || 'unknown';
@@ -74,7 +72,6 @@ export const streamSearchText = function ({
         messages: modelMessages,
         stopWhen: stepCountIs(20),
         tools: createSearchTools({ searchEngine, writer }),
-        onStepFinish,
       });
 
       writer.merge(result.toUIMessageStream());

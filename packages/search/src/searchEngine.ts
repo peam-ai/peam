@@ -5,6 +5,7 @@ import type { StructuredPageDocumentData } from './types';
 
 const log = loggers.search;
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface SearchEngineConfig {
   // Reserved for future configuration options
 }
@@ -13,6 +14,7 @@ export class SearchEngine {
   private textSearch: TextSearch;
   private initialized: boolean;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(_config?: SearchEngineConfig) {
     this.textSearch = new TextSearch();
     this.initialized = false;

@@ -6,7 +6,10 @@
     "build:watch": "turbo watch build",
     "prettier": "prettier --write packages",
     "clean": "turbo run clean",
-    "test": "turbo test",
+    "test": "run-p test:*",
+    "test:eslint": "turbo run test:eslint",
+    "test:prettier": "turbo run test:prettier",
+    "test:jest": "turbo run test:jest -- --passWithNoTests",
     "changeset-packages": "changeset",
     "publish-packages": "turbo run build test && changeset version && changeset publish"
   },

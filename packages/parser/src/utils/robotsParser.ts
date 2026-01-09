@@ -22,40 +22,36 @@ export function loadRobotsTxt(
   searchPaths: string[],
   robotsTxtPath?: string
 ): RobotsTxtResult | null {
-  try {
-    let robotsContent: string | null = null;
-    let foundPath: string | null = null;
+  let robotsContent: string | null = null;
+  let foundPath: string | null = null;
 
-    if (robotsTxtPath) {
-      const customPath = join(projectDir, robotsTxtPath);
-      if (existsSync(customPath)) {
-        robotsContent = readFileSync(customPath, 'utf-8');
-        foundPath = customPath;
-      }
+  if (robotsTxtPath) {
+    const customPath = join(projectDir, robotsTxtPath);
+    if (existsSync(customPath)) {
+      robotsContent = readFileSync(customPath, 'utf-8');
+      foundPath = customPath;
     }
-
-    if (!robotsContent) {
-      for (const searchPath of searchPaths) {
-        const fullPath = join(projectDir, searchPath);
-        if (existsSync(fullPath)) {
-          robotsContent = readFileSync(fullPath, 'utf-8');
-          foundPath = fullPath;
-          break;
-        }
-      }
-    }
-
-    if (!robotsContent) {
-      return null;
-    }
-
-    return {
-      parser: createRobotsParser(robotsContent),
-      path: foundPath || '',
-    };
-  } catch (error) {
-    throw error;
   }
+
+  if (!robotsContent) {
+    for (const searchPath of searchPaths) {
+      const fullPath = join(projectDir, searchPath);
+      if (existsSync(fullPath)) {
+        robotsContent = readFileSync(fullPath, 'utf-8');
+        foundPath = fullPath;
+        break;
+      }
+    }
+  }
+
+  if (!robotsContent) {
+    return null;
+  }
+
+  return {
+    parser: createRobotsParser(robotsContent),
+    path: foundPath || '',
+  };
 }
 
 export function isPathAllowedByRobots(path: string, robots: RobotsParser | null): boolean {

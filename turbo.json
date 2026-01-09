@@ -8,7 +8,13 @@
     "clean": {
       "cache": false
     },
-    "test": {
+    "test:eslint": {
+      "cache": false
+    },
+    "test:prettier": {
+      "cache": false
+    },
+    "test:jest": {
       "dependsOn": ["^build", "build"]
     }
   }

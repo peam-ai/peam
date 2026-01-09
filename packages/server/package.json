@@ -22,7 +22,7 @@
     "dev": "tsup --watch",
     "test:eslint": "eslint \"src/**/*.ts*\"",
     "test:prettier": "prettier --check \"src/**/*.ts*\"",
-    "test": "run-p test:*"
+    "test:jest": "jest"
   },
   "files": [
     "dist/**/*"
