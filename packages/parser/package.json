@@ -1,7 +1,6 @@
 {
   "name": "@peam-ai/parser",
   "description": "Content parser for extracting page metadata",
-  "private": true,
   "version": "0.1.0",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
