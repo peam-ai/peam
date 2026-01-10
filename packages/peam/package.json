@@ -69,7 +69,6 @@
     "fast-glob": "^3.3.3"
   },
   "devDependencies": {
-    "@peam-ai/tsconfig": "workspace:*",
     "@types/node": "^20.0.0",
     "tsup": "^8.2.4",
     "typescript": "^5.5.4"

@@ -35,7 +35,6 @@
     "debug": "^4.3.7"
   },
   "devDependencies": {
-    "@peam-ai/tsconfig": "workspace:*",
     "@types/debug": "^4.1.12",
     "@types/node": "^22.10.2",
     "tsup": "^8.2.4",

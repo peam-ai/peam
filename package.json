@@ -13,10 +13,7 @@
     "changeset-packages": "changeset",
     "publish-packages": "turbo run build test && changeset version && changeset publish"
   },
-  "packageManager": "npm@10.5.0",
-  "workspaces": [
-    "packages/*"
-  ],
+  "packageManager": "pnpm@10.28.0",
   "files": [
     "dist/**/**",
     "docs/**/**",

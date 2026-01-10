@@ -1,5 +1,5 @@
 {
-  "extends": "@peam-ai/tsconfig/tsconfig.base.json",
+  "extends": "../tsconfig/tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
     "outDir": "./dist",
