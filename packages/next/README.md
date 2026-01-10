@@ -17,10 +17,7 @@ export default withPeam({
   outputDir: '.peam',
   indexFilename: 'index.json',
   respectRobotsTxt: true,
-  exclude: [
-    '/admin/**',
-    '/api/*',
-  ],
+  exclude: ['/admin/**', '/api/*'],
 })(nextConfig);
 ```
 

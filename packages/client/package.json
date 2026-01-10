@@ -42,9 +42,9 @@
   "dependencies": {
     "@ai-sdk/openai": "^3.0.0",
     "@ai-sdk/react": "^3.0.5",
-    "@peam-ai/ai": "*",
-    "@peam-ai/logger": "*",
-    "@peam-ai/search": "*",
+    "@peam-ai/ai": "workspace:*",
+    "@peam-ai/logger": "workspace:*",
+    "@peam-ai/search": "workspace:*",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",

@@ -37,13 +37,13 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.0",
-    "@peam-ai/ai": "*",
-    "@peam-ai/logger": "*",
-    "@peam-ai/search": "*",
+    "@peam-ai/ai": "workspace:*",
+    "@peam-ai/logger": "workspace:*",
+    "@peam-ai/search": "workspace:*",
     "ai": "^6.0.1"
   },
   "devDependencies": {
-    "@peam-ai/tsconfig": "*",
+    "@peam-ai/tsconfig": "workspace:*",
     "tsup": "^8.2.4",
     "typescript": "^5.5.4"
   }

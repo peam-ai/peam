@@ -3,9 +3,7 @@ const config = {
   verbose: true,
   testEnvironment: 'node',
   transform: {
-    '^.+.tsx?$': [
-      'ts-jest'
-    ],
+    '^.+.tsx?$': ['ts-jest'],
   },
 };
 
