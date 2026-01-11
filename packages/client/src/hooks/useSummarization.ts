@@ -76,7 +76,7 @@ export function useSummarization(options: UseSummarizationOptions = {}) {
           }
         }
       } catch (error) {
-        log('Error processing summary:', error);
+        log.error('Error processing summary:', error);
       } finally {
         setIsSummarizing(false);
         isProcessingRef.current = false;

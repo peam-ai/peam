@@ -45,7 +45,7 @@ export class TextSearch {
 
   async initialize(): Promise<void> {
     if (this.initialized) {
-      log('Text search already initialized');
+      log.debug('Text search already initialized');
       return;
     }
 
@@ -57,7 +57,7 @@ export class TextSearch {
       throw new Error('TextSearch not initialized. Call initialize() first.');
     }
 
-    log('Adding document to text search: %s', document.path);
+    log.debug('Adding document to text search:', document.path);
 
     this.index.add(document);
     this.documentIds.add(document.path);
@@ -71,7 +71,7 @@ export class TextSearch {
     const limit = options.limit || MAX_DOCUMENTS_RETRIEVE;
     const offset = options.offset || 0;
 
-    log('Searching for: "%s"', query);
+    log.debug('Searching for:', query);
 
     const results = await this.index.search(query, {
       limit: limit + offset,
@@ -126,7 +126,7 @@ export class TextSearch {
       }
     }
 
-    log('Retrieved %d documents from store (limit: %d)', documents.length, limit);
+    log.debug('Retrieved documents from store (limit):', documents.length, limit);
     return documents;
   }
 
@@ -147,7 +147,7 @@ export class TextSearch {
       await handler(key, data);
     });
 
-    log('Exported %d keys', keys.length);
+    log.debug('Exported keys:', keys.length);
 
     return { keys };
   }
@@ -170,11 +170,11 @@ export class TextSearch {
           this.index.import(key, data);
         }
       } catch (error) {
-        log('Error importing key %s: %s', key, error);
+        log.error('Error importing key:', key, error);
       }
     }
 
     this.initialized = true;
-    log('Import completed with %d keys', keys.length);
+    log.debug('Import completed with keys:', keys.length);
   }
 }

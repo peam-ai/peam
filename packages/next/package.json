@@ -50,10 +50,7 @@
     "next": ">=15.0.0"
   },
   "dependencies": {
-    "@peam-ai/logger": "workspace:*",
-    "@peam-ai/parser": "workspace:*",
-    "@peam-ai/search": "workspace:*",
-    "@peam-ai/server": "workspace:*"
+    "peam": "workspace:*"
   },
   "peerDependencies": {
     "next": ">=15.0.0"

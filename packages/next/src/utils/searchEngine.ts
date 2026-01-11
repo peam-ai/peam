@@ -1,5 +1,5 @@
-import { loggers } from '@peam-ai/logger';
-import { SearchEngine } from '@peam-ai/search';
+import { loggers } from 'peam/logger';
+import { SearchEngine } from 'peam/search';
 import { getConfig } from '../config';
 
 const log = loggers.next;
@@ -13,7 +13,7 @@ export async function getSearchEngine(): Promise<SearchEngine | undefined> {
   try {
     const config = getConfig();
     const indexPath = `${config.outputDir}/${config.indexFilename}`;
-    log(`Loading index from: ${indexPath}`);
+    log.debug('Loading index from:', indexPath);
 
     // Use @/ alias which Next.js resolves to the project root src directory
     const indexFile = await import(`@/../${indexPath}`);
@@ -23,10 +23,10 @@ export async function getSearchEngine(): Promise<SearchEngine | undefined> {
     }, indexFile.keys);
 
     const totalDocs = searchEngine.count();
-    log(`Index loaded successfully with ${totalDocs} documents`);
+    log.debug('Index loaded successfully with', totalDocs, 'documents');
     return searchEngine;
   } catch (error) {
-    log(`Failed to load search index: ${error}`);
+    log.error('Failed to load search index:', error);
   }
 
   return undefined;

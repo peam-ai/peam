@@ -109,7 +109,7 @@ export function createHandler(options: CreateHandlerOptions = {}) {
 
       return createUIMessageStreamResponse({ stream });
     } catch (error) {
-      log(`Error in the chat route: ${error}`);
+      log.error('Error in the chat route:', error);
 
       return new Response(
         JSON.stringify({

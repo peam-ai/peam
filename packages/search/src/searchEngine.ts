@@ -25,7 +25,7 @@ export class SearchEngine {
       return;
     }
 
-    log('Initializing search engine');
+    log.debug('Initializing search engine');
     await this.textSearch.initialize();
     this.initialized = true;
   }
@@ -42,7 +42,7 @@ export class SearchEngine {
     };
 
     await this.textSearch.addDocument(document);
-    log('Page added to search engine: %s', path);
+    log.debug('Page added to search engine:', path);
   }
 
   async search(query: string, options: TextSearchOptions = {}): Promise<StructuredPageDocumentData[]> {
@@ -50,7 +50,7 @@ export class SearchEngine {
       throw new Error('Search engine not initialized. Call initialize() first.');
     }
 
-    log('Performing text search: "%s"', query);
+    log.debug('Performing text search:', query);
     return this.textSearch.search(query, options);
   }
 
@@ -77,6 +77,6 @@ export class SearchEngine {
   async import(handler: (key: string) => Promise<string>, keys: string[]): Promise<void> {
     await this.textSearch.import(handler, keys);
     this.initialized = true;
-    log('Search engine initialized from imported data');
+    log.debug('Search engine initialized from imported data');
   }
 }

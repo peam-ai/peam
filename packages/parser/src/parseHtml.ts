@@ -15,11 +15,11 @@ const log = loggers.parser;
  */
 export function parseHTML(html: string, options: ParseOptions = {}): StructuredPage | undefined {
   if (!html || html.trim().length === 0) {
-    log('Empty or invalid HTML input');
+    log.warn('Empty or invalid HTML input');
     return undefined;
   }
 
-  log('Starting parse with options %O', options);
+  log.debug('Starting parse with options', options);
   const dom = new JSDOM(html);
   const document = dom.window.document;
 
@@ -29,7 +29,7 @@ export function parseHTML(html: string, options: ParseOptions = {}): StructuredP
   const readabilityStructuredPage = readabilityParser.parse(document, options);
 
   if (!cssSelectorStructuredPage && !readabilityStructuredPage) {
-    log('Failed to extract content');
+    log.warn('Failed to extract content');
     return undefined;
   }
 

@@ -32,10 +32,9 @@
     "test:jest": "jest"
   },
   "dependencies": {
-    "debug": "^4.3.7"
+    "picocolors": "^1.1.1"
   },
   "devDependencies": {
-    "@types/debug": "^4.1.12",
     "@types/node": "^22.10.2",
     "tsup": "^8.2.4",
     "typescript": "^5.5.4"

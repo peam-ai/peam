@@ -33,7 +33,7 @@ export const useChatPersistence = () => {
         await db.messages.bulkAdd(messagesToStore);
       });
     } catch (error) {
-      log('Failed to save messages: %O', error);
+      log.error('Failed to save messages:', error);
     }
   }, []);
 
@@ -48,7 +48,7 @@ export const useChatPersistence = () => {
         timestamp: Date.now(),
       });
     } catch (error) {
-      log('Failed to save summary: %O', error);
+      log.error('Failed to save summary:', error);
     }
   }, []);
 
@@ -59,7 +59,7 @@ export const useChatPersistence = () => {
         await db.summaries.delete(CURRENT_CONVERSATION_ID);
       });
     } catch (error) {
-      log('Failed to clear messages: %O', error);
+      log.error('Failed to clear messages:', error);
     }
   }, []);
 

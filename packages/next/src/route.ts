@@ -1,5 +1,5 @@
-import { createHandler as serverCreateHandler } from '@peam-ai/server';
 import { type LanguageModel } from 'ai';
+import { createHandler as serverCreateHandler } from 'peam/server';
 import { getSearchEngine } from './utils/searchEngine';
 
 /**

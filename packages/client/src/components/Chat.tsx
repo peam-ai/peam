@@ -184,7 +184,7 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
       await clearMessages();
       setMessages([]);
     } catch (error) {
-      log('Failed to clear chat history: %O', error);
+      log.error('Failed to clear chat history:', error);
     }
   }, [clearMessages, setMessages]);
 

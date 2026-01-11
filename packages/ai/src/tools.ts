@@ -20,12 +20,12 @@ export function createSearchTool({
       query: z.string().describe('The search query to find relevant content on the website'),
     }),
     execute: async ({ query }) => {
-      log(`Searching for: "${query}"`);
+      log.debug('Searching for:', query);
 
       try {
         const results = await searchEngine.search(query);
 
-        log(`Found ${results.length} results`);
+        log.debug('Found', results.length, 'results');
 
         if (results.length === 0) {
           return {
@@ -56,7 +56,7 @@ export function createSearchTool({
           results: formattedResults,
         };
       } catch (error) {
-        log(`Search tool error: ${error}`);
+        log.error('Search tool error:', error);
         return {
           success: false,
           message: 'Search failed',
@@ -81,13 +81,13 @@ export function createGetDocumentTool({
       id: z.string().describe('The complete document path/ID to retrieve (e.g., "/contact", "/about")'),
     }),
     execute: async ({ id }: { id: string }) => {
-      log(`Getting document: ${id}`);
+      log.debug('Getting document:', id);
 
       try {
         const doc = searchEngine.getDocument(id);
 
         if (!doc) {
-          log(`Document with ID "${id}" not found`);
+          log.warn('Document with ID not found:', id);
           return {
             success: false,
             message: `Document with ID "${id}" not found`,
@@ -122,7 +122,7 @@ export function createGetDocumentTool({
           },
         };
       } catch (error) {
-        log(`Get document tool error: ${error}`);
+        log.error('Get document tool error:', error);
         return {
           success: false,
           message: 'Failed to get document',
@@ -145,7 +145,7 @@ export function createListDocumentsTool({
       'List all available web pages in the knowledge base. Use this to get an overview of what pages are available.',
     inputSchema: z.object(),
     execute: async () => {
-      log('Listing all documents');
+      log.debug('Listing all documents');
 
       try {
         const documents = searchEngine.getAllDocuments();
@@ -173,7 +173,7 @@ export function createListDocumentsTool({
           documents: summary,
         };
       } catch (error) {
-        log(`List documents tool error: ${error}`);
+        log.error('List documents tool error:', error);
         return {
           success: false,
           message: 'Failed to list documents',

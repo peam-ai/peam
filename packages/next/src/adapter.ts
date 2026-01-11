@@ -1,4 +1,7 @@
-import { loggers } from '@peam-ai/logger';
+import { mkdirSync, readFileSync, writeFileSync } from 'fs';
+import type { NextAdapter } from 'next';
+import { join } from 'path';
+import { loggers } from 'peam/logger';
 import {
   loadRobotsTxt as baseLoadRobotsTxt,
   createRobotsParser,
@@ -6,11 +9,8 @@ import {
   shouldIncludePath,
   type RobotsTxtResult,
   type StructuredPage,
-} from '@peam-ai/parser';
-import { buildSearchIndex } from '@peam-ai/search';
-import { mkdirSync, readFileSync, writeFileSync } from 'fs';
-import type { NextAdapter } from 'next';
-import { join } from 'path';
+} from 'peam/parser';
+import { buildSearchIndex } from 'peam/search';
 import { type ResolvedPeamAdapterConfig } from './config';
 
 const log = loggers.adapter;
@@ -41,7 +41,7 @@ function extractRobotsFromPrerender(prerender: PrerenderOutput): string | null {
       return content;
     }
   } catch (error) {
-    log('Error extracting robots from prerender: %O', error);
+    log.error('Error extracting robots from prerender:', error);
   }
 
   return null;
@@ -60,7 +60,7 @@ function loadRobotsTxt(
       for (const prerender of prerenders) {
         const content = extractRobotsFromPrerender(prerender);
         if (content) {
-          log('Found dynamic robots.txt from prerenders');
+          log.debug('Found dynamic robots.txt from prerenders');
           robotsContent = content;
           foundPath = prerender.pathname;
           break;
@@ -72,7 +72,7 @@ function loadRobotsTxt(
       const searchPaths = ['public/robots.txt', 'app/robots.txt', 'src/app/robots.txt'];
       const result = baseLoadRobotsTxt(projectDir, searchPaths, robotsTxtPath);
       if (result) {
-        log('Loaded robots.txt from: %s', result.path);
+        log.debug('Loaded robots.txt from:', result.path);
         return result;
       }
       return null;
@@ -83,7 +83,7 @@ function loadRobotsTxt(
       path: foundPath || '',
     };
   } catch (error) {
-    log('Error loading robots.txt: %O', error);
+    log.error('Error loading robots.txt:', error);
     return null;
   }
 }
@@ -93,7 +93,7 @@ export function createPeamAdapter(config: ResolvedPeamAdapterConfig): NextAdapte
     name: 'peam-adapter',
 
     async onBuildComplete(ctx) {
-      log('Extracting page content via adapter');
+      log.debug('Extracting page content via adapter');
 
       const outputs = ctx.outputs as NextJS15Output[] | NextJS16Outputs;
       let prerenders: PrerenderOutput[];
@@ -104,14 +104,14 @@ export function createPeamAdapter(config: ResolvedPeamAdapterConfig): NextAdapte
         prerenders = outputs.prerenders || [];
       }
 
-      log('Total prerenders: %d', prerenders.length);
+      log.debug('Total prerenders:', prerenders.length);
 
       const projectDir = ctx.projectDir || process.cwd();
 
       const robotsResult = config.respectRobotsTxt ? loadRobotsTxt(projectDir, prerenders, config.robotsTxtPath) : null;
 
       if (robotsResult) {
-        log('Using robots.txt from: %s', robotsResult.path);
+        log.debug('Using robots.txt from:', robotsResult.path);
       }
 
       const pages: Array<{
@@ -144,25 +144,25 @@ export function createPeamAdapter(config: ResolvedPeamAdapterConfig): NextAdapte
 
         if (!filterResult.included) {
           if (filterResult.reason === 'robots-txt') {
-            log('Path excluded by robots.txt: %s', pathname);
+            log.debug('Path excluded by robots.txt:', pathname);
           } else if (filterResult.reason === 'exclude-pattern') {
-            log('Path excluded by user pattern: %s', pathname);
+            log.debug('Path excluded by user pattern:', pathname);
           }
           continue;
         }
 
         try {
-          log('Reading HTML from: %s', fallbackFilePath);
+          log.debug('Reading HTML from:', fallbackFilePath);
 
           const html = readFileSync(fallbackFilePath, 'utf-8');
           const structuredPage = parseHTML(html);
 
           if (!structuredPage) {
-            log('No content extracted from %s', pathname);
+            log.warn('No content extracted from', pathname);
             continue;
           }
 
-          log('Successfully extracted content from %s', pathname);
+          log.debug('Successfully extracted content from', pathname);
           pages.push({
             path: pathname,
             htmlFile: fallbackFilePath.replace(projectDir + '/', ''),
@@ -170,21 +170,21 @@ export function createPeamAdapter(config: ResolvedPeamAdapterConfig): NextAdapte
             type: 'page',
           });
         } catch (error) {
-          log('Error processing %s: %O', pathname, error);
+          log.error('Error processing', pathname, error);
         }
       }
 
       const outputPath = join(projectDir, config.outputDir);
       mkdirSync(outputPath, { recursive: true });
 
-      log('Creating search index...');
+      log.debug('Creating search index...');
       const searchIndexData = await buildSearchIndex(pages);
 
       const searchIndexFile = join(outputPath, config.indexFilename);
       writeFileSync(searchIndexFile, JSON.stringify(searchIndexData));
 
-      log('Saved search index to: %s', searchIndexFile);
-      log('Extraction complete with total pages: %d', pages.length);
+      log.debug('Saved search index to:', searchIndexFile);
+      log.debug('Extraction complete with total pages:', pages.length);
     },
   };
 }
