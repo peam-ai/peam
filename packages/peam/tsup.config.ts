@@ -1,10 +1,5 @@
 import { defineConfig } from 'tsup';
 
-// IMPORTANT:
-// Build all library entrypoints in a single config. When we split into multiple
-// configs all writing to the same outDir with `clean: true`, tsup can end up
-// deleting artifacts from sibling entries (especially DTS), causing e.g.
-// dist/search.d.ts to disappear.
 export default defineConfig([
   {
     entry: {
@@ -22,7 +17,6 @@ export default defineConfig([
     treeshake: true,
     outDir: 'dist',
   },
-  // CLI: separate build so we can emit a shebang, but DON'T clean the outDir.
   {
     entry: { cli: 'src/cli.ts' },
     format: ['cjs'],
