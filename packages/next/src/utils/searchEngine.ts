@@ -1,6 +1,5 @@
 import { loggers } from 'peam/logger';
 import { SearchEngine } from 'peam/search';
-import { getConfig } from '../config';
 
 const log = loggers.next;
 let searchEngine: SearchEngine | null = null;
@@ -8,16 +7,17 @@ let searchEngine: SearchEngine | null = null;
 export async function getSearchEngine(): Promise<SearchEngine | undefined> {
   if (searchEngine) return searchEngine;
 
-  searchEngine = new SearchEngine();
-
   try {
-    const config = getConfig();
-    const indexPath = `${config.outputDir}/${config.indexFilename}`;
-    log.debug('Loading index from:', indexPath);
+    // @ts-expect-error - peam_index/generated is resolved via webpack/turbopack alias
+    const indexFile = (await import('peam_index/generated'))?.default;
 
-    // Use @/ alias which Next.js resolves to the project root src directory
-    const indexFile = await import(`@/../${indexPath}`);
+    // Check if this is the stub
+    if (!indexFile || !indexFile.data || !indexFile.keys || indexFile.keys.length === 0) {
+      log.debug('Search index not yet generated. Run build first to generate the index.');
+      return undefined;
+    }
 
+    searchEngine = new SearchEngine();
     await searchEngine.import(async (key: string) => {
       return indexFile.data[key];
     }, indexFile.keys);
