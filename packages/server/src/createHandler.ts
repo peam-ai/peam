@@ -4,6 +4,7 @@ import { loggers } from '@peam-ai/logger';
 import { createUIMessageStreamResponse } from 'ai';
 import { type CreateHandlerOptions, type HandlerRequestBody } from './types';
 import { getCurrentPage } from './utils/getCurrentPage';
+import { getSearchEngine } from './utils/getSearchEngine';
 
 const MAX_MESSAGE_LENGTH = 30000;
 const log = loggers.server;
@@ -13,6 +14,8 @@ const log = loggers.server;
  * This handler processes incoming chat messages and streams responses back to the client.
  *
  * @param options - Configuration options for the handler
+ * @param options.model - The language model to use (default: GPT-4o)
+ * @param options.getSearchEngine - An optional function to retrieve the search engine
  * @returns An async function that handles HTTP requests
  *
  * @example
@@ -85,7 +88,7 @@ export function createHandler(options: CreateHandlerOptions = {}) {
       const currentPage = getCurrentPage({ request: req, message: lastMessage });
 
       // Get search engine using the provided function
-      const searchEngine = options.getSearchEngine ? await options.getSearchEngine() : undefined;
+      const searchEngine = options.getSearchEngine ? await options.getSearchEngine() : await getSearchEngine();
 
       if (!searchEngine) {
         return new Response(

@@ -1,7 +1,7 @@
-import { loggers } from 'peam/logger';
-import { SearchEngine } from 'peam/search';
+import { loggers } from '@peam-ai/logger';
+import { SearchEngine } from '@peam-ai/search';
 
-const log = loggers.next;
+const log = loggers.server;
 let searchEngine: SearchEngine | null = null;
 
 export async function getSearchEngine(): Promise<SearchEngine | undefined> {

@@ -7,4 +7,5 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   target: 'es2015',
+  external: ['peam_index/generated'],
 });

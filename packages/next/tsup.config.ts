@@ -13,7 +13,7 @@ export default defineConfig([
   {
     entry: ['src/route.ts'],
     format: ['cjs', 'esm'],
-    dts: false,
+    dts: true,
     sourcemap: true,
     clean: true,
     treeshake: true,
@@ -21,8 +21,8 @@ export default defineConfig([
   {
     entry: ['src/peam.adapter.ts'],
     format: ['cjs'],
-    dts: false,
-    sourcemap: false,
+    dts: true,
+    sourcemap: true,
     clean: true,
     treeshake: true,
     external: ['@peam-ai/parser', '@peam-ai/search', '@peam-ai/server'],
