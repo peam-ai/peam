@@ -1,7 +1,7 @@
 {
   "name": "@peam-ai/next",
   "description": "Peam Next.js integration",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -47,12 +47,12 @@
     "tsup": "^8.2.4",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.50.0",
-    "next": ">=15.0.0"
+    "next": ">=14.0.0"
   },
   "dependencies": {
     "peam": "workspace:*"
   },
   "peerDependencies": {
-    "next": ">=15.0.0"
+    "next": ">=14.0.0"
   }
 }
