@@ -1,5 +1,5 @@
 {
-  "name": "peam-root",
+  "name": "peam-monorepo",
   "private": true,
   "scripts": {
     "build": "turbo build",
@@ -10,30 +10,16 @@
     "test:eslint": "turbo run test:eslint",
     "test:prettier": "turbo run test:prettier",
     "test:jest": "turbo run test:jest -- --passWithNoTests",
-    "changeset-packages": "changeset",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:publish": "pnpm build && changeset publish",
     "publish-packages": "turbo run build test && changeset version && changeset publish"
   },
   "packageManager": "pnpm@10.28.0",
-  "files": [
-    "dist/**/**",
-    "docs/**/**",
-    "!**/*.spec.*",
-    "!**/*.json",
-    "!**/*.tsbuildinfo",
-    "LICENSE",
-    "README.md"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/peam-ai/peam.git"
   },
-  "keywords": [
-    "ai",
-    "llm",
-    "agent",
-    "chat",
-    "ui"
-  ],
   "author": "Afshin Mehrabani",
   "license": "Apache-2.0",
   "bugs": {
@@ -41,6 +27,7 @@
   },
   "homepage": "https://github.com/peam-ai/peam#readme",
   "devDependencies": {
+    "@changesets/cli": "^2.27.9",
     "@eslint/js": "^9.9.0",
     "@types/eslint__js": "^8.42.3",
     "@types/jest": "^29.5.12",
@@ -55,8 +42,5 @@
     "turbo": "^2.0.14",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.50.0"
-  },
-  "dependencies": {
-    "@changesets/cli": "^2.27.9"
   }
 }

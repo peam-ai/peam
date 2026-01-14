@@ -16,17 +16,11 @@
     "test:jest": "jest"
   },
   "keywords": [
-    "static-site",
-    "ssg",
-    "nextjs",
-    "hugo",
-    "jekyll",
-    "gatsby",
-    "search",
-    "indexer",
     "ai",
-    "cli",
-    "peam"
+    "llm",
+    "agent",
+    "chat",
+    "ui"
   ],
   "author": "Afshin Mehrabani",
   "license": "Apache-2.0",
