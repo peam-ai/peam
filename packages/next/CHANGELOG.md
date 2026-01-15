@@ -1,5 +1,11 @@
 # @peam-ai/next
 
+## 0.1.3
+
+### Patch Changes
+
+- Fix /route types
+
 ## 0.1.2
 
 ### Patch Changes
