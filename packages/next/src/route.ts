@@ -1,4 +1,3 @@
-import { FileBasedSearchIndexExporter } from '@peam-ai/search';
 import { createHandler } from 'peam/server';
 import { getConfig } from './config';
 
@@ -13,8 +12,5 @@ import { getConfig } from './config';
 const config = getConfig();
 
 export const POST = createHandler({
-  searchIndexExporter: new FileBasedSearchIndexExporter({
-    baseDir: process.cwd(),
-    indexPath: config.indexPath,
-  }),
+  searchIndexExporter: config.searchIndexExporter,
 });

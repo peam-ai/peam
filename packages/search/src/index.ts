@@ -8,6 +8,8 @@ export type { SearchEngineConfig } from './searchEngine';
 
 export {
   FileBasedSearchIndexExporter,
+  createExporterFromConfig,
   type FileBasedSearchIndexExporterOptions,
+  type SearchExporterConfig,
   type SearchIndexExporter,
 } from './exporters';

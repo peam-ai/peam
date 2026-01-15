@@ -1,11 +1,12 @@
+import { createExporterFromConfig, type SearchExporterConfig, type SearchIndexExporter } from '@peam-ai/search';
 import { NextConfig } from 'next';
 
-export interface PeamAdapterConfig {
+export interface PeamConfig {
   /**
-   * Path to the search index file relative to the project root
-   * @default '.peam/index.json'
+   * Search exporter configuration
+   * @default { type: 'fileBased', config: { indexPath: '.peam/index.json' } }
    */
-  indexPath?: string;
+  searchExporter?: SearchExporterConfig;
   /**
    * Whether to respect robots.txt rules when indexing pages
    * @default true
@@ -27,38 +28,32 @@ export interface PeamAdapterConfig {
   exclude?: string[];
 }
 
-export type ResolvedPeamAdapterConfig = Required<Omit<PeamAdapterConfig, 'robotsTxtPath'>> & {
+export type ResolvedPeamAdapterConfig = Required<Omit<PeamConfig, 'robotsTxtPath' | 'searchExporter'>> & {
   robotsTxtPath?: string;
+  searchIndexExporter: SearchIndexExporter;
 };
 
-export const defaultConfig = {
-  indexPath: '.peam/index.json',
+const defaultConfig = {
+  searchExporter: {
+    type: 'fileBased' as const,
+    config: { baseDir: process.cwd(), indexPath: '.peam/index.json' },
+  },
   respectRobotsTxt: true,
   robotsTxtPath: undefined,
   exclude: [],
-} satisfies PeamAdapterConfig;
+} satisfies PeamConfig;
 
-export const getConfig = (): ResolvedPeamAdapterConfig => {
-  return {
-    indexPath: process.env.PEAM_INDEX_PATH || defaultConfig.indexPath,
-    respectRobotsTxt:
-      process.env.PEAM_RESPECT_ROBOTS_TXT !== undefined
-        ? process.env.PEAM_RESPECT_ROBOTS_TXT === 'true'
-        : defaultConfig.respectRobotsTxt,
-    robotsTxtPath: process.env.PEAM_ROBOTS_TXT_PATH || defaultConfig.robotsTxtPath,
-    exclude: process.env.PEAM_EXCLUDE ? JSON.parse(process.env.PEAM_EXCLUDE) : defaultConfig.exclude,
-  };
-};
-
-export function setNextConfig(nextConfig: NextConfig, peamConfig: PeamAdapterConfig): void {
+export function setNextConfig(nextConfig: NextConfig, peamConfig?: PeamConfig): void {
   const envVars = {
-    PEAM_INDEX_PATH: peamConfig.indexPath,
-    PEAM_RESPECT_ROBOTS_TXT: String(peamConfig.respectRobotsTxt),
-    PEAM_EXCLUDE: JSON.stringify(peamConfig.exclude),
+    PEAM_SEARCH_EXPORTER_TYPE: peamConfig?.searchExporter?.type ?? defaultConfig.searchExporter.type,
+    PEAM_SEARCH_EXPORTER_CONFIG:
+      JSON.stringify(peamConfig?.searchExporter?.config) ?? JSON.stringify(defaultConfig.searchExporter.config),
+    PEAM_RESPECT_ROBOTS_TXT: String(peamConfig?.respectRobotsTxt ?? defaultConfig.respectRobotsTxt),
+    PEAM_EXCLUDE: JSON.stringify(peamConfig?.exclude) ?? JSON.stringify(defaultConfig.exclude),
     PEAM_ROBOTS_TXT_PATH: '',
   };
 
-  if (peamConfig.robotsTxtPath) {
+  if (peamConfig?.robotsTxtPath) {
     envVars.PEAM_ROBOTS_TXT_PATH = String(peamConfig.robotsTxtPath);
   }
 
@@ -71,3 +66,25 @@ export function setNextConfig(nextConfig: NextConfig, peamConfig: PeamAdapterCon
     ...envVars,
   };
 }
+
+export const getConfig = (): ResolvedPeamAdapterConfig => {
+  if (!process.env.PEAM_SEARCH_EXPORTER_TYPE || !process.env.PEAM_SEARCH_EXPORTER_CONFIG) {
+    throw new Error(
+      'Peam configuration not found. Make sure withPeam() is properly configured in your next.config file.'
+    );
+  }
+
+  const searchExporter: SearchExporterConfig = {
+    type: process.env.PEAM_SEARCH_EXPORTER_TYPE as SearchExporterConfig['type'],
+    config: JSON.parse(process.env.PEAM_SEARCH_EXPORTER_CONFIG),
+  };
+
+  const resolvedConfig = {
+    searchIndexExporter: createExporterFromConfig(searchExporter),
+    respectRobotsTxt: process.env.PEAM_RESPECT_ROBOTS_TXT === 'true',
+    robotsTxtPath: process.env.PEAM_ROBOTS_TXT_PATH || undefined,
+    exclude: process.env.PEAM_EXCLUDE ? JSON.parse(process.env.PEAM_EXCLUDE) : [],
+  };
+
+  return resolvedConfig;
+};
