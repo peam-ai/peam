@@ -5,3 +5,9 @@ export { TextSearch } from './textSearch';
 export type { StructuredPageDocumentData } from './types';
 
 export type { SearchEngineConfig } from './searchEngine';
+
+export {
+  FileBasedSearchIndexExporter,
+  type FileBasedSearchIndexExporterOptions,
+  type SearchIndexExporter,
+} from './exporters';

@@ -15,18 +15,21 @@ const log = loggers.server;
  *
  * @param options - Configuration options for the handler
  * @param options.model - The language model to use (default: GPT-4o)
- * @param options.getSearchEngine - An optional function to retrieve the search engine
+ * @param options.searchIndexExporter - The search index exporter to use for loading the search index (required)
  * @returns An async function that handles HTTP requests
  *
  * @example
  * ```typescript
- * // Next.js
  * import { createHandler } from 'peam/server';
  * import { openai } from '@ai-sdk/openai';
+ * import { FileBasedSearchIndexExporter } from '@peam-ai/search';
  *
  * export const POST = createHandler({
  *   model: openai('gpt-4o'),
- *   getSearchEngine: async () => mySearchEngine,
+ *   searchIndexExporter: new FileBasedSearchIndexExporter({
+ *     baseDir: process.cwd(),
+ *     indexPath: 'generated/index.json',
+ *   }),
  * });
  * ```
  */
@@ -87,8 +90,19 @@ export function createHandler(options: CreateHandlerOptions = {}) {
       const lastMessage = messages[messages.length - 1];
       const currentPage = getCurrentPage({ request: req, message: lastMessage });
 
-      // Get search engine using the provided function
-      const searchEngine = options.getSearchEngine ? await options.getSearchEngine() : await getSearchEngine();
+      if (!options.searchIndexExporter) {
+        return new Response(
+          JSON.stringify({
+            error: 'Search index exporter not configured',
+          }),
+          {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+      }
+
+      const searchEngine = await getSearchEngine(options.searchIndexExporter);
 
       if (!searchEngine) {
         return new Response(

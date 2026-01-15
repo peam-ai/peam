@@ -1,4 +1,4 @@
-import { SearchEngine } from '@peam-ai/search';
+import { type SearchIndexExporter } from '@peam-ai/search';
 import { UIMessage, type LanguageModel } from 'ai';
 
 /**
@@ -20,11 +20,6 @@ export interface CurrentPageMetadata {
 }
 
 /**
- * Function to retrieve the search engine instance.
- */
-export type GetSearchEngine = () => Promise<SearchEngine | undefined>;
-
-/**
  * Options for creating a chat handler.
  */
 export interface CreateHandlerOptions {
@@ -34,10 +29,10 @@ export interface CreateHandlerOptions {
    */
   model?: LanguageModel;
   /**
-   * Function to retrieve the search engine instance.
-   * If not provided, the handler will return an error when no search engine is available.
+   * Search index exporter to use for loading the search index.
+   * If not provided, the handler will return an error when search is needed.
    */
-  getSearchEngine?: GetSearchEngine;
+  searchIndexExporter?: SearchIndexExporter;
 }
 
 /**

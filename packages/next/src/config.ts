@@ -2,15 +2,10 @@ import { NextConfig } from 'next';
 
 export interface PeamAdapterConfig {
   /**
-   * Directory where the search index and pages.json will be output
-   * @default '.peam'
+   * Path to the search index file relative to the project root
+   * @default '.peam/index.json'
    */
-  outputDir?: string;
-  /**
-   * Filename for the search index
-   * @default 'index.json'
-   */
-  indexFilename?: string;
+  indexPath?: string;
   /**
    * Whether to respect robots.txt rules when indexing pages
    * @default true
@@ -37,8 +32,7 @@ export type ResolvedPeamAdapterConfig = Required<Omit<PeamAdapterConfig, 'robots
 };
 
 export const defaultConfig = {
-  outputDir: '.peam',
-  indexFilename: 'index.json',
+  indexPath: '.peam/index.json',
   respectRobotsTxt: true,
   robotsTxtPath: undefined,
   exclude: [],
@@ -46,8 +40,7 @@ export const defaultConfig = {
 
 export const getConfig = (): ResolvedPeamAdapterConfig => {
   return {
-    outputDir: process.env.PEAM_OUTPUT_DIR || defaultConfig.outputDir,
-    indexFilename: process.env.PEAM_INDEX_FILENAME || defaultConfig.indexFilename,
+    indexPath: process.env.PEAM_INDEX_PATH || defaultConfig.indexPath,
     respectRobotsTxt:
       process.env.PEAM_RESPECT_ROBOTS_TXT !== undefined
         ? process.env.PEAM_RESPECT_ROBOTS_TXT === 'true'
@@ -59,8 +52,7 @@ export const getConfig = (): ResolvedPeamAdapterConfig => {
 
 export function setNextConfig(nextConfig: NextConfig, peamConfig: PeamAdapterConfig): void {
   const envVars = {
-    PEAM_OUTPUT_DIR: peamConfig.outputDir,
-    PEAM_INDEX_FILENAME: peamConfig.indexFilename,
+    PEAM_INDEX_PATH: peamConfig.indexPath,
     PEAM_RESPECT_ROBOTS_TXT: String(peamConfig.respectRobotsTxt),
     PEAM_EXCLUDE: JSON.stringify(peamConfig.exclude),
     PEAM_ROBOTS_TXT_PATH: '',
