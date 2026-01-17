@@ -3,20 +3,20 @@ import * as fsSync from 'fs';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import type { SearchIndexData } from '../indexBuilder';
-import type { SearchIndexExporter } from './SearchIndexExporter';
+import type { ExportOptions, SearchIndexExporter } from './SearchIndexExporter';
 
 const log = loggers.search;
 
 export interface FileBasedSearchIndexExporterOptions {
   /**
-   * The directory where the index file is located
-   */
-  baseDir: string;
-
-  /**
    * The path to the index file relative to baseDir
    */
   indexPath: string;
+
+  /**
+   * The directory where the index file is located
+   */
+  baseDir?: string;
 }
 
 /**
@@ -29,7 +29,7 @@ export class FileBasedSearchIndexExporter implements SearchIndexExporter {
   private cachedData: SearchIndexData | null = null;
 
   constructor(options: FileBasedSearchIndexExporterOptions) {
-    this.baseDir = options.baseDir;
+    this.baseDir = options.baseDir ?? process.cwd();
     this.indexPath = options.indexPath;
   }
 
@@ -72,10 +72,20 @@ export class FileBasedSearchIndexExporter implements SearchIndexExporter {
     return data;
   }
 
-  async export(data: SearchIndexData): Promise<void> {
+  async export(data: SearchIndexData, options: ExportOptions = { override: true }): Promise<void> {
     const fullPath = this.getFullPath();
 
     try {
+      if (!options?.override) {
+        try {
+          await fs.access(fullPath);
+          log.debug('Search index file already exists and override is false, skipping export:', fullPath);
+          return;
+        } catch {
+          // noop
+        }
+      }
+
       const dir = path.dirname(fullPath);
       await fs.mkdir(dir, { recursive: true });
 
@@ -88,10 +98,20 @@ export class FileBasedSearchIndexExporter implements SearchIndexExporter {
     }
   }
 
-  exportSync(data: SearchIndexData) {
+  exportSync(data: SearchIndexData, options: ExportOptions = { override: true }): void {
     const fullPath = this.getFullPath();
 
     try {
+      if (!options?.override) {
+        try {
+          fsSync.accessSync(fullPath);
+          log.debug('Search index file already exists and override is false, skipping export:', fullPath);
+          return;
+        } catch {
+          // noop
+        }
+      }
+
       const dir = path.dirname(fullPath);
       fsSync.mkdirSync(dir, { recursive: true });
 

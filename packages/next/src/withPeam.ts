@@ -21,24 +21,33 @@ function getNextVersion(): { major: number; minor: number } | undefined {
 
 function addStubIndex() {
   try {
+    if (!isProd) {
+      return;
+    }
+
     const config = getConfig();
 
     if (config.searchExporter?.type !== 'fileBased') {
       return;
     }
 
-    if (isProd) {
-      return;
-    }
-
     const stubData = { keys: [], data: {} };
-    config.searchIndexExporter.exportSync?.(stubData);
+    config.searchIndexExporter.exportSync?.(stubData, { override: false });
   } catch (error) {
     log.error('Failed to create stub index:', error);
   }
 }
 
 function addAdapter(config: NextConfig): NextConfig {
+  const nextVersion = getNextVersion();
+
+  if (!nextVersion || nextVersion.major < 16) {
+    log.warn(
+      'Peam adapter requires Next.js 16 or higher, skipping adapter configuration. Make sure the postbuild script is set up correctly, See more here: https://peam.ai/docs.'
+    );
+    return config;
+  }
+
   return {
     ...config,
     experimental: {
@@ -133,6 +142,16 @@ function addOutputFileTracing(nextConfig: NextConfig, peamConfig: PeamConfig): N
  * import withPeam from '@peam-ai/next';
  *
  * export default withPeam()({
+ *   // your Next.js config
+ * });
+ * ```
+ *
+ * Or with `require()`:
+ * ```javascript
+ * // next.config.js
+ * const withPeam = require('@peam-ai/next');
+ *
+ * module.exports = withPeam()({
  *   // your Next.js config
  * });
  * ```

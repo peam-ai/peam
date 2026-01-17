@@ -27,8 +27,7 @@ const log = loggers.server;
  * export const POST = createHandler({
  *   model: openai('gpt-4o'),
  *   searchIndexExporter: new FileBasedSearchIndexExporter({
- *     baseDir: process.cwd(),
- *     indexPath: 'generated/index.json',
+ *     indexPath: 'generated/index.json'
  *   }),
  * });
  * ```

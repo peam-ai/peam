@@ -36,7 +36,7 @@ export type ResolvedPeamAdapterConfig = Required<Omit<PeamConfig, 'robotsTxtPath
 const defaultConfig = {
   searchExporter: {
     type: 'fileBased' as const,
-    config: { baseDir: process.cwd(), indexPath: '.peam/index.json' },
+    config: { indexPath: '.peam/index.json' },
   },
   respectRobotsTxt: true,
   robotsTxtPath: undefined,
