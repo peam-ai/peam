@@ -4,13 +4,13 @@ import { Trash2, X } from 'lucide-react';
 import { useAskAI } from '../hooks/useAskAI';
 import type { AskAIBaseProps } from './AskAI';
 import { Chat } from './Chat';
-import { PeamCloseIcon, PeamIcon } from './icons/peam';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { PeamIcon } from './icons/peam';
+import { PeamButton } from './PeamButton';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAIChatProps extends AskAIBaseProps {}
 
-export function AskAIChat({ suggestedPrompts, button, maxMessages }: AskAIChatProps = {}) {
+export function AskAIChat({ suggestedPrompts, button, maxMessages, inlineButton = false }: AskAIChatProps = {}) {
   const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
 
   return (
@@ -18,22 +18,7 @@ export function AskAIChat({ suggestedPrompts, button, maxMessages }: AskAIChatPr
       {button ? (
         button({ isOpen, toggle: handleToggle, open: handleOpen, close: handleClose })
       ) : (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={handleToggle}
-              className="fixed right-4 bottom-4 z-50 hover:scale-110 active:scale-90 transition-transform flex items-center justify-center cursor-pointer bg-transparent border-0 p-0"
-              aria-label="Ask AI"
-            >
-              {isOpen ? (
-                <PeamCloseIcon className="size-10 drop-shadow-lg" />
-              ) : (
-                <PeamIcon className="size-10 drop-shadow-lg" />
-              )}
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="left">Ask AI</TooltipContent>
-        </Tooltip>
+        <PeamButton onClick={handleToggle} isOpen={isOpen} inlineButton={inlineButton} className="z-50" />
       )}
 
       {isOpen && (

@@ -18,6 +18,11 @@ export interface AskAIBaseProps {
    */
   maxMessages?: number;
   /**
+   * Render the button inline instead of as a floating button.
+   * @default false
+   */
+  inlineButton?: boolean;
+  /**
    * Custom button component.
    *
    * @example

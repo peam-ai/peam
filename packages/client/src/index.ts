@@ -12,3 +12,5 @@ export { AskAISidepane } from './components/AskAISidepane';
 export type { AskAISidepaneProps } from './components/AskAISidepane';
 export { Chat } from './components/Chat';
 export type { ChatProps } from './components/Chat';
+export { PeamButton } from './components/PeamButton';
+export type { PeamButtonProps } from './components/PeamButton';

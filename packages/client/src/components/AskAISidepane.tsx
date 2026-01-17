@@ -6,12 +6,17 @@ import { useAskAI } from '../hooks/useAskAI';
 import type { AskAIBaseProps } from './AskAI';
 import { Chat } from './Chat';
 import { PeamIcon } from './icons/peam';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { PeamButton } from './PeamButton';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAISidepaneProps extends AskAIBaseProps {}
 
-export function AskAISidepane({ suggestedPrompts, button, maxMessages }: AskAISidepaneProps = {}) {
+export function AskAISidepane({
+  suggestedPrompts,
+  button,
+  maxMessages,
+  inlineButton = false,
+}: AskAISidepaneProps = {}) {
   const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
   const originalBodyStyles = useRef<{ marginRight: string; transition: string } | null>(null);
 
@@ -62,19 +67,13 @@ export function AskAISidepane({ suggestedPrompts, button, maxMessages }: AskAISi
       ) : isOpen ? (
         <></>
       ) : (
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={handleToggle}
-              className="fixed right-4 bottom-4 z-60 hover:scale-110 active:scale-90 transition-transform flex items-center justify-center cursor-pointer bg-transparent border-0 p-0"
-              aria-label="Ask AI"
-              aria-expanded={isOpen}
-            >
-              <PeamIcon className="size-10 drop-shadow-lg" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="left">Ask AI</TooltipContent>
-        </Tooltip>
+        <PeamButton
+          onClick={handleToggle}
+          isOpen={isOpen}
+          inlineButton={inlineButton}
+          className="z-60"
+          showCloseIcon={false}
+        />
       )}
 
       {isOpen && (
