@@ -1,6 +1,6 @@
 {
   "name": "@peam-ai/search",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Vector database and search functionality for Peam",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

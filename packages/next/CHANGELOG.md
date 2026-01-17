@@ -1,5 +1,13 @@
 # @peam-ai/next
 
+## 0.1.5
+
+### Patch Changes
+
+- TracingConfig and FileExporter improvements
+- Updated dependencies
+  - peam@0.1.3
+
 ## 0.1.4
 
 ### Patch Changes

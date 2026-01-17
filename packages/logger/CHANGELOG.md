@@ -1,5 +1,11 @@
 # @peam-ai/logger
 
+## 0.1.3
+
+### Patch Changes
+
+- TracingConfig and FileExporter improvements
+
 ## 0.1.2
 
 ### Patch Changes
