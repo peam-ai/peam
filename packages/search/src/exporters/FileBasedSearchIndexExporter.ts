@@ -1,4 +1,5 @@
 import { loggers } from '@peam-ai/logger';
+import * as fsSync from 'fs';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import type { SearchIndexData } from '../indexBuilder';
@@ -79,6 +80,22 @@ export class FileBasedSearchIndexExporter implements SearchIndexExporter {
       await fs.mkdir(dir, { recursive: true });
 
       await fs.writeFile(fullPath, JSON.stringify(data, null, 2), 'utf-8');
+
+      log.debug('Search index saved to file:', fullPath, 'with', data.keys.length, 'keys');
+    } catch (error) {
+      log.error('Failed to save search index to file:', fullPath, error);
+      throw error;
+    }
+  }
+
+  exportSync(data: SearchIndexData) {
+    const fullPath = this.getFullPath();
+
+    try {
+      const dir = path.dirname(fullPath);
+      fsSync.mkdirSync(dir, { recursive: true });
+
+      fsSync.writeFileSync(fullPath, JSON.stringify(data, null, 2), 'utf-8');
 
       log.debug('Search index saved to file:', fullPath, 'with', data.keys.length, 'keys');
     } catch (error) {

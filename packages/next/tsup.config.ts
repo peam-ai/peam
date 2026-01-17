@@ -8,6 +8,7 @@ export default defineConfig([
     sourcemap: true,
     clean: true,
     treeshake: true,
+    splitting: false,
     external: ['../dist/peam.adapter.js'],
   },
   {
@@ -17,6 +18,7 @@ export default defineConfig([
     sourcemap: true,
     clean: true,
     treeshake: true,
+    splitting: false,
   },
   {
     entry: ['src/peam.adapter.ts'],
@@ -25,6 +27,7 @@ export default defineConfig([
     sourcemap: true,
     clean: true,
     treeshake: true,
+    splitting: false,
     external: ['@peam-ai/parser', '@peam-ai/search', '@peam-ai/server'],
   },
 ]);

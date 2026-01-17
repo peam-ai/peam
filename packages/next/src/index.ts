@@ -1,3 +1,2 @@
-export * from './adapter';
-export * from './config';
-export * from './withPeam';
+import { withPeam } from './withPeam';
+export default withPeam;

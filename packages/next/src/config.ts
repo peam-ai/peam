@@ -28,7 +28,7 @@ export interface PeamConfig {
   exclude?: string[];
 }
 
-export type ResolvedPeamAdapterConfig = Required<Omit<PeamConfig, 'robotsTxtPath' | 'searchExporter'>> & {
+export type ResolvedPeamAdapterConfig = Required<Omit<PeamConfig, 'robotsTxtPath'>> & {
   robotsTxtPath?: string;
   searchIndexExporter: SearchIndexExporter;
 };
@@ -74,13 +74,14 @@ export const getConfig = (): ResolvedPeamAdapterConfig => {
     );
   }
 
-  const searchExporter: SearchExporterConfig = {
+  const searchExporterConfig: SearchExporterConfig = {
     type: process.env.PEAM_SEARCH_EXPORTER_TYPE as SearchExporterConfig['type'],
     config: JSON.parse(process.env.PEAM_SEARCH_EXPORTER_CONFIG),
   };
 
   const resolvedConfig = {
-    searchIndexExporter: createExporterFromConfig(searchExporter),
+    searchExporter: searchExporterConfig,
+    searchIndexExporter: createExporterFromConfig(searchExporterConfig),
     respectRobotsTxt: process.env.PEAM_RESPECT_ROBOTS_TXT === 'true',
     robotsTxtPath: process.env.PEAM_ROBOTS_TXT_PATH || undefined,
     exclude: process.env.PEAM_EXCLUDE ? JSON.parse(process.env.PEAM_EXCLUDE) : [],

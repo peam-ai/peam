@@ -15,4 +15,10 @@ export interface SearchIndexExporter {
    * @param data The search index data to save
    */
   export(data: SearchIndexData): Promise<void>;
+
+  /**
+   * Synchronous export of search index to storage
+   * @param data
+   */
+  exportSync?(data: SearchIndexData): void;
 }

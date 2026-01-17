@@ -1,5 +1,128 @@
+import { loggers } from '@peam-ai/logger';
 import type { NextConfig } from 'next';
-import { PeamConfig, setNextConfig } from './config';
+import { createRequire } from 'node:module';
+import * as path from 'path';
+import { getConfig, PeamConfig, setNextConfig } from './config';
+
+const require = createRequire(process.cwd() + '/');
+const log = loggers.next;
+const isProd = process.env.NODE_ENV === 'production';
+
+function getNextVersion(): { major: number; minor: number } | undefined {
+  try {
+    const [major, minor] = require('next/package.json').version.split('.', 2).map(Number);
+
+    return { major, minor };
+  } catch (error) {
+    log.error('Could not resolve Next.js version.', error);
+    return undefined;
+  }
+}
+
+function addStubIndex() {
+  try {
+    const config = getConfig();
+
+    if (config.searchExporter?.type !== 'fileBased') {
+      return;
+    }
+
+    if (isProd) {
+      return;
+    }
+
+    const stubData = { keys: [], data: {} };
+    config.searchIndexExporter.exportSync?.(stubData);
+  } catch (error) {
+    log.error('Failed to create stub index:', error);
+  }
+}
+
+function addAdapter(config: NextConfig): NextConfig {
+  return {
+    ...config,
+    experimental: {
+      ...config.experimental,
+      adapterPath: require.resolve(path.join(__dirname, 'peam.adapter.js')),
+    },
+  };
+}
+
+function addOutputFileTracing(nextConfig: NextConfig, peamConfig: PeamConfig): NextConfig {
+  nextConfig = { ...nextConfig };
+
+  if (peamConfig.searchExporter?.type !== 'fileBased') {
+    return nextConfig;
+  }
+
+  const exporterConfig = peamConfig.searchExporter.config;
+  const indexDir = path.dirname(exporterConfig.indexPath);
+  const tracingConfig = {
+    '/api/peam': [`./${indexDir}/**/*`],
+  };
+
+  const nextVersion = getNextVersion();
+
+  if (!nextVersion) {
+    log.warn(
+      'Could not determine Next.js version. Adding outputFileTracingIncludes to both experimental and root config.'
+    );
+
+    // Add to experimental (for Next.js 14.x)
+    const existingExperimentalTracing =
+      nextConfig.experimental &&
+      typeof nextConfig.experimental === 'object' &&
+      'outputFileTracingIncludes' in nextConfig.experimental
+        ? nextConfig.experimental.outputFileTracingIncludes
+        : undefined;
+
+    if (nextConfig.experimental) {
+      Object.assign(nextConfig.experimental, {
+        outputFileTracingIncludes: {
+          ...(existingExperimentalTracing || {}),
+          ...tracingConfig,
+        },
+      });
+    }
+
+    // Add to root (for Next.js 15+)
+    const existingRootTracing = nextConfig.outputFileTracingIncludes ?? undefined;
+
+    Object.assign(nextConfig, {
+      outputFileTracingIncludes: {
+        ...(existingRootTracing || {}),
+        ...tracingConfig,
+      },
+    });
+  } else if (nextVersion.major < 15) {
+    // For Next.js 14.x, add outputFileTracingIncludes in experimental
+    const existingTracing =
+      typeof nextConfig.experimental === 'object' && 'outputFileTracingIncludes' in nextConfig.experimental
+        ? nextConfig.experimental?.outputFileTracingIncludes
+        : undefined;
+
+    if (nextConfig.experimental) {
+      Object.assign(nextConfig.experimental, {
+        outputFileTracingIncludes: {
+          ...(existingTracing || {}),
+          ...tracingConfig,
+        },
+      });
+    }
+  } else {
+    // For Next.js 15+, add outputFileTracingIncludes at root
+    const existingTracing = nextConfig.outputFileTracingIncludes ?? undefined;
+
+    Object.assign(nextConfig, {
+      outputFileTracingIncludes: {
+        ...(existingTracing || {}),
+        ...tracingConfig,
+      },
+    });
+  }
+
+  return nextConfig;
+}
 
 /**
  * Wraps Next.js config to enable Peam content extraction during build.
@@ -7,7 +130,7 @@ import { PeamConfig, setNextConfig } from './config';
  * @example
  * ```typescript
  * // next.config.ts
- * import { withPeam } from '@peam-ai/next';
+ * import withPeam from '@peam-ai/next';
  *
  * export default withPeam()({
  *   // your Next.js config
@@ -17,13 +140,14 @@ import { PeamConfig, setNextConfig } from './config';
 export function withPeam(peamConfig?: PeamConfig) {
   return function (nextConfig: NextConfig = {}): NextConfig {
     setNextConfig(nextConfig, peamConfig);
+    addStubIndex();
 
-    return {
-      ...nextConfig,
-      experimental: {
-        ...nextConfig.experimental,
-        adapterPath: require.resolve('../dist/peam.adapter.js'),
-      },
-    };
+    let updatedNextConfig: NextConfig = { ...nextConfig };
+    updatedNextConfig = addAdapter(updatedNextConfig);
+    updatedNextConfig = addOutputFileTracing(updatedNextConfig, getConfig());
+
+    return updatedNextConfig;
   };
 }
+
+export default withPeam;
