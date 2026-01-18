@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@types/jsdom": "^27.0.0",
+    "@types/turndown": "^5.0.5",
     "tsup": "^8.2.4",
     "typescript": "^5.5.4"
   },
@@ -44,6 +45,7 @@
     "@peam-ai/logger": "workspace:*",
     "jsdom": "^27.3.0",
     "matcher": "^6.0.0",
-    "robots-parser": "^3.0.1"
+    "robots-parser": "^3.0.1",
+    "turndown": "^7.2.0"
   }
 }

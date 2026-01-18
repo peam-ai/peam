@@ -3,6 +3,7 @@ export interface StructuredPage {
   description: string;
   content: string;
   textContent: string;
+  markdownContent?: string;
   contentLength?: number;
 
   author?: string;

@@ -1,5 +1,6 @@
 import { loggers } from '@peam-ai/logger';
 import { JSDOM } from 'jsdom';
+import TurndownService from 'turndown';
 import { CssSelectorParser } from './parsers/cssSelectorParser';
 import { ParseOptions } from './parsers/parser';
 import { ReadabilityParser } from './parsers/readabilityParser';
@@ -15,7 +16,7 @@ const log = loggers.parser;
  */
 export function parseHTML(html: string, options: ParseOptions = {}): StructuredPage | undefined {
   if (!html || html.trim().length === 0) {
-    log.warn('Empty or invalid HTML input');
+    log.error('Empty or invalid HTML input');
     return undefined;
   }
 
@@ -29,12 +30,12 @@ export function parseHTML(html: string, options: ParseOptions = {}): StructuredP
   const readabilityStructuredPage = readabilityParser.parse(document, options);
 
   if (!cssSelectorStructuredPage && !readabilityStructuredPage) {
-    log.warn('Failed to extract content');
+    log.error('Failed to extract content');
     return undefined;
   }
 
   // Merge results, prioritizing Readability data
-  return {
+  const mergedResult: StructuredPage = {
     ...{
       title: '',
       description: '',
@@ -44,4 +45,19 @@ export function parseHTML(html: string, options: ParseOptions = {}): StructuredP
     ...cssSelectorStructuredPage,
     ...readabilityStructuredPage,
   };
+
+  // Convert HTML content to markdown
+  if (mergedResult.content) {
+    try {
+      const turndownService = new TurndownService({
+        headingStyle: 'atx',
+        codeBlockStyle: 'fenced',
+      });
+      mergedResult.markdownContent = turndownService.turndown(mergedResult.content);
+    } catch (error) {
+      log.error('Failed to convert content to markdown', error);
+    }
+  }
+
+  return mergedResult;
 }

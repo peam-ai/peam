@@ -38,7 +38,15 @@ export class SearchEngine {
     const document: StructuredPageDocumentData = {
       id: path,
       path,
-      content,
+      content: {
+        title: content.title,
+        description: content.description,
+        content: content.markdownContent ? content.markdownContent : content.textContent,
+        author: content.author,
+        keywords: content.keywords,
+        language: content.language,
+        publishedTime: content.publishedTime,
+      },
     };
 
     await this.textSearch.addDocument(document);

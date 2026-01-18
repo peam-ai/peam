@@ -82,4 +82,42 @@ describe('parseHTML', () => {
     expect(result?.author).toBeDefined();
     expect(result?.direction).toBe('rtl');
   });
+
+  it('should convert HTML content to markdown', () => {
+    // Arrange
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Markdown Test</title>
+          <meta name="description" content="Testing markdown conversion">
+        </head>
+        <body>
+          <article>
+            <h1>Main Heading</h1>
+            <p>This is a <strong>bold</strong> and <em>italic</em> text.</p>
+            <h2>Subheading</h2>
+            <ul>
+              <li>Item 1</li>
+              <li>Item 2</li>
+            </ul>
+            <p>A paragraph with a <a href="https://example.com">link</a>.</p>
+          </article>
+        </body>
+      </html>
+    `;
+
+    // Act
+    const result = parseHTML(html);
+
+    // Assert
+    expect(result).toBeDefined();
+    expect(result?.markdownContent).toBeDefined();
+    expect(result?.markdownContent).toContain('## Main Heading');
+    expect(result?.markdownContent).toContain('**bold**');
+    expect(result?.markdownContent).toContain('_italic_');
+    expect(result?.markdownContent).toContain('## Subheading');
+    expect(result?.markdownContent).toContain('*   Item 1');
+    expect(result?.markdownContent).toContain('[link](https://example.com/)');
+  });
 });

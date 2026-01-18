@@ -109,16 +109,8 @@ export function createGetDocumentTool({
             id: doc.id,
             path: doc.path,
             title: doc.content.title,
-            description: doc.content.description,
-            author: doc.content.author,
-            keywords: doc.content.keywords,
-            textContent: doc.content.textContent,
-            content: doc.content.content,
             language: doc.content.language,
-            publishedTime: doc.content.publishedTime,
-            headings: doc.content.headings,
-            internalLinks: doc.content.internalLinks,
-            externalLinks: doc.content.externalLinks,
+            content: doc.content.content,
           },
         };
       } catch (error) {

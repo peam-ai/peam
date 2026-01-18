@@ -28,8 +28,8 @@ export class TextSearch {
       worker: false,
       document: {
         id: 'path',
-        index: ['content:title', 'content:description', 'content:textContent', 'content:author', 'content:keywords'],
-        store: true,
+        index: ['content:title', 'content:description', 'content:content', 'content:keywords', 'content:author'],
+        store: ['id', 'path', 'content:title', 'content:content', 'content:language'],
       },
       tokenize: 'forward',
       resolution: 9,
@@ -63,19 +63,28 @@ export class TextSearch {
     this.documentIds.add(document.path);
   }
 
-  async search(query: string, options: TextSearchOptions = {}): Promise<StructuredPageDocumentData[]> {
+  async search(
+    query: string,
+    options: TextSearchOptions = {
+      limit: MAX_DOCUMENTS_RETRIEVE,
+      offset: 0,
+      suggest: true,
+    }
+  ): Promise<StructuredPageDocumentData[]> {
     if (!this.initialized) {
       throw new Error('TextSearch not initialized. Call initialize() first.');
     }
 
     const limit = options.limit || MAX_DOCUMENTS_RETRIEVE;
     const offset = options.offset || 0;
+    const suggest = options.suggest || true;
 
     log.debug('Searching for:', query);
 
     const results = await this.index.search(query, {
-      limit: limit + offset,
-      suggest: options.suggest,
+      offset,
+      limit,
+      suggest,
       enrich: true,
     });
 
@@ -96,9 +105,7 @@ export class TextSearch {
       }
     }
 
-    const pagedResults = documents.slice(offset, offset + limit);
-
-    return pagedResults;
+    return documents;
   }
 
   count(): number {
