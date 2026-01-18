@@ -1,7 +1,7 @@
-import { loggers } from 'peam/logger';
 import type { NextConfig } from 'next';
 import { createRequire } from 'node:module';
 import * as path from 'path';
+import { loggers } from 'peam/logger';
 import { getConfig, PeamConfig, setNextConfig } from './config';
 
 const require = createRequire(process.cwd() + '/');
