@@ -20,10 +20,9 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "clean": "rm -rf dist",
-    "lint": "eslint .",
-    "test:eslint": "eslint \"src/**/*.ts*\"",
+    "test:lint": "eslint \"src/**/*.ts*\"",
     "test:prettier": "prettier --check \"src/**/*.ts*\"",
-    "test:jest": "jest"
+    "test:unit": "vitest run"
   },
   "files": [
     "dist/**/*"

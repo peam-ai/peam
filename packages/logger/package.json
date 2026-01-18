@@ -26,10 +26,9 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "lint": "eslint .",
-    "test:eslint": "eslint \"src/**/*.ts*\"",
+    "test:lint": "eslint \"src/**/*.ts*\"",
     "test:prettier": "prettier --check \"src/**/*.ts*\"",
-    "test:jest": "jest"
+    "test:unit": "vitest run"
   },
   "dependencies": {
     "picocolors": "^1.1.1"

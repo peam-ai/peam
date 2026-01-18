@@ -21,6 +21,6 @@
     "alwaysStrict": true,
     "preserveConstEnums": true,
     "downlevelIteration": true,
-    "types": ["node", "jest"]
+    "types": ["node", "vitest/globals"]
   }
 }
