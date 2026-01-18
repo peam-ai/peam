@@ -72,6 +72,7 @@ export const streamSearchText = function ({
         messages: modelMessages,
         stopWhen: stepCountIs(20),
         tools: createSearchTools({ searchEngine, writer }),
+        temperature: 0.2,
       });
 
       writer.merge(result.toUIMessageStream());

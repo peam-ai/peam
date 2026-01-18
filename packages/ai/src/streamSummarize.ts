@@ -40,6 +40,7 @@ export function streamSummarize({ model, messages, previousSummary }: StreamSumm
         model,
         system: SUMMARIZATION_SYSTEM_PROMPT,
         prompt: summaryPrompt,
+        temperature: 0,
       });
 
       writer.merge(result.toUIMessageStream());
