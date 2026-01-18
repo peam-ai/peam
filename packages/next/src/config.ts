@@ -1,5 +1,5 @@
-import { createExporterFromConfig, type SearchExporterConfig, type SearchIndexExporter } from '@peam-ai/search';
 import { NextConfig } from 'next';
+import { createExporterFromConfig, type SearchExporterConfig, type SearchIndexExporter } from 'peam/search';
 
 export interface PeamConfig {
   /**

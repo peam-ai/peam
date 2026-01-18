@@ -1,4 +1,4 @@
-import { loggers } from '@peam-ai/logger';
+import { loggers } from 'peam/logger';
 import type { NextConfig } from 'next';
 import { createRequire } from 'node:module';
 import * as path from 'path';

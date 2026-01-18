@@ -1,1 +1,7 @@
-export { SearchEngine, buildSearchIndex } from '@peam-ai/search';
+export {
+  SearchEngine,
+  buildSearchIndex,
+  createExporterFromConfig,
+  type SearchExporterConfig,
+  type SearchIndexExporter,
+} from '@peam-ai/search';

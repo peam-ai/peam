@@ -28,6 +28,5 @@ export default defineConfig([
     clean: true,
     treeshake: true,
     splitting: false,
-    external: ['@peam-ai/parser', '@peam-ai/search', '@peam-ai/server'],
   },
 ]);
