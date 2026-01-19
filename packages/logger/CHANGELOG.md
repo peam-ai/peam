@@ -1,5 +1,11 @@
 # @peam-ai/logger
 
+## 0.1.4
+
+### Patch Changes
+
+- Markdown page content
+
 ## 0.1.3
 
 ### Patch Changes

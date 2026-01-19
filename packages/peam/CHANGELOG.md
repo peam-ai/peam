@@ -1,5 +1,17 @@
 # peam
 
+## 0.1.4
+
+### Patch Changes
+
+- Markdown page content
+- Updated dependencies
+  - @peam-ai/client@0.1.4
+  - @peam-ai/logger@0.1.4
+  - @peam-ai/parser@0.1.4
+  - @peam-ai/search@0.1.4
+  - @peam-ai/server@0.1.4
+
 ## 0.1.3
 
 ### Patch Changes
