@@ -57,12 +57,14 @@ function addAdapter(config: NextConfig): NextConfig {
   };
 }
 
-function addOutputFileTracing(nextConfig: NextConfig, peamConfig: PeamConfig): NextConfig {
-  nextConfig = { ...nextConfig };
+function addOutputFileTracing(nextConfig: NextConfig): NextConfig {
+  const peamConfig = getConfig();
 
   if (peamConfig.searchExporter?.type !== 'fileBased') {
     return nextConfig;
   }
+
+  nextConfig = { ...nextConfig };
 
   const exporterConfig = peamConfig.searchExporter.config;
   const indexDir = path.dirname(exporterConfig.indexPath);
@@ -79,27 +81,27 @@ function addOutputFileTracing(nextConfig: NextConfig, peamConfig: PeamConfig): N
 
     // Add to experimental (for Next.js 14.x)
     const existingExperimentalTracing =
-      nextConfig.experimental &&
-      typeof nextConfig.experimental === 'object' &&
-      'outputFileTracingIncludes' in nextConfig.experimental
+      typeof nextConfig.experimental === 'object' && 'outputFileTracingIncludes' in nextConfig.experimental
         ? nextConfig.experimental.outputFileTracingIncludes
         : undefined;
 
-    if (nextConfig.experimental) {
-      Object.assign(nextConfig.experimental, {
-        outputFileTracingIncludes: {
-          ...(existingExperimentalTracing || {}),
-          ...tracingConfig,
-        },
-      });
+    if (!nextConfig.experimental) {
+      nextConfig.experimental = {};
     }
 
+    Object.assign(nextConfig.experimental, {
+      outputFileTracingIncludes: {
+        ...(existingExperimentalTracing || {}),
+        ...tracingConfig,
+      },
+    });
+
     // Add to root (for Next.js 15+)
-    const existingRootTracing = nextConfig.outputFileTracingIncludes ?? undefined;
+    const existingRootTracing = nextConfig.outputFileTracingIncludes ?? {};
 
     Object.assign(nextConfig, {
       outputFileTracingIncludes: {
-        ...(existingRootTracing || {}),
+        ...existingRootTracing,
         ...tracingConfig,
       },
     });
@@ -107,24 +109,26 @@ function addOutputFileTracing(nextConfig: NextConfig, peamConfig: PeamConfig): N
     // For Next.js 14.x, add outputFileTracingIncludes in experimental
     const existingTracing =
       typeof nextConfig.experimental === 'object' && 'outputFileTracingIncludes' in nextConfig.experimental
-        ? nextConfig.experimental?.outputFileTracingIncludes
+        ? nextConfig.experimental.outputFileTracingIncludes
         : undefined;
 
-    if (nextConfig.experimental) {
-      Object.assign(nextConfig.experimental, {
-        outputFileTracingIncludes: {
-          ...(existingTracing || {}),
-          ...tracingConfig,
-        },
-      });
+    if (!nextConfig.experimental) {
+      nextConfig.experimental = {};
     }
+
+    Object.assign(nextConfig.experimental, {
+      outputFileTracingIncludes: {
+        ...(existingTracing || {}),
+        ...tracingConfig,
+      },
+    });
   } else {
     // For Next.js 15+, add outputFileTracingIncludes at root
-    const existingTracing = nextConfig.outputFileTracingIncludes ?? undefined;
+    const existingTracing = nextConfig.outputFileTracingIncludes ?? {};
 
     Object.assign(nextConfig, {
       outputFileTracingIncludes: {
-        ...(existingTracing || {}),
+        ...existingTracing,
         ...tracingConfig,
       },
     });
@@ -163,7 +167,7 @@ export function withPeam(peamConfig?: PeamConfig) {
 
     let updatedNextConfig: NextConfig = { ...nextConfig };
     updatedNextConfig = addAdapter(updatedNextConfig);
-    updatedNextConfig = addOutputFileTracing(updatedNextConfig, getConfig());
+    updatedNextConfig = addOutputFileTracing(updatedNextConfig);
 
     return updatedNextConfig;
   };
