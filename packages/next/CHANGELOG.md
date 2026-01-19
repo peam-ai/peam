@@ -1,5 +1,11 @@
 # @peam-ai/next
 
+## 0.1.7
+
+### Patch Changes
+
+- Fix tracing assignment
+
 ## 0.1.6
 
 ### Patch Changes
