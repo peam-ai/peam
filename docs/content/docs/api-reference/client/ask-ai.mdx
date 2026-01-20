@@ -1,0 +1,144 @@
+---
+title: AskAI
+description: AI chat component with dialog, sidepane, and inline chat modes
+---
+
+# AskAI
+
+The main AI chat component with multiple display modes.
+
+## Type Definition
+
+```typescript
+export interface AskAIBaseProps {
+  /**
+   * Suggested prompts to display to the user
+   */
+  suggestedPrompts?: string[];
+
+  /**
+   * Maximum number of messages to show
+   * @default 50
+   */
+  maxMessages?: number;
+
+  /**
+   * Custom inline button (for chat mode)
+   */
+  inlineButton?: React.ReactNode;
+
+  /**
+   * Custom trigger button (for dialog/sidepane modes)
+   */
+  button?: React.ReactNode;
+
+  /**
+   * Display mode for the chat interface
+   * - 'chat': Inline chat
+   * - 'dialog': Modal dialog
+   * - 'sidepane': Side panel
+   * @default 'dialog'
+   */
+  type?: 'chat' | 'dialog' | 'sidepane';
+}
+```
+
+## Usage
+
+### Dialog Mode (Default)
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return <AskAI type="dialog" />;
+}
+```
+
+### Sidepane Mode
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return <AskAI type="sidepane" />;
+}
+```
+
+### Inline Chat Mode
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return <AskAI type="chat" />;
+}
+```
+
+### With Custom Button
+
+```tsx
+import { AskAI } from 'peam/client';
+import { Button } from '@/components/ui/button';
+
+export default function Page() {
+  return (
+    <AskAI
+      type="dialog"
+      button={<Button>Ask a Question</Button>}
+    />
+  );
+}
+```
+
+### With Suggested Prompts
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI
+      type="dialog"
+      suggestedPrompts={[
+        "How do I get started?",
+        "What models are supported?",
+        "How do I deploy?"
+      ]}
+    />
+  );
+}
+```
+
+### With Custom Inline Button
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI
+      type="chat"
+      inlineButton={<button>Send Message</button>}
+    />
+  );
+}
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `type` | `'chat' \| 'dialog' \| 'sidepane'` | `'dialog'` | Display mode for the chat interface |
+| `suggestedPrompts` | `string[]` | `undefined` | Suggested prompts to display to the user |
+| `maxMessages` | `number` | `50` | Maximum number of messages to show |
+| `button` | `React.ReactNode` | `undefined` | Custom trigger button (for dialog/sidepane modes) |
+| `inlineButton` | `React.ReactNode` | `undefined` | Custom inline button (for chat mode) |
+
+## Notes
+
+- **Dialog mode** opens the chat in a modal overlay
+- **Sidepane mode** slides the chat in from the side
+- **Chat mode** displays the chat inline on the page
+- Custom buttons allow you to match your app's design system
+- Suggested prompts help guide users with common questions

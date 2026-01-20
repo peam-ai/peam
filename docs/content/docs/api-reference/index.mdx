@@ -1,0 +1,60 @@
+---
+title: API Reference
+description: Complete API reference for Peam
+---
+
+# API Reference
+
+Complete reference documentation for all Peam APIs.
+
+## Client Components
+
+Client-side React components for adding AI chat to your application.
+
+- [**AskAI**](/docs/api-reference/client/ask-ai) - Main component with dialog, sidepane, and chat modes
+- [**AskAIDialog**](/docs/api-reference/client/ask-ai-dialog) - Modal dialog variant
+- [**AskAISidepane**](/docs/api-reference/client/ask-ai-sidepane) - Sidepane variant
+- [**AskAIChat**](/docs/api-reference/client/ask-ai-chat) - Inline chat variant
+
+## Server API
+
+Server-side functions for handling AI requests.
+
+- [**createHandler**](/docs/api-reference/server/create-handler) - Create API route handler
+
+## Next.js Integration
+
+Next.js specific configuration and utilities.
+
+- [**withPeam**](/docs/api-reference/next/with-peam) - Next.js config wrapper
+
+## Quick Reference
+
+### Client Component
+
+```tsx
+import { AskAI } from 'peam/client';
+
+<AskAI type="dialog" />
+```
+
+### Server Handler
+
+```typescript
+import { createHandler } from 'peam/server';
+import { openai } from '@ai-sdk/openai';
+
+export const POST = createHandler({
+  model: openai('gpt-4o'),
+});
+```
+
+### Next.js Integration
+
+```typescript
+import { withPeam } from '@peam-ai/next';
+
+export default withPeam({
+  outputDir: '.peam',
+})(nextConfig);
+```

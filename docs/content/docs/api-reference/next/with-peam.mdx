@@ -1,0 +1,168 @@
+---
+title: withPeam
+description: Next.js configuration wrapper for Peam integration
+---
+
+# withPeam
+
+Wraps your Next.js config to enable Peam content extraction during build. This function configures the necessary adapters and file tracing for Peam to work with your Next.js application.
+
+## Type Definition
+
+```typescript
+export type SearchExporterConfig = 
+  | {
+      type: 'fileBased';
+      config: {
+        /**
+         * Path where the search index will be written
+         * @default '.peam/index.json'
+         */
+        indexPath: string;
+      };
+    }
+  | {
+      type: 'custom';
+      config: Record<string, unknown>;
+    };
+
+export interface PeamConfig {
+  /**
+   * Configuration for how the search index is exported
+   * @default { type: 'fileBased', config: { indexPath: '.peam/index.json' } }
+   */
+  searchExporter?: SearchExporterConfig;
+}
+
+function withPeam(
+  peamConfig?: PeamConfig
+): (nextConfig?: NextConfig) => NextConfig;
+```
+
+## Usage Examples
+
+### Basic Usage
+
+```typescript
+// next.config.ts
+import { withPeam } from '@peam-ai/next';
+
+const nextConfig = {
+  // your Next.js config
+};
+
+export default withPeam()(nextConfig);
+```
+
+### With Custom Index Path
+
+```typescript
+// next.config.ts
+import { withPeam } from '@peam-ai/next';
+
+const nextConfig = {
+  // your Next.js config
+};
+
+export default withPeam({
+  searchExporter: {
+    type: 'fileBased',
+    config: {
+      indexPath: 'public/.peam/index.json',
+    },
+  },
+})(nextConfig);
+```
+
+### CommonJS (JavaScript)
+
+```javascript
+// next.config.js
+const { withPeam } = require('@peam-ai/next');
+
+module.exports = withPeam()({
+  // your Next.js config
+});
+```
+
+### With Existing Next.js Plugins
+
+```typescript
+// next.config.ts
+import { withPeam } from '@peam-ai/next';
+import withBundleAnalyzer from '@next/bundle-analyzer';
+
+const nextConfig = {
+  // your Next.js config
+};
+
+// Compose multiple config wrappers
+export default withPeam()(
+  withBundleAnalyzer({
+    enabled: process.env.ANALYZE === 'true',
+  })(nextConfig)
+);
+```
+
+## Configuration Options
+
+### searchExporter
+
+Controls how the search index is exported during the build process.
+
+#### File-Based Export (Default)
+
+Exports the search index to a file in your project:
+
+```typescript
+{
+  searchExporter: {
+    type: 'fileBased',
+    config: {
+      indexPath: '.peam/index.json', // relative to project root
+    },
+  },
+}
+```
+
+#### Custom Export
+
+For advanced use cases where you want to handle the export yourself:
+
+```typescript
+{
+  searchExporter: {
+    type: 'custom',
+    config: {
+      // your custom configuration
+    },
+  },
+}
+```
+
+## How It Works
+
+The `withPeam` function enhances your Next.js configuration by:
+
+1. **Adding a Build Adapter**: Configures Next.js 16+ adapter to extract content during the build process
+2. **Configuring File Tracing**: Ensures the search index is included in production deployments
+3. **Creating Stub Index**: Generates an empty index file for development if needed
+
+## Requirements
+
+- **Next.js 16+**: The adapter feature requires Next.js 16 or higher
+- For Next.js 14.x and 15.x, you'll need to use the postbuild script approach (see [Getting Started](/docs/getting-started/next))
+
+## Deployment
+
+When deploying to Vercel or other platforms, the `withPeam` configuration ensures that:
+
+- The search index is properly traced and included in the deployment
+- The index is accessible to your API routes at runtime
+- File paths are correctly resolved in serverless environments
+
+## See Also
+
+- [Getting Started with Next.js](/docs/getting-started/next)
+- [createHandler](/docs/api-reference/server/create-handler)
+- [Next.js Configuration](https://nextjs.org/docs/app/api-reference/next-config-js)

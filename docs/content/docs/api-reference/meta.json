@@ -1,0 +1,12 @@
+{
+  "title": "API Reference",
+  "pages": [
+    "index",
+    "---Client Components---",
+    "client/ask-ai",
+    "---Server API---",
+    "server/create-handler",
+    "---Next.js Integration---",
+    "next/with-peam"
+  ]
+}
