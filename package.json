@@ -10,6 +10,7 @@
     "test:lint": "turbo run test:lint",
     "test:prettier": "turbo run test:prettier",
     "test:unit": "turbo run test:unit -- --passWithNoTests",
+    "test:docs": "pnpm --filter @peam-ai/docs-typecheck test:docs",
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "pnpm build && changeset publish",
