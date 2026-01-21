@@ -7,11 +7,10 @@
  * even when moduleDetection is set to "force" (for top-level await support).
  */
 
-import type { NextConfig } from 'next';
-import type * as ReactTypes from 'react';
 import type { PeamConfig } from '@peam-ai/next';
-import type { SearchIndexData } from 'peam/search';
-import type { SearchEngine } from 'peam/search';
+import type { NextConfig } from 'next';
+import type { SearchEngine, SearchIndexData } from 'peam/search';
+import type * as ReactTypes from 'react';
 
 export {};
 

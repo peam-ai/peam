@@ -1,10 +1,5 @@
 import GithubSlugger from 'github-slugger';
-import {
-  type FileObject,
-  printErrors,
-  scanURLs,
-  validateFiles,
-} from 'next-validate-link';
+import { type FileObject, printErrors, scanURLs, validateFiles } from 'next-validate-link';
 import { source } from '../lib/geistdocs/source';
 
 async function checkLinks() {

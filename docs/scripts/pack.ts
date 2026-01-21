@@ -70,8 +70,7 @@ async function main() {
       for (const depName of Object.keys(deps)) {
         if (packageNames.has(depName)) {
           const escapedName = depName.replace(/^@(.+)\//, '$1-');
-          deps[depName] =
-            `https://${process.env.VERCEL_URL}/${escapedName}.tgz`;
+          deps[depName] = `https://${process.env.VERCEL_URL}/${escapedName}.tgz`;
         }
       }
     };
@@ -81,10 +80,7 @@ async function main() {
     updateDeps(modifiedPackageJson.peerDependencies);
 
     // Write modified package.json
-    await fs.writeFile(
-      packageJsonPath,
-      JSON.stringify(modifiedPackageJson, null, 2)
-    );
+    await fs.writeFile(packageJsonPath, JSON.stringify(modifiedPackageJson, null, 2));
 
     try {
       // Pack the package
@@ -96,9 +92,7 @@ async function main() {
     }
   }
 
-  console.log(
-    `\nSuccessfully packed ${packages.length} preview packages to ${outDir}`
-  );
+  console.log(`\nSuccessfully packed ${packages.length} preview packages to ${outDir}`);
 }
 
 async function getSha(): Promise<string> {
