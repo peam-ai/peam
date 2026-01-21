@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo build",
     "build:watch": "turbo watch build",
+    "docs:dev": "pnpm --filter peam-docs dev",
     "format": "turbo run format",
     "clean": "turbo run clean",
     "test": "run-p test:*",
