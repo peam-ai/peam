@@ -9,8 +9,10 @@ Wraps your Next.js config to enable Peam content extraction during build. This f
 
 ## Type Definition
 
+{/* @skip-typecheck: incomplete type definition example */}
+
 ```typescript
-export type SearchExporterConfig = 
+export type SearchExporterConfig =
   | {
       type: 'fileBased';
       config: {
@@ -34,9 +36,7 @@ export interface PeamConfig {
   searchExporter?: SearchExporterConfig;
 }
 
-function withPeam(
-  peamConfig?: PeamConfig
-): (nextConfig?: NextConfig) => NextConfig;
+function withPeam(peamConfig?: PeamConfig): (nextConfig?: NextConfig) => NextConfig;
 ```
 
 ## Usage Examples
@@ -114,6 +114,8 @@ Controls how the search index is exported during the build process.
 
 Exports the search index to a file in your project:
 
+{/* @skip-typecheck: partial config example */}
+
 ```typescript
 {
   searchExporter: {
@@ -128,6 +130,8 @@ Exports the search index to a file in your project:
 #### Custom Export
 
 For advanced use cases where you want to handle the export yourself:
+
+{/* @skip-typecheck: partial config example */}
 
 ```typescript
 {

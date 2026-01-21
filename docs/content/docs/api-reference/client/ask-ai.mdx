@@ -82,12 +82,7 @@ import { AskAI } from 'peam/client';
 import { Button } from '@/components/ui/button';
 
 export default function Page() {
-  return (
-    <AskAI
-      type="dialog"
-      button={<Button>Ask a Question</Button>}
-    />
-  );
+  return <AskAI type="dialog" button={<Button>Ask a Question</Button>} />;
 }
 ```
 
@@ -100,11 +95,7 @@ export default function Page() {
   return (
     <AskAI
       type="dialog"
-      suggestedPrompts={[
-        "How do I get started?",
-        "What models are supported?",
-        "How do I deploy?"
-      ]}
+      suggestedPrompts={['How do I get started?', 'What models are supported?', 'How do I deploy?']}
     />
   );
 }
@@ -116,24 +107,19 @@ export default function Page() {
 import { AskAI } from 'peam/client';
 
 export default function Page() {
-  return (
-    <AskAI
-      type="chat"
-      inlineButton={<button>Send Message</button>}
-    />
-  );
+  return <AskAI type="chat" inlineButton={<button>Send Message</button>} />;
 }
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `type` | `'chat' \| 'dialog' \| 'sidepane'` | `'dialog'` | Display mode for the chat interface |
-| `suggestedPrompts` | `string[]` | `undefined` | Suggested prompts to display to the user |
-| `maxMessages` | `number` | `50` | Maximum number of messages to show |
-| `button` | `React.ReactNode` | `undefined` | Custom trigger button (for dialog/sidepane modes) |
-| `inlineButton` | `React.ReactNode` | `undefined` | Custom inline button (for chat mode) |
+| Prop               | Type                               | Default     | Description                                       |
+| ------------------ | ---------------------------------- | ----------- | ------------------------------------------------- |
+| `type`             | `'chat' \| 'dialog' \| 'sidepane'` | `'dialog'`  | Display mode for the chat interface               |
+| `suggestedPrompts` | `string[]`                         | `undefined` | Suggested prompts to display to the user          |
+| `maxMessages`      | `number`                           | `50`        | Maximum number of messages to show                |
+| `button`           | `React.ReactNode`                  | `undefined` | Custom trigger button (for dialog/sidepane modes) |
+| `inlineButton`     | `React.ReactNode`                  | `undefined` | Custom inline button (for chat mode)              |
 
 ## Notes
 

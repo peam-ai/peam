@@ -1,6 +1,4 @@
 {
   "title": "Next.js",
-  "pages": [
-    "with-peam"
-  ]
+  "pages": ["with-peam"]
 }

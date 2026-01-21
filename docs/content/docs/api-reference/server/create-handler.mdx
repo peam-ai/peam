@@ -9,6 +9,8 @@ Creates a Next.js API route handler that processes AI chat requests with any Ver
 
 ## Type Definition
 
+{/* @skip-typecheck: incomplete type definition example */}
+
 ```typescript
 import type { LanguageModelV1 } from 'ai';
 
@@ -122,10 +124,10 @@ The `createHandler` function works with any model from the [Vercel AI SDK](https
 
 ## Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `model` | `LanguageModelV1` | Yes | AI model from Vercel AI SDK |
-| `searchIndexExporter` | `() => Promise<SearchIndex>` | No | Custom search index provider |
+| Parameter             | Type                         | Required | Description                  |
+| --------------------- | ---------------------------- | -------- | ---------------------------- |
+| `model`               | `LanguageModelV1`            | Yes      | AI model from Vercel AI SDK  |
+| `searchIndexExporter` | `() => Promise<SearchIndex>` | No       | Custom search index provider |
 
 ## Return Value
 

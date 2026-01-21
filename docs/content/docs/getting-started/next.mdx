@@ -28,11 +28,7 @@ In your root layout (`app/layout.tsx`):
 ```tsx
 import { AskAI } from 'peam/client';
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
@@ -81,10 +77,7 @@ For Next.js static export, make sure you have `output: 'export'` in your `next.c
 You can customize the AskAI component appearance and behavior:
 
 ```tsx
-<AskAI 
-  placeholder="Ask anything about our docs..."
-  theme="dark"
-/>
+<AskAI placeholder="Ask anything about our docs..." theme="dark" />
 ```
 
 See the [API Reference](/docs/api-reference) for all available options.

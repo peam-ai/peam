@@ -1,6 +1,4 @@
 {
   "title": "Server",
-  "pages": [
-    "create-handler"
-  ]
+  "pages": ["create-handler"]
 }
