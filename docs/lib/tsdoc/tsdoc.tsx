@@ -1,8 +1,8 @@
+import { Callout } from '@/components/geistdocs/callout';
 import cn from 'clsx';
 import Slugger from 'github-slugger';
 import Link from 'next/link';
 import type { FC, ReactElement, ReactNode } from 'react';
-import { Callout } from '@/components/geistdocs/callout';
 import { generateDefinition } from './base';
 import type { GeneratedFunction, TypeField } from './types';
 
@@ -25,11 +25,7 @@ const classes = {
 export const TSDoc: FC<TSDocProps> = ({
   definition: rawDefinition,
   typeLinkMap = {},
-  noParametersContent = (
-    <p className="text-muted-foreground">
-      This function does not accept any parameters.
-    </p>
-  ),
+  noParametersContent = <p className="text-muted-foreground">This function does not accept any parameters.</p>,
   showSections = ['parameters', 'returns'],
 }) => {
   const definition = generateDefinition({
@@ -39,9 +35,7 @@ export const TSDoc: FC<TSDocProps> = ({
   const showReturns = showSections.includes('returns');
   const showThrows = showSections.includes('throws');
   if ('entries' in definition) {
-    return (
-      <FieldsTable fields={definition.entries} typeLinkMap={typeLinkMap} />
-    );
+    return <FieldsTable fields={definition.entries} typeLinkMap={typeLinkMap} />;
   }
 
   const { signatures } = definition;
@@ -87,11 +81,7 @@ function FunctionSignature({
   showParameters = true,
   showReturns = true,
   showThrows = true,
-  noParametersContent = (
-    <p className="text-muted-foreground">
-      This function does not accept any parameters.
-    </p>
-  ),
+  noParametersContent = <p className="text-muted-foreground">This function does not accept any parameters.</p>,
   typeLinkMap = {},
 }: {
   signature: GeneratedFunction['signatures'][number];
@@ -135,9 +125,7 @@ function FunctionSignature({
                       <Row key={id} id={id}>
                         <NameCell optional={prop.optional} name={prop.name} />
                         <TypeCell type={prop.type} typeLinkMap={typeLinkMap} />
-                        <td className="p-3 table-cell break-words">
-                          {linkify(prop.description || '', typeLinkMap)}
-                        </td>
+                        <td className="p-3 table-cell break-words">{linkify(prop.description || '', typeLinkMap)}</td>
                       </Row>
                     );
                   })}
@@ -147,10 +135,7 @@ function FunctionSignature({
           ) : (
             <div
               id={unnamedReturnId}
-              className={cn(
-                classes.card,
-                'text-sm relative p-3 border before:content-["Type:_"]'
-              )}
+              className={cn(classes.card, 'text-sm relative p-3 border before:content-["Type:_"]')}
             >
               <code className="bg-muted px-1.5 py-0.5 rounded text-sm">
                 {linkify(signature.returns.type, typeLinkMap)}
@@ -196,9 +181,7 @@ function FunctionSignature({
               </tbody>
             </table>
           ) : (
-            <p className="text-muted-foreground">
-              This function does not throw any errors.
-            </p>
+            <p className="text-muted-foreground">This function does not throw any errors.</p>
           )}
         </div>
       )}
@@ -211,10 +194,7 @@ const Row: FC<{
   id: string;
 }> = ({ children, id }) => {
   return (
-    <tr
-      id={id}
-      className={cn(classes.card, 'group mb-2 table-row not-last:border-b')}
-    >
+    <tr id={id} className={cn(classes.card, 'group mb-2 table-row not-last:border-b')}>
       {children}
     </tr>
   );
@@ -244,9 +224,7 @@ const TypeCell: FC<{
   type: string;
   typeLinkMap: TSDocProps['typeLinkMap'];
 }> = ({ type, typeLinkMap }) => {
-  return (
-    <td className="p-3 table-cell break-words">{linkify(type, typeLinkMap)}</td>
-  );
+  return <td className="p-3 table-cell break-words">{linkify(type, typeLinkMap)}</td>;
 };
 
 const FieldsTable: FC<{
@@ -296,10 +274,7 @@ const FieldsTable: FC<{
   );
 };
 
-function linkify(
-  text: string,
-  typeLinkMap: TSDocProps['typeLinkMap'] = {}
-): ReactNode {
+function linkify(text: string, typeLinkMap: TSDocProps['typeLinkMap'] = {}): ReactNode {
   // Combined regex to match markdown links and inline code
   const markdownRegex = /(\[([^\]]+)\]\(([^)]+)\))|(`([^`]+)`)/g;
 
@@ -355,10 +330,7 @@ function linkify(
       // It's inline code: `code`
       const codeText = match[5];
       parts.push(
-        <code
-          key={parts.length}
-          className="bg-muted px-1 py-0.5 rounded text-xs"
-        >
+        <code key={parts.length} className="bg-muted px-1 py-0.5 rounded text-xs">
           {codeText}
         </code>
       );
@@ -379,9 +351,7 @@ function linkify(
     const chunks = text.match(/(\w+|\W+)/g) || [];
 
     for (const chunk of chunks) {
-      const href = Object.hasOwn(typeLinkMap, chunk)
-        ? typeLinkMap[chunk]
-        : undefined;
+      const href = Object.hasOwn(typeLinkMap, chunk) ? typeLinkMap[chunk] : undefined;
       if (href) {
         result.push(
           <Link key={result.length} href={href} className="text-primary-blue">
@@ -408,16 +378,10 @@ function linkify(
     const processedChunks: (string | ReactElement)[] = [];
 
     for (const chunk of chunks) {
-      const href = Object.hasOwn(typeLinkMap, chunk)
-        ? typeLinkMap[chunk]
-        : undefined;
+      const href = Object.hasOwn(typeLinkMap, chunk) ? typeLinkMap[chunk] : undefined;
       if (href) {
         processedChunks.push(
-          <Link
-            key={`${index}-${processedChunks.length}`}
-            href={href}
-            className="text-primary-blue hover:underline"
-          >
+          <Link key={`${index}-${processedChunks.length}`} href={href} className="text-primary-blue hover:underline">
             <code>{chunk}</code>
           </Link>
         );

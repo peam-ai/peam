@@ -1,19 +1,7 @@
 import path from 'node:path';
-import type {
-  ExportedDeclarations,
-  Node as TsNode,
-  Symbol as TsSymbol,
-  Type,
-} from 'ts-morph';
+import type { ExportedDeclarations, Node as TsNode, Symbol as TsSymbol, Type } from 'ts-morph';
 import { Project, SyntaxKind, ts } from 'ts-morph';
-import type {
-  BaseArgs,
-  GeneratedDefinition,
-  GeneratedFunction,
-  GeneratedType,
-  Tags,
-  TypeField,
-} from './types';
+import type { BaseArgs, GeneratedDefinition, GeneratedFunction, GeneratedType, Tags, TypeField } from './types';
 
 const DEFAULT_FILENAME = '$.ts';
 
@@ -33,13 +21,7 @@ const project = new Project({
   },
 });
 
-const IGNORED_TYPES = new Set([
-  'Date',
-  'RegExp',
-  'ReactElement',
-  'Element',
-  'CSSProperties',
-]);
+const IGNORED_TYPES = new Set(['Date', 'RegExp', 'ReactElement', 'Element', 'CSSProperties']);
 
 let compilerObject: ts.TypeChecker;
 
@@ -59,9 +41,7 @@ function findExportDeclaration(
   if (!declaration) {
     // Try to handle re-exports by looking for the actual function
     const exportAssignments = sourceFile.getExportAssignments();
-    const defaultExport = exportAssignments.find(
-      (exp) => exp.isExportEquals() === false
-    );
+    const defaultExport = exportAssignments.find((exp) => exp.isExportEquals() === false);
 
     if (defaultExport && exportName === 'default') {
       const expression = defaultExport.getExpression();
@@ -155,9 +135,7 @@ export function generateDefinition({
           'Your type is resolved as "any", it seems like you have an issue in "generateDefinition.code" argument.'
         );
       }
-      throw new Error(
-        `No properties found, check if your type "${typeName}" exist.`
-      );
+      throw new Error(`No properties found, check if your type "${typeName}" exist.`);
     }
 
     return {
@@ -178,13 +156,7 @@ export function generateDefinition({
           ? signatureDecl
               .getJsDocs()
               .flatMap((jsDoc: any) =>
-                jsDoc
-                  .getTags()
-                  .filter(
-                    (tag: any) =>
-                      tag.getTagName() === 'param' ||
-                      tag.getTagName() === 'throws'
-                  )
+                jsDoc.getTags().filter((tag: any) => tag.getTagName() === 'param' || tag.getTagName() === 'throws')
               )
           : [];
 
@@ -205,9 +177,7 @@ export function generateDefinition({
         if (paramTag && !Array.isArray(baseEntry)) {
           let tagText = paramTag.getText();
           tagText = tagText.replace(/^\s*\*\s*/, '');
-          const match = tagText.match(
-            new RegExp(`${paramName}\\s*-\\s*(.+?)(?:\\s*\\*)?$`, 's')
-          );
+          const match = tagText.match(new RegExp(`${paramName}\\s*-\\s*(.+?)(?:\\s*\\*)?$`, 's'));
           if (match) {
             baseEntry.description = replaceJsDocLinks(
               match[1]
@@ -221,10 +191,7 @@ export function generateDefinition({
         return baseEntry;
       });
 
-      const returnType = signature
-        .getDeclaration()
-        .getSignature()
-        .getReturnType();
+      const returnType = signature.getDeclaration().getSignature().getReturnType();
 
       let flattenedReturnType: GeneratedFunction['signatures'][number]['returns'] =
         flattened && shouldFlattenType(returnType)
@@ -266,8 +233,7 @@ function getCommentAndTags(declaration: ExportedDeclarations): {
     const aliasSymbol = declaration.getType().getAliasSymbol();
     if (aliasSymbol) {
       return {
-        comment:
-          aliasSymbol.compilerSymbol.getDocumentationComment(compilerObject),
+        comment: aliasSymbol.compilerSymbol.getDocumentationComment(compilerObject),
         tags: getTags(aliasSymbol),
       };
     }
@@ -293,22 +259,15 @@ function getDocEntry({
   flattened: boolean;
   prefix?: string;
 }): TypeField | TypeField[] {
-  const originalSubType = project
-    .getTypeChecker()
-    .getTypeOfSymbolAtLocation(symbol, declaration);
+  const originalSubType = project.getTypeChecker().getTypeOfSymbolAtLocation(symbol, declaration);
   const valueDeclaration = symbol.getValueDeclaration();
-  const isFunctionParameter =
-    valueDeclaration && valueDeclaration.getKind() === SyntaxKind.Parameter;
+  const isFunctionParameter = valueDeclaration && valueDeclaration.getKind() === SyntaxKind.Parameter;
 
-  const subType = isFunctionParameter
-    ? originalSubType.getNonNullableType()
-    : originalSubType;
+  const subType = isFunctionParameter ? originalSubType.getNonNullableType() : originalSubType;
 
   if (flattened && shouldFlattenType(subType)) {
     return subType.getProperties().flatMap((childProp) => {
-      const childPrefix = isFunctionParameter
-        ? symbol.getName().replace(/^_+/, '')
-        : symbol.getName();
+      const childPrefix = isFunctionParameter ? symbol.getName().replace(/^_+/, '') : symbol.getName();
       const newPrefix =
         typeof +childPrefix === 'number' && !Number.isNaN(+childPrefix)
           ? `[${childPrefix}] ${originalSubType.isNullable() ? '?' : ''}`
@@ -325,9 +284,7 @@ function getDocEntry({
   const tags = getTags(symbol);
   const name = symbol.getName();
   const typeDescription = replaceJsDocLinks(
-    ts.displayPartsToString(
-      symbol.compilerSymbol.getDocumentationComment(compilerObject)
-    )
+    ts.displayPartsToString(symbol.compilerSymbol.getDocumentationComment(compilerObject))
   ).replace(/^- /, '');
 
   const isOptional = isFunctionParameter
@@ -364,10 +321,7 @@ function getTypeName({
   const aliasSymbol = subType.getAliasSymbol();
   const subTypeTags = aliasSymbol ? getTags(aliasSymbol) : {};
   const remarksValue = tags.remarks || subTypeTags.remarks;
-  const typeName =
-    typeof remarksValue === 'string'
-      ? remarksValue.match(/^`(?<name>.+)`/)?.groups?.name
-      : undefined;
+  const typeName = typeof remarksValue === 'string' ? remarksValue.match(/^`(?<name>.+)`/)?.groups?.name : undefined;
 
   if (typeName) {
     return typeName;
@@ -375,19 +329,12 @@ function getTypeName({
 
   const declarationNode = symbol
     .getDeclarations()
-    .find(
-      (d) =>
-        ts.isPropertySignature(d.compilerNode) || ts.isParameter(d.compilerNode)
-    );
+    .find((d) => ts.isPropertySignature(d.compilerNode) || ts.isParameter(d.compilerNode));
   const typeNode =
-    declarationNode?.asKind(SyntaxKind.PropertySignature) ??
-    declarationNode?.asKind(SyntaxKind.Parameter);
+    declarationNode?.asKind(SyntaxKind.PropertySignature) ?? declarationNode?.asKind(SyntaxKind.Parameter);
   const t = typeNode?.getTypeNode()?.getText();
 
-  const useTypeNode =
-    t &&
-    (t.startsWith('Partial<') ||
-      ['React.ReactNode', 'React.ReactElement'].includes(t));
+  const useTypeNode = t && (t.startsWith('Partial<') || ['React.ReactNode', 'React.ReactElement'].includes(t));
 
   if (useTypeNode) {
     return t;
@@ -406,9 +353,7 @@ function getTypeName({
   if (isFunction) {
     const params = signature.getParameters().map((param) => {
       const paramDecl = param.getDeclarations()[0]!;
-      const paramType = project
-        .getTypeChecker()
-        .getTypeOfSymbolAtLocation(param, paramDecl);
+      const paramType = project.getTypeChecker().getTypeOfSymbolAtLocation(param, paramDecl);
       const inlineParamAlias = paramType.getNonNullableType().getAliasSymbol();
       const paramTags = inlineParamAlias && getTags(inlineParamAlias);
 
@@ -420,9 +365,7 @@ function getTypeName({
               .getTypeNodeOrThrow()
               .getText()
           : getFormattedText(paramType);
-      const optional = paramDecl
-        .asKindOrThrow(SyntaxKind.Parameter)
-        .isOptional();
+      const optional = paramDecl.asKindOrThrow(SyntaxKind.Parameter).isOptional();
 
       return `${param.getName()}${optional ? '?' : ''}: ${paramTypeStr}`;
     });
@@ -434,9 +377,7 @@ function getTypeName({
   if (!aliasDecl) {
     throw new Error("Can't find alias declaration for type.");
   }
-  const inlineNode = aliasDecl
-    .asKindOrThrow(SyntaxKind.TypeAliasDeclaration)
-    .getTypeNodeOrThrow();
+  const inlineNode = aliasDecl.asKindOrThrow(SyntaxKind.TypeAliasDeclaration).getTypeNodeOrThrow();
   return inlineNode.getText();
 }
 
@@ -492,10 +433,7 @@ function getTags(prop: TsSymbol): Tags {
 }
 
 function getFormattedText(t: Type): string {
-  return t.getText(
-    undefined,
-    ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope
-  );
+  return t.getText(undefined, ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope);
 }
 
 function replaceJsDocLinks(md: string): string {

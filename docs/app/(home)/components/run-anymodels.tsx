@@ -1,6 +1,6 @@
-import type { ComponentProps } from 'react';
 import { CodeBlock } from '@/app/(home)/components/code-block';
 import { cn } from '@/lib/utils';
+import type { ComponentProps } from 'react';
 
 const OpenAI = (props: ComponentProps<'svg'>) => (
   <svg
@@ -77,9 +77,7 @@ export const POST = createHandler({
 export const RunAnyModels = () => (
   <div className="px-4 py-8 sm:py-12 sm:px-12 grid gap-10 items-center overflow-hidden">
     <div className="grid gap-4 max-w-lg text-center mx-auto">
-      <h2 className="font-semibold text-xl tracking-tight sm:text-2xl md:text-3xl lg:text-[40px]">
-        Use any AI model
-      </h2>
+      <h2 className="font-semibold text-xl tracking-tight sm:text-2xl md:text-3xl lg:text-[40px]">Use any AI model</h2>
       <p className="text-balance text-lg text-muted-foreground">
         Connect to any AI provider - OpenAI, Anthropic, Google, Mistral, and more. No vendor lock-in.
       </p>
@@ -90,9 +88,7 @@ export const RunAnyModels = () => (
           <div
             className={cn(
               'aspect-[244/189] flex items-center justify-center h-[180px] border rounded-md',
-              index
-                ? 'bg-gradient-to-r from-background/30 to-transparent'
-                : 'bg-background/30'
+              index ? 'bg-gradient-to-r from-background/30 to-transparent' : 'bg-background/30'
             )}
             key={index}
           >
@@ -105,8 +101,7 @@ export const RunAnyModels = () => (
           lang="tsx"
           code={code}
           codeblock={{
-            className:
-              'bg-background text-md max-w-lg rounded-md w-full mx-auto',
+            className: 'bg-background text-md max-w-lg rounded-md w-full mx-auto',
           }}
         />
       </div>
@@ -115,9 +110,7 @@ export const RunAnyModels = () => (
           <div
             className={cn(
               'aspect-[244/189] flex items-center justify-center h-[180px] border rounded-md',
-              index
-                ? 'bg-background/30'
-                : 'bg-gradient-to-l from-background/30 to-transparent'
+              index ? 'bg-background/30' : 'bg-gradient-to-l from-background/30 to-transparent'
             )}
             key={index}
           >

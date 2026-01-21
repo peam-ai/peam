@@ -1,5 +1,5 @@
-import { codeToHtml } from 'shiki';
 import { cn } from '@/lib/utils';
+import { codeToHtml } from 'shiki';
 
 type CodeBlockProps = {
   code: string;
@@ -21,10 +21,7 @@ export const CodeBlock = async ({ code, lang, codeblock }: CodeBlockProps) => {
 
   return (
     <div
-      className={cn(
-        'overflow-auto text-sm py-6 border [&_pre]:!bg-transparent',
-        codeblock?.className
-      )}
+      className={cn('overflow-auto text-sm py-6 border [&_pre]:!bg-transparent', codeblock?.className)}
       // biome-ignore lint/security/noDangerouslySetInnerHtml: Shiki generates safe HTML
       dangerouslySetInnerHTML={{ __html: html }}
     />

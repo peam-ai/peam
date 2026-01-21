@@ -1,12 +1,12 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { track } from '@vercel/analytics';
 import { CheckIcon, CopyIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 
 type HeroProps = {
   title: string;
@@ -25,10 +25,7 @@ export const Hero = ({ title, description }: HeroProps) => {
         setCopied(false);
       }, 2000);
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : 'Failed to copy text to clipboard';
+      const message = error instanceof Error ? error.message : 'Failed to copy text to clipboard';
 
       toast.error(message);
     }
@@ -39,13 +36,16 @@ export const Hero = ({ title, description }: HeroProps) => {
   return (
     <section className="mt-[var(--fd-nav-height)] space-y-6 px-4 pt-16 sm:pt-24 pb-16 text-center">
       <div className="mx-auto w-full max-w-4xl space-y-5">
-        <Link 
-          href="https://github.com/peam-ai/peam" 
-          target="_blank" 
+        <Link
+          href="https://github.com/peam-ai/peam"
+          target="_blank"
           rel="noopener noreferrer"
           className="inline-block hover:opacity-80 transition-opacity"
         >
-          <Badge variant="secondary" className="rounded-full hover:border-foreground/30 focus:border-foreground/30 active:border-foreground/30 transition-colors">
+          <Badge
+            variant="secondary"
+            className="rounded-full hover:border-foreground/30 focus:border-foreground/30 active:border-foreground/30 transition-colors"
+          >
             <div className="size-2 rounded-full bg-muted-foreground" />
             <p>Peam is in beta</p>
           </Badge>
@@ -54,7 +54,8 @@ export const Hero = ({ title, description }: HeroProps) => {
           {title}
         </h1>
         <p className="text-balance max-w-3xl mx-auto text-muted-foreground sm:text-xl leading-relaxed">
-          Add intelligent AI search and chat to your website with Peam. Simple installation, powerful features, and seamless integration with your existing content.
+          Add intelligent AI search and chat to your website with Peam. Simple installation, powerful features, and
+          seamless integration with your existing content.
         </p>
       </div>
       <div className="inline-flex w-fit mx-auto items-center gap-3">

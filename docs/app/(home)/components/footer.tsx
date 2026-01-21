@@ -7,22 +7,19 @@ export const Footer = () => (
         © {new Date().getFullYear()} Peam. Open source under Apache-2.0.
       </div>
       <div className="flex flex-wrap gap-6 text-sm">
-        <Link 
-          href="/docs" 
-          className="text-muted-foreground hover:text-foreground transition-colors"
-        >
+        <Link href="/docs" className="text-muted-foreground hover:text-foreground transition-colors">
           Documentation
         </Link>
-        <Link 
-          href="https://github.com/peam-ai/peam" 
+        <Link
+          href="https://github.com/peam-ai/peam"
           target="_blank"
           rel="noopener noreferrer"
           className="text-muted-foreground hover:text-foreground transition-colors"
         >
           GitHub
         </Link>
-        <Link 
-          href="https://github.com/peam-ai/peam/issues" 
+        <Link
+          href="https://github.com/peam-ai/peam/issues"
           target="_blank"
           rel="noopener noreferrer"
           className="text-muted-foreground hover:text-foreground transition-colors"

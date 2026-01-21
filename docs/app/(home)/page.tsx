@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
+import { ConversationSummary } from './components/conversation-summary';
 import { CTA } from './components/cta';
+import { DataPrivacy } from './components/data-privacy';
+import { DialogShowcase } from './components/dialog-showcase';
 import { Footer } from './components/footer';
+import { Frameworks } from './components/frameworks';
 import { Hero } from './components/hero';
 import { OpenSource } from './components/open-source';
-import { DataPrivacy } from './components/data-privacy';
-import { Frameworks } from './components/frameworks';
 import { RunAnyModels } from './components/run-anymodels';
-import { DialogShowcase } from './components/dialog-showcase';
 import { SemanticSearch } from './components/semantic-search';
-import { ConversationSummary } from './components/conversation-summary';
 
 const title = 'AI that knows your website';
 const description =
@@ -43,7 +43,7 @@ const Home = () => (
         </div>
       </div>
     </div>
-    <div className="pt-16 sm:pt-24"> 
+    <div className="pt-16 sm:pt-24">
       <Footer />
     </div>
   </div>

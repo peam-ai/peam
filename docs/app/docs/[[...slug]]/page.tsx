@@ -1,7 +1,3 @@
-import { Step, Steps } from 'fumadocs-ui/components/steps';
-import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
-import { createRelativeLink } from 'fumadocs-ui/mdx';
-import { notFound } from 'next/navigation';
 import { CopyPage } from '@/components/geistdocs/copy-page';
 import {
   DocsBody,
@@ -17,6 +13,10 @@ import { ScrollTop } from '@/components/geistdocs/scroll-top';
 import { TableOfContents } from '@/components/geistdocs/toc';
 import * as AccordionComponents from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { createRelativeLink } from 'fumadocs-ui/mdx';
+import { notFound } from 'next/navigation';
 
 import { getLLMText, source } from '@/lib/geistdocs/source';
 import { TSDoc } from '@/lib/tsdoc';
@@ -71,9 +71,7 @@ const Page = async (props: PageProps<'/docs/[[...slug]]'>) => {
 
 export const generateStaticParams = generateStaticPageParams;
 
-export const generateMetadata = async (
-  props: PageProps<'/docs/[[...slug]]'>
-) => {
+export const generateMetadata = async (props: PageProps<'/docs/[[...slug]]'>) => {
   const params = await props.params;
 
   return generatePageMetadata(params.slug);

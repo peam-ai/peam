@@ -1,9 +1,9 @@
-import './global.css';
-import type { Metadata } from 'next';
 import { Navbar } from '@/components/geistdocs/navbar';
 import { GeistdocsProvider } from '@/components/geistdocs/provider';
 import { mono, sans } from '@/lib/geistdocs/fonts';
 import { cn } from '@/lib/utils';
+import type { Metadata } from 'next';
+import './global.css';
 
 const Logo = () => (
   <span className="flex items-center gap-1.5 font-semibold text-foreground tracking-tight text-xl">
@@ -23,11 +23,7 @@ const links = [
 ];
 
 const Layout = ({ children }: LayoutProps<'/'>) => (
-  <html
-    className={cn(sans.variable, mono.variable, 'scroll-smooth antialiased')}
-    lang="en"
-    suppressHydrationWarning
-  >
+  <html className={cn(sans.variable, mono.variable, 'scroll-smooth antialiased')} lang="en" suppressHydrationWarning>
     <body>
       <GeistdocsProvider>
         <Navbar items={links}>
