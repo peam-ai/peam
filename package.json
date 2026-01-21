@@ -4,11 +4,11 @@
   "scripts": {
     "build": "turbo build",
     "build:watch": "turbo watch build",
-    "prettier": "turbo run prettier",
+    "format": "turbo run format",
     "clean": "turbo run clean",
     "test": "run-p test:*",
     "test:lint": "turbo run test:lint",
-    "test:prettier": "turbo run test:prettier",
+    "test:format": "turbo run test:format",
     "test:unit": "turbo run test:unit -- --passWithNoTests",
     "test:docs": "pnpm --filter @peam-ai/docs-typecheck test:docs",
     "changeset": "changeset",

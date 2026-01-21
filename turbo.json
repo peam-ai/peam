@@ -8,17 +8,17 @@
     "clean": {
       "cache": false
     },
-    "prettier": {
-      "cache": false
-    },
     "test:lint": {
       "cache": false
     },
-    "test:prettier": {
+    "test:unit": {
       "cache": false
     },
-    "test:unit": {
-      "dependsOn": ["^build", "build"]
+    "test:format": {
+      "cache": false
+    },
+    "format": {
+      "cache": false
     }
   }
 }

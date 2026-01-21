@@ -19,10 +19,10 @@
   "scripts": {
     "build": "tsup",
     "clean": "rm -rf dist",
-    "prettier": "prettier --write \"src/**/*.ts*\"",
+    "format": "prettier --write \"src/**/*.ts*\"",
     "test:unit": "vitest run",
     "test:lint": "eslint \"src/**/*.ts*\"",
-    "test:prettier": "prettier --check \"src/**/*.ts*\""
+    "test:format": "prettier --check \"src/**/*.ts*\""
   },
   "files": [
     "dist/**/*"
