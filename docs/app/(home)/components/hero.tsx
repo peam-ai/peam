@@ -44,11 +44,11 @@ export const Hero = ({ title, description: _description }: HeroProps) => {
           className="inline-block hover:opacity-80 transition-opacity"
         >
           <Badge
-            variant="secondary"
+            variant="outline"
             className="rounded-full hover:border-foreground/30 focus:border-foreground/30 active:border-foreground/30 transition-colors"
           >
-            <div className="size-2 rounded-full bg-muted-foreground" />
-            <p>Peam is in beta</p>
+            <div className="size-2 rounded-full bg-primary" />
+            <p>Star us on GitHub</p>
           </Badge>
         </Link>
         <h1 className="text-center font-semibold text-4xl leading-[1.1] tracking-tight lg:font-semibold sm:text-5xl! xl:text-6xl! text-balance">
