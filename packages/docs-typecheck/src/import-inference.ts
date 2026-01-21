@@ -180,6 +180,7 @@ function generateImports(missingSymbols: Map<string, ImportMapping>): string[] {
       byModule.set(mapping.module, { values: new Set(), types: new Set(), aliases: [] });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const group = byModule.get(mapping.module)!;
 
     if (mapping.importAs) {

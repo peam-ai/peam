@@ -1,13 +1,17 @@
 /**
  * Global type declarations for documentation code samples.
- * These provide liberal types for placeholder functions and variables
+ * These provide types for placeholder functions and variables
  * commonly used in documentation examples.
  *
  * Wrapped in `declare global` to ensure these are available globally
  * even when moduleDetection is set to "force" (for top-level await support).
  */
 
+import type { NextConfig } from 'next';
 import type * as ReactTypes from 'react';
+import type { PeamConfig } from '@peam-ai/next';
+import type { SearchIndexData } from 'peam/search';
+import type { SearchEngine } from 'peam/search';
 
 export {};
 
@@ -21,36 +25,27 @@ declare global {
     export import PropsWithChildren = ReactTypes.PropsWithChildren;
   }
 
-  // Placeholder functions - all accept any args and return Promise<any>
-  function fetchData(...args: any[]): Promise<any>;
-  function fetchUser(...args: any[]): Promise<any>;
-  function saveData(...args: any[]): Promise<any>;
-  function processItem(...args: any[]): Promise<any>;
-  function handleRequest(...args: any[]): Promise<any>;
-  function sendEmail(...args: any[]): Promise<any>;
-  function transform(...args: any[]): any;
-
-  // Placeholder types
+  // Placeholder types - using proper types from internal packages
   type User = {
     id: string;
     name: string;
-    [key: string]: any;
+    email?: string;
+    [key: string]: unknown;
   };
 
   type Message = {
     id: string;
     content: string;
-    [key: string]: any;
+    role?: 'user' | 'assistant' | 'system';
+    [key: string]: unknown;
   };
 
-  // Next.js types
-  type NextConfig = Record<string, any>;
+  // Search index type from internal package
+  type SearchIndex = SearchIndexData;
 
-  // Search index type
-  type SearchIndex = Record<string, any>;
-
-  // Search engine placeholder
-  const mySearchEngine: any;
-  const myCustomSearchIndex: any;
-  const nextConfig: any;
+  // Search engine placeholder - properly typed
+  const mySearchEngine: SearchEngine;
+  const myCustomSearchIndex: SearchIndexData;
+  const nextConfig: NextConfig;
+  const peamConfig: PeamConfig;
 }

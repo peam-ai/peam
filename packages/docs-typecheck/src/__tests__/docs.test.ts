@@ -73,12 +73,14 @@ for (const relativeFile of allDocFiles) {
 }
 
 // Batch type check ALL samples in a single TypeScript program
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const batchResults: Map<ProcessedCodeSample, TypeCheckResult> = typeCheckBatch(allSamples.map((s) => s.processed!));
 
 // Create a lookup for results
 const resultsByKey = new Map<string, TypeCheckResult>();
 for (const info of allSamples) {
   const key = `${info.relativeFile}:${info.sample.lineNumber}`;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const result = batchResults.get(info.processed!);
   if (result) {
     resultsByKey.set(key, result);
