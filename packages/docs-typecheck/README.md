@@ -39,12 +39,15 @@ Add a comment before the code block (invisible in rendered docs):
 
 **For MDX files** (use JSX comment syntax):
 
-```markdown
-{/* @skip-typecheck: reason */}
+````markdown
+{/_ @skip-typecheck: reason _/}
+
 ```typescript
 // This code will not be type-checked
 ```
-```
+````
+
+````
 
 **For Markdown files** (use HTML comment syntax):
 
@@ -52,8 +55,9 @@ Add a comment before the code block (invisible in rendered docs):
 <!-- @skip-typecheck: reason -->
 ```typescript
 // This code will not be type-checked
-```
-```
+````
+
+````
 
 ### Expect specific errors
 
@@ -63,8 +67,9 @@ For code samples that intentionally show errors:
 <!-- @expect-error:2304,2307 -->
 ```typescript
 // This code expects TS2304 and TS2307 errors
-```
-```
+````
+
+````
 
 ## How it works
 
@@ -82,7 +87,7 @@ const SYMBOL_IMPORTS: Record<string, ImportMapping> = {
   MyNewSymbol: { module: 'peam/client' },
   MyType: { module: 'peam/server', isType: true }, // For type-only imports
 };
-```
+````
 
 ## Adding placeholder types
 

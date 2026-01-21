@@ -2,11 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
-import type {
-  ProcessedCodeSample,
-  TypeCheckDiagnostic,
-  TypeCheckResult,
-} from './types.js';
+import type { ProcessedCodeSample, TypeCheckDiagnostic, TypeCheckResult } from './types.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -45,15 +41,10 @@ const compilerOptions: ts.CompilerOptions = {
   jsx: ts.JsxEmit.ReactJSX,
   jsxImportSource: 'react',
   types: ['node'],
-  typeRoots: [
-    path.join(__dirname, '../node_modules/@types'),
-    path.join(repoRoot, 'node_modules/@types'),
-  ],
+  typeRoots: [path.join(__dirname, '../node_modules/@types'), path.join(repoRoot, 'node_modules/@types')],
   baseUrl: repoRoot,
   paths: {
-    'react/jsx-runtime': [
-      path.join(__dirname, '../node_modules/react/jsx-runtime'),
-    ],
+    'react/jsx-runtime': [path.join(__dirname, '../node_modules/react/jsx-runtime')],
     react: [path.join(__dirname, '../node_modules/react')],
   },
 };
@@ -107,11 +98,7 @@ function createBatchProgram(samples: ProcessedCodeSample[]): {
     getCurrentDirectory: () => repoRoot,
   };
 
-  const program = ts.createProgram(
-    [globalsPath, ...samplePaths.keys()],
-    compilerOptions,
-    host
-  );
+  const program = ts.createProgram([globalsPath, ...samplePaths.keys()], compilerOptions, host);
 
   return { program, samplePaths };
 }
@@ -120,9 +107,7 @@ function createBatchProgram(samples: ProcessedCodeSample[]): {
  * Type-checks multiple code samples in a single TypeScript program.
  * Much more efficient than checking each sample individually.
  */
-export function typeCheckBatch(
-  samples: ProcessedCodeSample[]
-): Map<ProcessedCodeSample, TypeCheckResult> {
+export function typeCheckBatch(samples: ProcessedCodeSample[]): Map<ProcessedCodeSample, TypeCheckResult> {
   const results = new Map<ProcessedCodeSample, TypeCheckResult>();
 
   if (samples.length === 0) {
@@ -133,8 +118,7 @@ export function typeCheckBatch(
 
   for (const [virtualPath, sample] of samplePaths) {
     const sourceFile = program.getSourceFile(virtualPath);
-    const importLineCount =
-      sample.addedImports.length > 0 ? sample.addedImports.length + 1 : 0;
+    const importLineCount = sample.addedImports.length > 0 ? sample.addedImports.length + 1 : 0;
 
     if (!sourceFile) {
       results.set(sample, {
@@ -161,9 +145,7 @@ export function typeCheckBatch(
       (d) => !IGNORED_ERROR_CODES.has(d.code) && !expectedErrorSet.has(d.code)
     );
 
-    const diagnostics = relevantDiagnostics.map((d) =>
-      convertDiagnostic(d, importLineCount)
-    );
+    const diagnostics = relevantDiagnostics.map((d) => convertDiagnostic(d, importLineCount));
 
     results.set(sample, {
       success: diagnostics.length === 0,
@@ -178,10 +160,7 @@ export function typeCheckBatch(
 /**
  * Converts a TypeScript diagnostic to our format
  */
-function convertDiagnostic(
-  diagnostic: ts.Diagnostic,
-  offset: number
-): TypeCheckDiagnostic {
+function convertDiagnostic(diagnostic: ts.Diagnostic, offset: number): TypeCheckDiagnostic {
   const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
 
   let line = 1;

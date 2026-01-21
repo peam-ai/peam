@@ -1,16 +1,12 @@
+import { globSync } from 'glob';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { globSync } from 'glob';
 import { describe, expect, it } from 'vitest';
 import { extractCodeSamples } from '../extractor.js';
 import { addInferredImports } from '../import-inference.js';
 import { formatResult, typeCheckBatch } from '../type-checker.js';
-import type {
-  CodeSample,
-  ProcessedCodeSample,
-  TypeCheckResult,
-} from '../types.js';
+import type { CodeSample, ProcessedCodeSample, TypeCheckResult } from '../types.js';
 
 // Resolve paths relative to repository root
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -34,9 +30,7 @@ let allDocFiles = docsFiles.map((f) => path.relative(repoRoot, f));
 // Apply filter if DOCS_FILE is set
 if (docsFileFilter) {
   const filters = docsFileFilter.split(',').map((f) => f.trim());
-  allDocFiles = allDocFiles.filter((file) =>
-    filters.some((filter) => file.includes(filter))
-  );
+  allDocFiles = allDocFiles.filter((file) => filters.some((filter) => file.includes(filter)));
   console.log(`Filtering to files matching: ${docsFileFilter}`);
 }
 
@@ -61,9 +55,7 @@ for (const relativeFile of allDocFiles) {
   const content = fs.readFileSync(filePath, 'utf-8');
   const samples = extractCodeSamples(filePath, content);
 
-  const tsSamples = samples.filter(
-    (s) => s.language === 'typescript' || s.language === 'ts'
-  );
+  const tsSamples = samples.filter((s) => s.language === 'typescript' || s.language === 'ts');
 
   if (tsSamples.length === 0) {
     noTsSamplesFiles.push(relativeFile);
@@ -81,9 +73,7 @@ for (const relativeFile of allDocFiles) {
 }
 
 // Batch type check ALL samples in a single TypeScript program
-const batchResults: Map<ProcessedCodeSample, TypeCheckResult> = typeCheckBatch(
-  allSamples.map((s) => s.processed!)
-);
+const batchResults: Map<ProcessedCodeSample, TypeCheckResult> = typeCheckBatch(allSamples.map((s) => s.processed!));
 
 // Create a lookup for results
 const resultsByKey = new Map<string, TypeCheckResult>();
@@ -119,11 +109,7 @@ describe('Documentation Code Samples', () => {
   }
 
   // Get all unique files
-  const allFilesWithSamples = new Set([
-    ...samplesByFile.keys(),
-    ...skippedByFile.keys(),
-    ...noTsSamplesFiles,
-  ]);
+  const allFilesWithSamples = new Set([...samplesByFile.keys(), ...skippedByFile.keys(), ...noTsSamplesFiles]);
 
   for (const relativeFile of allFilesWithSamples) {
     describe(relativeFile, () => {

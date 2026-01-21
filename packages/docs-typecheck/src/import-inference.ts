@@ -54,13 +54,7 @@ function findUsedIdentifiers(sourceCode: string): Set<string> {
   const identifiers = new Set<string>();
 
   try {
-    const sourceFile = ts.createSourceFile(
-      'sample.ts',
-      sourceCode,
-      ts.ScriptTarget.Latest,
-      true,
-      ts.ScriptKind.TS
-    );
+    const sourceFile = ts.createSourceFile('sample.ts', sourceCode, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
 
     function visit(node: ts.Node) {
       if (ts.isIdentifier(node)) {
@@ -89,13 +83,7 @@ function findLocalDeclarations(sourceCode: string): Set<string> {
   const declarations = new Set<string>();
 
   try {
-    const sourceFile = ts.createSourceFile(
-      'sample.ts',
-      sourceCode,
-      ts.ScriptTarget.Latest,
-      true,
-      ts.ScriptKind.TS
-    );
+    const sourceFile = ts.createSourceFile('sample.ts', sourceCode, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
 
     function visit(node: ts.Node) {
       // Variable declarations
@@ -145,13 +133,7 @@ function findExistingImports(sourceCode: string): Set<string> {
   const imported = new Set<string>();
 
   try {
-    const sourceFile = ts.createSourceFile(
-      'sample.ts',
-      sourceCode,
-      ts.ScriptTarget.Latest,
-      true,
-      ts.ScriptKind.TS
-    );
+    const sourceFile = ts.createSourceFile('sample.ts', sourceCode, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
 
     for (const statement of sourceFile.statements) {
       if (ts.isImportDeclaration(statement)) {
@@ -268,9 +250,7 @@ export function addInferredImports(sample: CodeSample): ProcessedCodeSample {
   }
 
   const addedImports = generateImports(missingSymbols);
-  const processedSource = addedImports.length > 0
-    ? `${addedImports.join('\n')}\n\n${sample.source}`
-    : sample.source;
+  const processedSource = addedImports.length > 0 ? `${addedImports.join('\n')}\n\n${sample.source}` : sample.source;
 
   return {
     ...sample,

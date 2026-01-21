@@ -3,10 +3,7 @@ import type { CodeSample } from './types.js';
 /**
  * Extracts TypeScript/JavaScript code samples from MDX/MD content
  */
-export function extractCodeSamples(
-  filePath: string,
-  content: string
-): CodeSample[] {
+export function extractCodeSamples(filePath: string, content: string): CodeSample[] {
   const samples: CodeSample[] = [];
   const lines = content.split('\n');
 
@@ -25,10 +22,7 @@ export function extractCodeSamples(
     if (!inCodeBlock) {
       // JSX comment syntax for MDX: {/* @skip-typecheck: reason */}
       // HTML comment syntax for MD: <!-- @skip-typecheck: reason -->
-      if (
-        line.includes('@skip-typecheck') ||
-        line.includes('skip-typecheck')
-      ) {
+      if (line.includes('@skip-typecheck') || line.includes('skip-typecheck')) {
         skipTypeCheck = true;
       }
 
@@ -44,11 +38,7 @@ export function extractCodeSamples(
     if (codeBlockMatch && !inCodeBlock) {
       inCodeBlock = true;
       codeBlockStart = lineNumber;
-      codeBlockLanguage = codeBlockMatch[1] as
-        | 'typescript'
-        | 'ts'
-        | 'javascript'
-        | 'js';
+      codeBlockLanguage = codeBlockMatch[1] as 'typescript' | 'ts' | 'javascript' | 'js';
       codeBlockLines = [];
       continue;
     }
@@ -87,9 +77,7 @@ export function extractCodeSamples(
 /**
  * Extracts code samples from a file path
  */
-export async function extractCodeSamplesFromFile(
-  filePath: string
-): Promise<CodeSample[]> {
+export async function extractCodeSamplesFromFile(filePath: string): Promise<CodeSample[]> {
   const fs = await import('node:fs/promises');
   const content = await fs.readFile(filePath, 'utf-8');
   return extractCodeSamples(filePath, content);
