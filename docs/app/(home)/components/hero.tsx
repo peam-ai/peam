@@ -3,8 +3,9 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { track } from '@vercel/analytics';
-import { CheckIcon, CopyIcon } from 'lucide-react';
+import { ArrowRightIcon, CheckIcon, CopyIcon, RocketIcon } from 'lucide-react';
 import Link from 'next/link';
+import { AskAI } from 'peam/client';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -58,23 +59,37 @@ export const Hero = ({ title, description: _description }: HeroProps) => {
           seamless integration with your existing content.
         </p>
       </div>
-      <div className="inline-flex w-fit mx-auto items-center gap-3">
-        <Button asChild size="lg" className="h-[44px] text-base">
-          <Link href="/docs/getting-started">Get Started</Link>
-        </Button>
-        <div className="relative bg-background border rounded-md overflow-hidden py-3 pl-4 pr-12 mx-auto inline-flex w-fit">
-          <pre className="text-sm">
-            <code>npm i peam</code>
-          </pre>
-          <Button
-            onClick={handleCopy}
-            size="icon"
-            variant="ghost"
-            className="absolute right-1 top-1/2 -translate-y-1/2"
-          >
-            <Icon className="size-4 text-muted-foreground" />
-          </Button>
+      <div className="flex flex-col items-center gap-3">
+        <div className="inline-flex w-fit mx-auto items-center gap-3">
+          <AskAI
+            type="sidepane"
+            button={({ toggle }) => (
+              <Button size="lg" className="h-[44px] text-base" onClick={toggle}>
+                Demo
+              </Button>
+            )}
+          />
+          <div className="relative bg-background border rounded-md overflow-hidden py-3 pl-4 pr-12 mx-auto inline-flex w-fit">
+            <pre className="text-sm">
+              <code>npm i peam</code>
+            </pre>
+            <Button
+              onClick={handleCopy}
+              size="icon"
+              variant="ghost"
+              className="absolute right-1 top-1/2 -translate-y-1/2"
+            >
+              <Icon className="size-4 text-muted-foreground" />
+            </Button>
+          </div>
         </div>
+        <Link
+          href="/docs/getting-started"
+          className="mt-2 inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+        >
+          Get Started
+          <ArrowRightIcon className="size-4" />
+        </Link>
       </div>
     </section>
   );

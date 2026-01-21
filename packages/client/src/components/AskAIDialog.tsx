@@ -18,11 +18,12 @@ export function AskAIDialog({ suggestedPrompts, button, maxMessages, inlineButto
       {button ? (
         button({ isOpen, toggle: handleToggle, open: handleOpen, close: handleClose })
       ) : (
-        <PeamButton onClick={handleToggle} isOpen={isOpen} inlineButton={inlineButton} className="z-60" />
+        <PeamButton onClick={handleToggle} isOpen={isOpen} inlineButton={inlineButton} className="z-30" />
       )}
 
       {isOpen && (
         <>
+          {/* Mobile backdrop */}
           <div
             className="fixed inset-0 z-40 bg-black/50 animate-in fade-in duration-200 cursor-pointer"
             onClick={handleClose}
@@ -30,7 +31,7 @@ export function AskAIDialog({ suggestedPrompts, button, maxMessages, inlineButto
           />
 
           <div
-            className="fixed z-50 inset-0 flex items-center justify-center p-4 md:p-0 cursor-pointer"
+            className="fixed z-100 inset-0 flex items-center justify-center p-4 md:p-0 cursor-pointer"
             onClick={handleClose}
           >
             <div
