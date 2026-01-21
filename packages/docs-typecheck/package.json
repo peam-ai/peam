@@ -1,0 +1,36 @@
+{
+  "name": "@peam-ai/docs-typecheck",
+  "description": "Type-check documentation code samples",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "tsc --build --clean && rm -rf dist",
+    "test:docs": "vitest run src",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "peam": "workspace:*",
+    "@peam-ai/client": "workspace:*",
+    "@peam-ai/server": "workspace:*",
+    "@peam-ai/next": "workspace:*",
+    "ai": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "@types/react": "^19.2.8",
+    "glob": "^11.0.0",
+    "react": "^19.2.0",
+    "typescript": "^5.5.4",
+    "vitest": "^2.1.8"
+  }
+}
