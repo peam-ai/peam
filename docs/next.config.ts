@@ -1,3 +1,4 @@
+import withPeam from '@peam-ai/next';
 import { createMDX } from 'fumadocs-mdx/next';
 import type { NextConfig } from 'next';
 
@@ -49,4 +50,6 @@ const config: NextConfig = {
   },
 };
 
-export default withMDX(config);
+export default withPeam({
+  exclude: ['/api/*'],
+})(withMDX(config)) as NextConfig;

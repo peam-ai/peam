@@ -74,6 +74,9 @@ importers:
       '@mdx-js/mdx':
         specifier: ^3.1.1
         version: 3.1.1
+      '@peam-ai/next':
+        specifier: workspace:*
+        version: link:../packages/next
       '@radix-ui/react-presence':
         specifier: ^1.1.5
         version: 1.1.5(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -170,6 +173,9 @@ importers:
       octokit:
         specifier: 5.0.5
         version: 5.0.5
+      peam:
+        specifier: workspace:*
+        version: link:../packages/peam
       radix-ui:
         specifier: latest
         version: 1.4.3(@types/react-dom@18.3.7(@types/react@18.3.27))(@types/react@18.3.27)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
