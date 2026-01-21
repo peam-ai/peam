@@ -13,7 +13,7 @@ type HeroProps = {
   description: string;
 };
 
-export const Hero = ({ title, description }: HeroProps) => {
+export const Hero = ({ title, description: _description }: HeroProps) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {

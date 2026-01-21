@@ -7,3 +7,7 @@ overrides:
   diff@<8.0.3: '>=8.0.3'
   esbuild@<=0.24.2: '>=0.25.0'
   happy-dom@<20.0.0: '>=20.0.0'
+
+onlyBuiltDependencies:
+  - esbuild
+  - bun
