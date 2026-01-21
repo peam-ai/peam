@@ -8,6 +8,9 @@
     "clean": {
       "cache": false
     },
+    "prettier": {
+      "cache": false
+    },
     "test:lint": {
       "cache": false
     },

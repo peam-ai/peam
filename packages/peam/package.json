@@ -11,6 +11,7 @@
     "build": "tsup",
     "clean": "rm -rf dist",
     "dev": "tsup --watch",
+    "prettier": "prettier --write \"src/**/*.ts*\"",
     "test:lint": "eslint \"src/**/*.ts*\"",
     "test:prettier": "prettier --check \"src/**/*.ts*\"",
     "test:unit": "vitest run"

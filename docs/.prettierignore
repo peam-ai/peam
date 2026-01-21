@@ -1,2 +1,2 @@
-components/geistdocs
-components/ui
+components/geistdocs/**/*
+components/ui/**/*

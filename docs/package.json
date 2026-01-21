@@ -9,6 +9,7 @@
     "start": "next start",
     "postinstall": "fumadocs-mdx",
     "postbuild": "tsx scripts/pack.ts",
+    "prettier": "prettier --write \"**/*.{ts,tsx,mjs,json,md,mdx}\"",
     "test:unit": "tsx ./scripts/lint.ts",
     "test:lint": "eslint \"**/*.{ts,tsx,mjs}\"",
     "test:prettier": "prettier --check \"**/*.{ts,tsx,mjs,json,md,mdx}\""

@@ -16,6 +16,7 @@
   "scripts": {
     "build": "tsup",
     "clean": "rm -rf dist",
+    "prettier": "prettier --write \"src/**/*.ts*\"",
     "test:docs": "vitest run src",
     "test:unit": "vitest run",
     "test:lint": "eslint \"src/**/*.ts*\"",

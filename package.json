@@ -4,7 +4,7 @@
   "scripts": {
     "build": "turbo build",
     "build:watch": "turbo watch build",
-    "prettier": "prettier --write packages docs",
+    "prettier": "turbo run prettier",
     "clean": "turbo run clean",
     "test": "run-p test:*",
     "test:lint": "turbo run test:lint",
