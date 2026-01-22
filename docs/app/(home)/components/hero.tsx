@@ -3,7 +3,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { track } from '@vercel/analytics';
-import { ArrowRightIcon, CheckIcon, CopyIcon, RocketIcon } from 'lucide-react';
+import { ArrowRightIcon, CheckIcon, CopyIcon } from 'lucide-react';
 import Link from 'next/link';
 import { AskAI } from 'peam/client';
 import { useState } from 'react';
