@@ -30,6 +30,7 @@ export function AskAIDialog({ suggestedPrompts, button, maxMessages, inlineButto
             aria-hidden="true"
           />
 
+          {/* Container */}
           <div
             className="fixed z-100 inset-0 flex items-center justify-center p-4 md:p-0 cursor-pointer"
             onClick={handleClose}
@@ -38,7 +39,7 @@ export function AskAIDialog({ suggestedPrompts, button, maxMessages, inlineButto
               role="dialog"
               aria-modal="true"
               aria-labelledby="ask-ai-dialog-title"
-              className="bg-background flex flex-col w-full max-w-2xl h-[80vh] md:h-150 rounded-lg border border-border shadow-2xl animate-in zoom-in-95 duration-200 relative cursor-default"
+              className="bg-background flex flex-col w-full max-w-2xl h-[80vh] md:h-150 rounded-lg border border-border shadow-2xl animate-in zoom-in-95 duration-200 relative cursor-default text-left"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="absolute top-3 right-3 z-10 flex gap-1">

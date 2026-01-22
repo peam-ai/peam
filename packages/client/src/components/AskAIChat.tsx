@@ -32,7 +32,7 @@ export function AskAIChat({ suggestedPrompts, button, maxMessages, inlineButton 
 
           {/* Container */}
           <div
-            className={`fixed z-50 bg-background flex flex-col
+            className={`fixed z-50 bg-background flex flex-col text-left
               inset-x-0 bottom-0 h-[66vh] md:h-125 md:inset-auto
               md:right-4 ${button ? 'md:bottom-4' : 'md:bottom-18'} md:w-100 md:rounded-sm
               border-t md:border border-border
