@@ -7,7 +7,7 @@ export const DataPrivacy = () => (
         over your AI models and data.
       </p>
       <div className="flex flex-wrap gap-3 justify-center pt-4">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent/50 border border-border">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border">
           <svg
             className="size-5 text-muted-foreground"
             fill="none"
@@ -23,7 +23,7 @@ export const DataPrivacy = () => (
           </svg>
           <span className="text-sm font-medium">Local Processing</span>
         </div>
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent/50 border border-border">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border">
           <svg
             className="size-5 text-muted-foreground"
             fill="none"

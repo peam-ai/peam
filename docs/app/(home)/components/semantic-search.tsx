@@ -6,7 +6,7 @@ export const SemanticSearch = () => (
         <p className="text-muted-foreground text-base sm:text-lg">Find answers based on meaning, not just keywords.</p>
       </div>
       <div className="space-y-4">
-        <div className="p-4 rounded-lg border bg-accent/50">
+        <div className="p-4 rounded-lg border">
           <div className="flex items-start gap-3">
             <svg
               className="size-6 text-muted-foreground flex-shrink-0 mt-0.5"
@@ -25,7 +25,7 @@ export const SemanticSearch = () => (
             </div>
           </div>
         </div>
-        <div className="p-4 rounded-lg border bg-accent/50">
+        <div className="p-4 rounded-lg border">
           <div className="flex items-start gap-3">
             <svg
               className="size-6 text-muted-foreground flex-shrink-0 mt-0.5"
@@ -42,7 +42,7 @@ export const SemanticSearch = () => (
             </div>
           </div>
         </div>
-        <div className="p-4 rounded-lg border bg-accent/50">
+        <div className="p-4 rounded-lg border">
           <div className="flex items-start gap-3">
             <svg
               className="size-6 text-muted-foreground flex-shrink-0 mt-0.5"
