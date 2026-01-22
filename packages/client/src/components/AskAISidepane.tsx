@@ -3,6 +3,7 @@
 import { Trash2, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useAskAI } from '../hooks/useAskAI';
+import { useIsMobile } from '../hooks/useIsMobile';
 import type { AskAIBaseProps } from './AskAI';
 import { Chat } from './Chat';
 import { PeamIcon } from './icons/peam';
@@ -18,39 +19,35 @@ export function AskAISidepane({
   inlineButton = false,
 }: AskAISidepaneProps = {}) {
   const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
+  const isMobile = useIsMobile();
   const originalBodyStyles = useRef<{ marginRight: string; transition: string } | null>(null);
 
   useEffect(() => {
-    const handleBodyMargin = () => {
-      const isDesktop = window.innerWidth >= 768;
-
-      if (!isDesktop) {
-        if (originalBodyStyles.current) {
-          document.body.style.marginRight = originalBodyStyles.current.marginRight;
-          document.body.style.transition = originalBodyStyles.current.transition;
-        }
-        return;
-      }
-
-      // Desktop behavior
-      if (isOpen) {
-        if (!originalBodyStyles.current) {
-          originalBodyStyles.current = {
-            marginRight: document.body.style.marginRight,
-            transition: document.body.style.transition,
-          };
-        }
-
-        const width = window.innerWidth >= 1024 ? '480px' : '400px';
-        document.body.style.marginRight = width;
-        document.body.style.transition = 'margin-right 300ms ease-in-out';
-      } else if (originalBodyStyles.current) {
+    // Only apply body margin on desktop
+    if (isMobile) {
+      if (originalBodyStyles.current) {
         document.body.style.marginRight = originalBodyStyles.current.marginRight;
         document.body.style.transition = originalBodyStyles.current.transition;
       }
-    };
+      return;
+    }
 
-    handleBodyMargin();
+    // Desktop behavior
+    if (isOpen) {
+      if (!originalBodyStyles.current) {
+        originalBodyStyles.current = {
+          marginRight: document.body.style.marginRight,
+          transition: document.body.style.transition,
+        };
+      }
+
+      const width = window.innerWidth >= 1024 ? '480px' : '400px';
+      document.body.style.marginRight = width;
+      document.body.style.transition = 'margin-right 300ms ease-in-out';
+    } else if (originalBodyStyles.current) {
+      document.body.style.marginRight = originalBodyStyles.current.marginRight;
+      document.body.style.transition = originalBodyStyles.current.transition;
+    }
 
     return () => {
       if (originalBodyStyles.current) {
@@ -58,7 +55,7 @@ export function AskAISidepane({
         document.body.style.transition = originalBodyStyles.current.transition;
       }
     };
-  }, [isOpen]);
+  }, [isOpen, isMobile]);
 
   return (
     <div className="peam-root">

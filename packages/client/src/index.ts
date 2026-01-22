@@ -14,3 +14,4 @@ export { Chat } from './components/Chat';
 export type { ChatProps } from './components/Chat';
 export { PeamButton } from './components/PeamButton';
 export type { PeamButtonProps } from './components/PeamButton';
+export { useIsMobile } from './hooks/useIsMobile';
