@@ -4,7 +4,10 @@ module.exports = {
     'postcss-prefix-selector': {
       prefix: '.peam-root',
       transform: function (prefix, selector, prefixedSelector) {
-        // For .dark selector, make it .peam-root.dark (same element, not descendant)
+        if (selector === ':root') {
+          return `${prefix}`;
+        }
+        // For .dark selector, make it .peam-root.dark
         if (selector === '.dark') {
           return `${prefix}${selector}`;
         }
