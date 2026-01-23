@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { track } from '@vercel/analytics';
 import { ArrowRightIcon, CheckIcon, CopyIcon } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import Link from 'next/link';
 import { AskAI } from 'peam/client';
 import { useState } from 'react';
@@ -16,6 +17,7 @@ type HeroProps = {
 
 export const Hero = ({ title, description: _description }: HeroProps) => {
   const [copied, setCopied] = useState(false);
+  const { resolvedTheme } = useTheme();
 
   const handleCopy = () => {
     try {
@@ -63,6 +65,7 @@ export const Hero = ({ title, description: _description }: HeroProps) => {
         <div className="inline-flex w-fit mx-auto items-center gap-3">
           <AskAI
             type="sidepane"
+            className={resolvedTheme === 'dark' ? 'dark' : undefined}
             button={({ toggle }) => (
               <Button size="lg" className="h-[44px] text-base" onClick={toggle}>
                 Demo

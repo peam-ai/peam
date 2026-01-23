@@ -1,9 +1,9 @@
 import { Navbar } from '@/components/geistdocs/navbar';
 import { GeistdocsProvider } from '@/components/geistdocs/provider';
+import { ThemedAskAI } from '@/components/themed-askai';
 import { mono, sans } from '@/lib/geistdocs/fonts';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
-import { AskAI } from 'peam/client';
 import './global.css';
 
 const Logo = () => (
@@ -31,7 +31,7 @@ const Layout = ({ children }: LayoutProps<'/'>) => (
           <Logo />
         </Navbar>
         {children}
-        <AskAI type="sidepane" />
+        <ThemedAskAI type="sidepane" />
       </GeistdocsProvider>
     </body>
   </html>
