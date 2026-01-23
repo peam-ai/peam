@@ -6,15 +6,22 @@ import type { AskAIBaseProps } from './AskAI';
 import { Chat } from './Chat';
 import { PeamIcon } from './icons/peam';
 import { PeamButton } from './PeamButton';
+import { cn } from '../lib/utils';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAIDialogProps extends AskAIBaseProps {}
 
-export function AskAIDialog({ suggestedPrompts, button, maxMessages, inlineButton = false }: AskAIDialogProps = {}) {
+export function AskAIDialog({
+  suggestedPrompts,
+  button,
+  maxMessages,
+  inlineButton = false,
+  className,
+}: AskAIDialogProps = {}) {
   const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
 
   return (
-    <div className="peam-root">
+    <div className={cn('peam-root', className)}>
       {button ? (
         button({ isOpen, toggle: handleToggle, open: handleOpen, close: handleClose })
       ) : (

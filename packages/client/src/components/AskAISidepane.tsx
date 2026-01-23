@@ -8,6 +8,7 @@ import type { AskAIBaseProps } from './AskAI';
 import { Chat } from './Chat';
 import { PeamIcon } from './icons/peam';
 import { PeamButton } from './PeamButton';
+import { cn } from '../lib/utils';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAISidepaneProps extends AskAIBaseProps {}
@@ -17,6 +18,7 @@ export function AskAISidepane({
   button,
   maxMessages,
   inlineButton = false,
+  className,
 }: AskAISidepaneProps = {}) {
   const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
   const isMobile = useIsMobile();
@@ -58,7 +60,7 @@ export function AskAISidepane({
   }, [isOpen, isMobile]);
 
   return (
-    <div className="peam-root">
+    <div className={cn('peam-root', className)}>
       {button ? (
         button({ isOpen, toggle: handleToggle, open: handleOpen, close: handleClose })
       ) : isOpen ? (

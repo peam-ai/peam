@@ -23,6 +23,10 @@ export interface AskAIBaseProps {
    */
   inlineButton?: boolean;
   /**
+   * Additional CSS classes to apply to the root container.
+   */
+  className?: string;
+  /**
    * Custom button component.
    *
    * @example
