@@ -2,11 +2,11 @@
 
 import { Trash2, X } from 'lucide-react';
 import { useAskAI } from '../hooks/useAskAI';
+import { cn } from '../lib/utils';
 import type { AskAIBaseProps } from './AskAI';
 import { Chat } from './Chat';
 import { PeamIcon } from './icons/peam';
 import { PeamButton } from './PeamButton';
-import { cn } from '../lib/utils';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAIDialogProps extends AskAIBaseProps {}
