@@ -466,7 +466,7 @@ importers:
         specifier: ^5.1.6
         version: 5.1.6
       shiki:
-        specifier: ^3.20.0
+        specifier: ^3.21.0
         version: 3.21.0
       streamdown:
         specifier: ^2.1.0
