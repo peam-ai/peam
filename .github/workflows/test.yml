@@ -31,7 +31,13 @@ jobs:
       - name: Install Dependencies
         run: pnpm i
 
-      - name: Build Packages
+      - name: Build Core Packages
+        run: pnpm build --filter=peam --filter=@peam-ai/*
+
+      - name: Rebuild bin links
+        run: pnpm install --frozen-lockfile
+
+      - name: Build All Packages
         run: pnpm build
 
       - name: Run Tests
