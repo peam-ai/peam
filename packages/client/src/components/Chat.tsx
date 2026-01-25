@@ -280,7 +280,7 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
                                     enabled: true,
                                     onLinkCheck: (url) => {
                                       const currentOrigin = window.location.origin;
-                                      return !url.startsWith(currentOrigin);
+                                      return url.startsWith(currentOrigin);
                                     },
                                   }}
                                   key={`${message.id}-${i}`}
