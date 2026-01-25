@@ -23,8 +23,8 @@ import {
   type PromptInputMessage,
 } from '@/components/ai-elements/prompt-input';
 import { Shimmer } from '@/components/ai-elements/shimmer';
-import { SpeechInput } from '@/components/ai-elements/speech-input';
 import { Source, Sources, SourcesContent, SourcesTrigger } from '@/components/ai-elements/sources';
+import { SpeechInput } from '@/components/ai-elements/speech-input';
 import { SuggestedPrompts } from '@/components/SuggestedPrompts';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
 import { useSummarization } from '@/hooks/useSummarization';
