@@ -89,7 +89,7 @@ export function AskAISidepane({
             role="dialog"
             aria-modal="true"
             aria-labelledby="ask-ai-sidepane-title"
-            className={`fixed z-100 bg-background flex flex-col text-left
+            className={`fixed z-100 bg-background text-foreground flex flex-col text-left
               inset-x-0 bottom-0 h-[66vh] md:inset-auto
               md:right-0 md:top-0 md:h-full md:w-100 lg:w-120
               border-t md:border-t-0 md:border-l border-border

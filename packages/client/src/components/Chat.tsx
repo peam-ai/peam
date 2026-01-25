@@ -365,7 +365,6 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
             <PromptInputSubmit
               status={status}
               disabled={!input.trim() && status !== 'streaming'}
-              className="[&_svg]:text-white [&_svg]:stroke-white"
             />
           </PromptInputFooter>
         </PromptInput>

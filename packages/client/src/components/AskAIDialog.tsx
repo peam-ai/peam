@@ -46,7 +46,7 @@ export function AskAIDialog({
               role="dialog"
               aria-modal="true"
               aria-labelledby="ask-ai-dialog-title"
-              className="bg-background flex flex-col w-full max-w-2xl h-[80vh] md:h-150 rounded-lg border border-border shadow-2xl animate-in zoom-in-95 duration-200 relative cursor-default text-left"
+              className="bg-background text-foreground flex flex-col w-full max-w-2xl h-[80vh] md:h-150 rounded-lg border border-border shadow-2xl animate-in zoom-in-95 duration-200 relative cursor-default text-left"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="absolute top-3 right-3 z-10 flex gap-1">
