@@ -274,7 +274,20 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
                         {message.parts.map((part, i) => {
                           switch (part.type) {
                             case 'text':
-                              return <MessageResponse key={`${message.id}-${i}`}>{part.text}</MessageResponse>;
+                              return (
+                                <MessageResponse
+                                  linkSafety={{
+                                    enabled: true,
+                                    onLinkCheck: (url) => {
+                                      const currentOrigin = window.location.origin;
+                                      return !url.startsWith(currentOrigin);
+                                    },
+                                  }}
+                                  key={`${message.id}-${i}`}
+                                >
+                                  {part.text}
+                                </MessageResponse>
+                              );
                             default:
                               return null;
                           }

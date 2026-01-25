@@ -1,11 +1,11 @@
 import { openai } from '@ai-sdk/openai';
 import { streamSearchText, streamSummarize } from '@peam-ai/ai';
 import { loggers } from '@peam-ai/logger';
+import { FileBasedSearchIndexExporter } from '@peam-ai/search';
 import { createUIMessageStreamResponse } from 'ai';
 import { type CreateHandlerOptions, type HandlerRequestBody } from './types';
 import { getCurrentPage } from './utils/getCurrentPage';
 import { getSearchEngine } from './utils/getSearchEngine';
-import { FileBasedSearchIndexExporter } from '@peam-ai/search';
 
 const MAX_MESSAGE_LENGTH = 30000;
 const log = loggers.server;
