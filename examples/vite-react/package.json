@@ -1,0 +1,37 @@
+{
+  "name": "vite-react-example",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx api/server.ts",
+    "build": "vite build",
+    "postbuild": "peam"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.2.1",
+    "peam": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vike": "^0.4.252",
+    "vike-react": "^0.6.18"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.6",
+    "@types/node": "^20",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^5.1.2",
+    "autoprefixer": "^10.4.20",
+    "cross-env": "^7.0.3",
+    "globals": "^15.14.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "tsx": "^4.19.2",
+    "typescript": "^5.5.4",
+    "vite": "^7.3.1"
+  }
+}

@@ -257,7 +257,7 @@ async function indexPages(config: IndexerConfig): Promise<void> {
 }
 
 function probeSourceDirectory(projectDir: string): string | null {
-  const commonDirs = ['.next', '.build', '.out'];
+  const commonDirs = ['.next', '.build', '.out', 'dist'];
 
   for (const dir of commonDirs) {
     const fullPath = join(projectDir, dir);

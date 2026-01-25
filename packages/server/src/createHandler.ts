@@ -5,6 +5,7 @@ import { createUIMessageStreamResponse } from 'ai';
 import { type CreateHandlerOptions, type HandlerRequestBody } from './types';
 import { getCurrentPage } from './utils/getCurrentPage';
 import { getSearchEngine } from './utils/getSearchEngine';
+import { FileBasedSearchIndexExporter } from '@peam-ai/search';
 
 const MAX_MESSAGE_LENGTH = 30000;
 const log = loggers.server;
@@ -88,6 +89,12 @@ export function createHandler(options: CreateHandlerOptions = {}) {
       const { summary } = body;
       const lastMessage = messages[messages.length - 1];
       const currentPage = getCurrentPage({ request: req, message: lastMessage });
+
+      options.searchIndexExporter =
+        options.searchIndexExporter ??
+        new FileBasedSearchIndexExporter({
+          indexPath: '.peam/index.json',
+        });
 
       if (!options.searchIndexExporter) {
         return new Response(
