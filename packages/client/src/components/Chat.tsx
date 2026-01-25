@@ -17,12 +17,13 @@ import {
   PromptInput,
   PromptInputBody,
   PromptInputFooter,
-  PromptInputSpeechButton,
   PromptInputSubmit,
   PromptInputTextarea,
+  PromptInputTools,
   type PromptInputMessage,
 } from '@/components/ai-elements/prompt-input';
 import { Shimmer } from '@/components/ai-elements/shimmer';
+import { SpeechInput } from '@/components/ai-elements/speech-input';
 import { Source, Sources, SourcesContent, SourcesTrigger } from '@/components/ai-elements/sources';
 import { SuggestedPrompts } from '@/components/SuggestedPrompts';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
@@ -31,7 +32,7 @@ import { BoundedChatTransport } from '@/lib/BoundedChatTransport';
 import { useChat } from '@ai-sdk/react';
 import { loggers } from '@peam-ai/logger';
 import { HttpChatTransport, UIMessage } from 'ai';
-import { Check, Copy, RefreshCcw } from 'lucide-react';
+import { Check, Copy, MicIcon, RefreshCcw } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PeamIcon } from './icons/peam';
 
@@ -339,8 +340,20 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
             />
           </PromptInputBody>
           <PromptInputFooter>
-            <PromptInputSpeechButton onTranscriptionChange={setInput} textareaRef={textareaRef} />
-            <PromptInputSubmit status={status} disabled={!input.trim() && status !== 'streaming'} />
+            <PromptInputTools>
+              <SpeechInput
+                onTranscriptionChange={setInput}
+                className="px-2 rounded-md bg-transparent hover:bg-accent dark:hover:bg-accent/50 text-foreground hover:text-accent-foreground text-sm"
+              >
+                <MicIcon size={16} />
+                <span className="sr-only">Microphone</span>
+              </SpeechInput>
+            </PromptInputTools>
+            <PromptInputSubmit
+              status={status}
+              disabled={!input.trim() && status !== 'streaming'}
+              className="[&_svg]:text-white [&_svg]:stroke-white"
+            />
           </PromptInputFooter>
         </PromptInput>
       </div>
