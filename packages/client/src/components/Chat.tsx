@@ -362,10 +362,7 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
                 <span className="sr-only">Microphone</span>
               </SpeechInput>
             </PromptInputTools>
-            <PromptInputSubmit
-              status={status}
-              disabled={!input.trim() && status !== 'streaming'}
-            />
+            <PromptInputSubmit status={status} disabled={!input.trim() && status !== 'streaming'} />
           </PromptInputFooter>
         </PromptInput>
       </div>
