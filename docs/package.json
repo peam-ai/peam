@@ -8,7 +8,6 @@
     "dev": "next dev --turbo",
     "start": "next start",
     "postinstall": "fumadocs-mdx",
-    "postbuild": "tsx scripts/pack.ts",
     "format": "prettier --write \"**/*.{ts,tsx,mjs,json,md,mdx}\"",
     "test:unit": "bun ./scripts/lint.ts",
     "test:lint": "eslint \"**/*.{ts,tsx,mjs}\"",
