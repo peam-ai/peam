@@ -1,5 +1,5 @@
+import { useChatPersistence } from '@/hooks/useChatPersistence';
 import { useEffect, useRef, useState } from 'react';
-import { useChatPersistence } from './useChatPersistence';
 
 export function useAskAI() {
   const [isOpen, setIsOpen] = useState(false);

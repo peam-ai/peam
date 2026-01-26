@@ -1,11 +1,11 @@
 'use client';
 
+import type { AskAIBaseProps } from '@/components/AskAI';
+import { Chat } from '@/components/Chat';
+import { PeamIcon } from '@/components/icons/peam';
+import { PeamButton } from '@/components/PeamButton';
+import { useAskAI } from '@/hooks/useAskAI';
 import { Trash2, X } from 'lucide-react';
-import { useAskAI } from '../hooks/useAskAI';
-import type { AskAIBaseProps } from './AskAI';
-import { Chat } from './Chat';
-import { PeamIcon } from './icons/peam';
-import { PeamButton } from './PeamButton';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAIDialogProps extends AskAIBaseProps {}

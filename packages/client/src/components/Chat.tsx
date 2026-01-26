@@ -25,6 +25,7 @@ import {
 import { Shimmer } from '@/components/ai-elements/shimmer';
 import { Source, Sources, SourcesContent, SourcesTrigger } from '@/components/ai-elements/sources';
 import { SpeechInput } from '@/components/ai-elements/speech-input';
+import { PeamIcon } from '@/components/icons/peam';
 import { SuggestedPrompts } from '@/components/SuggestedPrompts';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
 import { useSummarization } from '@/hooks/useSummarization';
@@ -34,7 +35,6 @@ import { loggers } from '@peam-ai/logger';
 import { HttpChatTransport, UIMessage } from 'ai';
 import { Check, Copy, MicIcon, RefreshCcw } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { PeamIcon } from './icons/peam';
 
 const log = loggers.ui;
 

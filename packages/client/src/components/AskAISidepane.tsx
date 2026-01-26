@@ -1,13 +1,13 @@
 'use client';
 
+import type { AskAIBaseProps } from '@/components/AskAI';
+import { Chat } from '@/components/Chat';
+import { PeamIcon } from '@/components/icons/peam';
+import { PeamButton } from '@/components/PeamButton';
+import { useAskAI } from '@/hooks/useAskAI';
+import { useIsMobile } from '@/hooks/useIsMobile';
 import { Trash2, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
-import { useAskAI } from '../hooks/useAskAI';
-import { useIsMobile } from '../hooks/useIsMobile';
-import type { AskAIBaseProps } from './AskAI';
-import { Chat } from './Chat';
-import { PeamIcon } from './icons/peam';
-import { PeamButton } from './PeamButton';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAISidepaneProps extends AskAIBaseProps {}

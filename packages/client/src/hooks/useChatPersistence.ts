@@ -1,11 +1,11 @@
 'use client';
 
+import { useDebounceCallback } from '@/hooks/useDebounceCallback';
+import { db } from '@/lib/db';
 import type { UIMessage } from '@ai-sdk/react';
 import { loggers } from '@peam-ai/logger';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useCallback } from 'react';
-import { db } from '../lib/db';
-import { useDebounceCallback } from './useDebounceCallback';
 
 const log = loggers.ui;
 const CURRENT_CONVERSATION_ID = 'current';

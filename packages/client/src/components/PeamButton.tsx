@@ -1,7 +1,7 @@
 'use client';
 
-import { PeamCloseIcon, PeamIcon } from './icons/peam';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { PeamCloseIcon, PeamIcon } from '@/components/icons/peam';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export interface PeamButtonProps {
   onClick: () => void;

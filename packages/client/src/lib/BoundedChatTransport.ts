@@ -1,6 +1,6 @@
+import { getRecentMessages } from '@/lib/messageWindow';
 import type { UIMessage } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import { getRecentMessages } from './messageWindow';
 
 export interface BoundedChatTransportOptions {
   api: string;

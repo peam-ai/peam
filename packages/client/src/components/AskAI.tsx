@@ -1,11 +1,11 @@
 'use client';
 
+import { AskAIChat, type AskAIChatProps } from '@/components/AskAIChat';
+import { AskAIDialog, type AskAIDialogProps } from '@/components/AskAIDialog';
+import { AskAISidepane, type AskAISidepaneProps } from '@/components/AskAISidepane';
+import { useDarkMode } from '@/hooks/useDarkMode';
+import { cn } from '@/lib/utils';
 import type { ReactNode } from 'react';
-import { useDarkMode } from '../hooks/useDarkMode';
-import { cn } from '../lib/utils';
-import { AskAIChat, type AskAIChatProps } from './AskAIChat';
-import { AskAIDialog, type AskAIDialogProps } from './AskAIDialog';
-import { AskAISidepane, type AskAISidepaneProps } from './AskAISidepane';
 
 export type AskAIType = 'chat' | 'dialog' | 'sidepane';
 
