@@ -18,6 +18,7 @@
   },
   "scripts": {
     "build": "tsup",
+    "build:watch": "tsup --watch",
     "clean": "rm -rf dist",
     "format": "prettier --write \"src/**/*.ts*\"",
     "test:unit": "vitest run",

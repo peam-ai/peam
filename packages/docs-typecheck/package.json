@@ -15,6 +15,7 @@
   },
   "scripts": {
     "build": "tsup",
+    "build:watch": "tsup --watch",
     "clean": "rm -rf dist",
     "format": "prettier --write \"src/**/*.ts*\"",
     "test:docs": "vitest run --config vitest.config.ts",

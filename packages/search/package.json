@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "dev": "tsup --watch",
+    "build:watch": "tsup --watch",
     "clean": "rm -rf dist",
     "format": "prettier --write \"src/**/*.ts*\"",
     "test:lint": "eslint \"src/**/*.ts*\"",
