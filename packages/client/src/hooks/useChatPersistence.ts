@@ -1,5 +1,3 @@
-'use client';
-
 import { useDebounceCallback } from '@/hooks/useDebounceCallback';
 import { db } from '@/lib/db';
 import type { UIMessage } from '@ai-sdk/react';
