@@ -4,7 +4,6 @@ import { Trash2, X } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useAskAI } from '../hooks/useAskAI';
 import { useIsMobile } from '../hooks/useIsMobile';
-import { cn } from '../lib/utils';
 import type { AskAIBaseProps } from './AskAI';
 import { Chat } from './Chat';
 import { PeamIcon } from './icons/peam';
@@ -18,7 +17,6 @@ export function AskAISidepane({
   button,
   maxMessages,
   inlineButton = false,
-  className,
 }: AskAISidepaneProps = {}) {
   const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
   const isMobile = useIsMobile();
@@ -60,7 +58,7 @@ export function AskAISidepane({
   }, [isOpen, isMobile]);
 
   return (
-    <div className={cn('peam-root', className)}>
+    <>
       {button ? (
         button({ isOpen, toggle: handleToggle, open: handleOpen, close: handleClose })
       ) : isOpen ? (
@@ -133,6 +131,6 @@ export function AskAISidepane({
           </div>
         </>
       )}
-    </div>
+    </>
   );
 }

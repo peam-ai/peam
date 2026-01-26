@@ -1,6 +1,8 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { useDarkMode } from '../hooks/useDarkMode';
+import { cn } from '../lib/utils';
 import { AskAIChat, type AskAIChatProps } from './AskAIChat';
 import { AskAIDialog, type AskAIDialogProps } from './AskAIDialog';
 import { AskAISidepane, type AskAISidepaneProps } from './AskAISidepane';
@@ -49,14 +51,20 @@ export type AskAIProps =
   | ({ type: 'dialog' } & AskAIDialogProps)
   | ({ type: 'sidepane' } & AskAISidepaneProps);
 
-export function AskAI({ type = 'chat', ...props }: AskAIProps) {
-  switch (type) {
-    case 'dialog':
-      return <AskAIDialog {...props} />;
-    case 'sidepane':
-      return <AskAISidepane {...props} />;
-    case 'chat':
-    default:
-      return <AskAIChat {...props} />;
-  }
+export function AskAI({ type = 'chat', className, ...props }: AskAIProps) {
+  const isDarkMode = useDarkMode();
+
+  const content = (() => {
+    switch (type) {
+      case 'dialog':
+        return <AskAIDialog {...props} />;
+      case 'sidepane':
+        return <AskAISidepane {...props} />;
+      case 'chat':
+      default:
+        return <AskAIChat {...props} />;
+    }
+  })();
+
+  return <div className={cn('peam-root', isDarkMode && 'dark', className)}>{content}</div>;
 }

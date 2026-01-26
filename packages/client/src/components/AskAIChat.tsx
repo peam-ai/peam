@@ -2,7 +2,6 @@
 
 import { Trash2, X } from 'lucide-react';
 import { useAskAI } from '../hooks/useAskAI';
-import { cn } from '../lib/utils';
 import type { AskAIBaseProps } from './AskAI';
 import { Chat } from './Chat';
 import { PeamIcon } from './icons/peam';
@@ -11,17 +10,11 @@ import { PeamButton } from './PeamButton';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAIChatProps extends AskAIBaseProps {}
 
-export function AskAIChat({
-  suggestedPrompts,
-  button,
-  maxMessages,
-  inlineButton = false,
-  className,
-}: AskAIChatProps = {}) {
+export function AskAIChat({ suggestedPrompts, button, maxMessages, inlineButton = false }: AskAIChatProps = {}) {
   const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
 
   return (
-    <div className={cn('peam-root', className)}>
+    <>
       {button ? (
         button({ isOpen, toggle: handleToggle, open: handleOpen, close: handleClose })
       ) : (
@@ -81,6 +74,6 @@ export function AskAIChat({
           </div>
         </>
       )}
-    </div>
+    </>
   );
 }

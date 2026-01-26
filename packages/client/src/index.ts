@@ -10,8 +10,3 @@ export { AskAIDialog } from './components/AskAIDialog';
 export type { AskAIDialogProps } from './components/AskAIDialog';
 export { AskAISidepane } from './components/AskAISidepane';
 export type { AskAISidepaneProps } from './components/AskAISidepane';
-export { Chat } from './components/Chat';
-export type { ChatProps } from './components/Chat';
-export { PeamButton } from './components/PeamButton';
-export type { PeamButtonProps } from './components/PeamButton';
-export { useIsMobile } from './hooks/useIsMobile';
