@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 const mobileBreakpoint = 768;
 const mobileQuery = `(max-width: ${mobileBreakpoint - 1}px)`;
 
+/**
+ * Hook to detect if the viewport width is considered mobile.
+ */
 export function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
