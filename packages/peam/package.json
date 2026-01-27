@@ -53,15 +53,15 @@
       "import": "./dist/logger.mjs",
       "require": "./dist/logger.js"
     },
-    "./parser": {
-      "types": "./dist/parser.d.ts",
-      "import": "./dist/parser.mjs",
-      "require": "./dist/parser.js"
-    },
     "./search": {
       "types": "./dist/search.d.ts",
       "import": "./dist/search.mjs",
       "require": "./dist/search.js"
+    },
+    "./builder": {
+      "types": "./dist/builder.d.ts",
+      "import": "./dist/builder.mjs",
+      "require": "./dist/builder.js"
     },
     "./server": {
       "types": "./dist/server.d.ts",
@@ -70,6 +70,7 @@
     }
   },
   "dependencies": {
+    "@peam-ai/builder": "workspace:*",
     "@peam-ai/client": "workspace:*",
     "@peam-ai/logger": "workspace:*",
     "@peam-ai/parser": "workspace:*",

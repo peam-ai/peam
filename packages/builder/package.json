@@ -1,0 +1,49 @@
+{
+  "name": "@peam-ai/builder",
+  "version": "0.1.0",
+  "description": "Build-time search index builders for Peam",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "homepage": "https://peam.ai",
+  "author": "Afshin Mehrabani",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/peam-ai/peam.git",
+    "directory": "packages/builder"
+  },
+  "bugs": {
+    "url": "https://github.com/peam-ai/peam/issues"
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "clean": "rm -rf dist",
+    "format": "prettier --write \"src/**/*.ts*\"",
+    "test:lint": "eslint \"src/**/*.ts*\"",
+    "test:format": "prettier --check \"src/**/*.ts*\""
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@peam-ai/logger": "workspace:*",
+    "@peam-ai/parser": "workspace:*",
+    "@peam-ai/search": "workspace:*",
+    "fast-glob": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4"
+  }
+}

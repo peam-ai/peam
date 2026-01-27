@@ -446,6 +446,31 @@ importers:
         specifier: ^5.5.4
         version: 5.9.3
 
+  packages/builder:
+    dependencies:
+      '@peam-ai/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@peam-ai/parser':
+        specifier: workspace:*
+        version: link:../parser
+      '@peam-ai/search':
+        specifier: workspace:*
+        version: link:../search
+      fast-glob:
+        specifier: ^3.3.2
+        version: 3.3.3
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.5
+      tsup:
+        specifier: ^8.2.4
+        version: 8.5.1(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: ^5.5.4
+        version: 5.9.3
+
   packages/client:
     dependencies:
       '@ai-sdk/react':
@@ -717,6 +742,9 @@ importers:
 
   packages/peam:
     dependencies:
+      '@peam-ai/builder':
+        specifier: workspace:*
+        version: link:../builder
       '@peam-ai/client':
         specifier: workspace:*
         version: link:../client
@@ -760,6 +788,9 @@ importers:
       '@peam-ai/parser':
         specifier: workspace:*
         version: link:../parser
+      fast-glob:
+        specifier: ^3.3.2
+        version: 3.3.3
       flexsearch:
         specifier: ^0.8.212
         version: 0.8.212

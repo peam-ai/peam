@@ -5,11 +5,10 @@
  * parses them into structured pages, and creates a searchable index.
  */
 
-import { filePathToPathname, loadRobotsTxt, parseHTML, shouldIncludePath, type StructuredPage } from '@peam-ai/parser';
-import { buildSearchIndex, createExporterFromConfig, type SearchExporterConfig } from '@peam-ai/search';
+import { createBuilderFromConfig, type SearchBuilderConfig } from '@peam-ai/builder';
+import { createExporterFromConfig, type SearchExporterConfig } from '@peam-ai/search';
 import chalk from 'chalk';
 import { Command } from 'commander';
-import fg from 'fast-glob';
 import { existsSync, readFileSync } from 'fs';
 import { join, relative } from 'path';
 
@@ -17,18 +16,13 @@ const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 
 
 interface IndexerConfig {
   source: string;
+  searchBuilder: SearchBuilderConfig;
   searchExporter: SearchExporterConfig;
   respectRobotsTxt: boolean;
   robotsTxtPath?: string;
   exclude: string[];
   glob: string;
   projectDir: string;
-}
-
-interface DiscoveredPage {
-  pathname: string;
-  htmlFilePath: string;
-  relativeHtmlPath: string;
 }
 
 function parseExcludePatterns(value: string): string[] {
@@ -43,6 +37,58 @@ function parseExcludePatterns(value: string): string[] {
  */
 function parseExporterConfigEntry(value: string, previous: string[] = []): string[] {
   return [...previous, value];
+}
+
+/**
+ * Parse builderConfig key=value pairs
+ */
+function parseBuilderConfigEntry(value: string, previous: string[] = []): string[] {
+  return [...previous, value];
+}
+
+/**
+ * Parse command line options and extract builder configuration dynamically.
+ * Supports --builderConfig key=value pairs
+ */
+function parseBuilderConfig(
+  options: Record<string, unknown>,
+  builderType: string,
+  sourceDir: string,
+  glob: string,
+  respectRobotsTxt: boolean,
+  robotsTxtPath: string | undefined,
+  exclude: string[],
+  projectDir: string
+): SearchBuilderConfig {
+  const builderConfig: Record<string, unknown> = {
+    sourceDir,
+    glob,
+    respectRobotsTxt,
+    exclude,
+    projectDir,
+  };
+
+  if (robotsTxtPath) {
+    builderConfig.robotsTxtPath = robotsTxtPath;
+  }
+
+  // Parse key=value pairs from --builderConfig options
+  if (Array.isArray(options.builderConfig)) {
+    for (const entry of options.builderConfig) {
+      if (typeof entry === 'string') {
+        const [key, ...valueParts] = entry.split('=');
+        const value = valueParts.join('=');
+        if (key && value !== undefined) {
+          builderConfig[key.trim()] = value.trim();
+        }
+      }
+    }
+  }
+
+  return {
+    type: builderType,
+    config: builderConfig,
+  } as unknown as SearchBuilderConfig;
 }
 
 /**
@@ -86,41 +132,6 @@ const log = {
   green: (text: string) => chalk.green(text),
 };
 
-async function discoverHtmlFiles(
-  sourceDir: string,
-  globPattern: string,
-  projectDir: string
-): Promise<DiscoveredPage[]> {
-  const pages: DiscoveredPage[] = [];
-
-  try {
-    const sourceFullPath = join(projectDir, sourceDir);
-
-    const htmlFiles = await fg(globPattern, {
-      cwd: sourceFullPath,
-      absolute: true,
-      onlyFiles: true,
-      dot: false,
-      ignore: ['**/_next/**', '**/_astro/**', '**/404.{html,htm}', '**/500.{html,htm}'],
-    });
-
-    for (const htmlFilePath of htmlFiles) {
-      const relativePath = relative(sourceFullPath, htmlFilePath);
-      const pathname = filePathToPathname(relativePath);
-
-      pages.push({
-        pathname,
-        htmlFilePath,
-        relativeHtmlPath: relativePath,
-      });
-    }
-  } catch (error) {
-    log.warn(`Error discovering HTML files: ${error}`);
-  }
-
-  return pages;
-}
-
 async function indexPages(config: IndexerConfig): Promise<void> {
   log.text('\n' + log.bold(log.cyan('Peam Static Site Indexer')) + '\n');
   log.text(log.bold('Configuration:'));
@@ -142,98 +153,26 @@ async function indexPages(config: IndexerConfig): Promise<void> {
     process.exit(1);
   }
 
-  const searchPaths = [join(config.source, 'robots.txt'), 'public/robots.txt', 'robots.txt'];
-
-  const robotsResult = config.respectRobotsTxt
-    ? loadRobotsTxt(config.projectDir, searchPaths, config.robotsTxtPath)
-    : null;
-
-  if (robotsResult && config.respectRobotsTxt) {
-    log.info(`robots.txt loaded from ${log.cyan(relative(config.projectDir, robotsResult.path))}`);
-  } else if (config.respectRobotsTxt) {
-    log.info('No robots.txt found, all paths will be indexed');
-  }
-
-  log.text(log.bold('Discovering HTML files...'));
-  log.text('');
-  log.text(`  Scanning: ${log.gray(config.source)}`);
-  log.text(`  Pattern: ${log.gray(config.glob)}`);
+  log.text(log.bold('Building search index from HTML files...'));
   log.text('');
 
-  const discoveredPages = await discoverHtmlFiles(config.source, config.glob, config.projectDir);
+  // Use builder to create the search index
+  const builder = createBuilderFromConfig(config.searchBuilder);
+  const searchIndexData = await builder.build();
 
-  if (discoveredPages.length === 0) {
+  if (!searchIndexData) {
     log.text('');
-    log.warn('No HTML files found');
+    log.warn('No search index data generated');
     log.text(log.yellow('   Check that your source directory contains HTML files'));
     log.text(log.yellow(`   Source: ${sourcePath}`));
-    log.text(log.yellow(`   Pattern: ${config.glob}`));
+    if (config.searchBuilder.type === 'fileBased') {
+      log.text(log.yellow(`   Pattern: ${config.searchBuilder.config.glob}`));
+    }
     process.exit(1);
   }
 
-  const uniquePages = new Map<string, DiscoveredPage>();
-  for (const page of discoveredPages) {
-    if (!uniquePages.has(page.pathname)) {
-      uniquePages.set(page.pathname, page);
-    }
-  }
-
   log.text('');
-  log.success(`Found ${log.bold(uniquePages.size.toString())} unique pages`);
-  log.text('');
-  log.text(log.bold('Processing pages...'));
-  log.text('');
-
-  const processedPages: Array<{
-    path: string;
-    htmlFile: string;
-    structuredPage: StructuredPage;
-  }> = [];
-
-  for (const [pathname, page] of uniquePages) {
-    const result = shouldIncludePath(pathname, robotsResult?.parser ?? null, config.exclude, config.respectRobotsTxt);
-
-    if (!result.included) {
-      // Log the specific reason for exclusion
-      if (result.reason === 'robots-txt') {
-        log.error(`Excluded by robots.txt: ${pathname}`);
-      } else if (result.reason === 'exclude-pattern') {
-        log.error(`Excluded by pattern: ${pathname}`);
-      }
-      continue;
-    }
-
-    try {
-      const html = readFileSync(page.htmlFilePath, 'utf-8');
-
-      const structuredPage = parseHTML(html);
-
-      if (!structuredPage) {
-        log.warn(`No content extracted from ${log.gray(pathname)}`);
-        continue;
-      }
-
-      log.success(`${log.cyan(pathname)}`);
-
-      processedPages.push({
-        path: pathname,
-        htmlFile: page.relativeHtmlPath,
-        structuredPage,
-      });
-    } catch (error) {
-      log.error(`Error processing ${log.gray(pathname)}: ${error}`);
-    }
-  }
-
-  log.text('');
-  log.success(`Successfully processed ${log.bold(processedPages.length.toString())} pages`);
-  log.text('');
-  log.text(log.bold('Creating search index...'));
-  log.text('');
-
-  const searchIndexData = await buildSearchIndex(processedPages);
-
-  log.success(`Added ${log.bold(processedPages.length.toString())} pages to search index`);
+  log.success(`Successfully indexed ${log.bold(searchIndexData.keys.length.toString())} pages`);
   log.text('');
   log.text(log.bold('Saving index...'));
   log.text('');
@@ -247,7 +186,7 @@ async function indexPages(config: IndexerConfig): Promise<void> {
       : 'configured location';
 
   log.success(`Index saved to: ${log.cyan(indexPathDisplay)}`);
-  log.text(`  Total pages indexed: ${log.bold(processedPages.length.toString())}`);
+  log.text(`  Total pages indexed: ${log.bold(searchIndexData.keys.length.toString())}`);
   log.text(
     `  Index size: ${log.bold((Buffer.byteLength(JSON.stringify(searchIndexData), 'utf8') / 1024).toFixed(2))} KB`
   );
@@ -278,6 +217,8 @@ async function main() {
     .version(packageJson.version)
     .option('--source <path>', 'Source directory containing HTML files (auto-detected if not provided)')
     .option('--glob <pattern>', 'Glob pattern for HTML files', '**/*.{html,htm}')
+    .option('--builder <type>', 'Search builder type', 'fileBased')
+    .option('--builderConfig <key=value>', 'Builder config entry (repeatable)', parseBuilderConfigEntry, [])
     .option('--exporter <type>', 'Search exporter type', 'fileBased')
     .option('--exporterConfig <key=value>', 'Exporter config entry (repeatable)', parseExporterConfigEntry, [
       `baseDir=${process.cwd()}`,
@@ -309,6 +250,9 @@ Examples:
   # Exclude patterns
   $ peam --exclude "/admin/**,/api/*,/private-*"
 
+  # Custom builder configuration
+  $ peam --builder fileBased --builderConfig glob=**/*.html
+
 For Next.js 15+, the @peam-ai/next integration is recommended for production use.
 
 More information: https://peam.ai
@@ -334,11 +278,23 @@ More information: https://peam.ai
       }
     }
 
+    const searchBuilder = parseBuilderConfig(
+      options,
+      options.builder,
+      sourceDir,
+      options.glob,
+      !options.ignoreRobotsTxt,
+      options.robotsPath,
+      options.exclude,
+      options.projectDir
+    );
+
     const searchExporter = parseExporterConfig(options, options.exporter);
 
     const config: IndexerConfig = {
       source: sourceDir,
       glob: options.glob,
+      searchBuilder,
       searchExporter,
       respectRobotsTxt: !options.ignoreRobotsTxt,
       robotsTxtPath: options.robotsPath,
