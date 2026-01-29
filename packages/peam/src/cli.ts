@@ -43,25 +43,20 @@ const CliSchema = z.object({
   projectDir: z.string().default(process.cwd()),
 });
 
-type Cli = z.infer<typeof CliSchema>;
-type Builder = z.infer<typeof BuilderSchema>;
-
 // ============================================================================
 // SCHEMA REGISTRY & METADATA EXTRACTION
 // ============================================================================
 
 const BUILDER_SCHEMAS = Object.fromEntries(
-  (BuilderSchema as unknown as z.ZodUnion<readonly z.ZodObject<z.ZodRawShape>[]>).options.map((option) => {
+  BuilderSchema.options.map((option) => {
     const typeLiteral = option.shape.type as z.ZodLiteral<string>;
-    const configSchema = option.shape.config as z.ZodObject<z.ZodRawShape>;
+    const configSchema = option.shape.config;
     return [typeLiteral.value, configSchema];
   })
 );
 
 const STORE_SCHEMAS = {
-  [((StoreSchema as z.ZodObject<z.ZodRawShape>).shape.type as z.ZodLiteral<string>).value]: (
-    StoreSchema as z.ZodObject<z.ZodRawShape>
-  ).shape.config as z.ZodObject<z.ZodRawShape>,
+  [(StoreSchema.shape.type as z.ZodLiteral<string>).value]: StoreSchema.shape.config,
 };
 
 const DEFAULT_BUILDER_TYPE = CliSchema.parse({}).builders[0]?.type;
@@ -76,7 +71,7 @@ function resolveSchemaDescription(schema: z.ZodTypeAny): string {
   if (schema.description) return schema.description;
 
   if ('unwrap' in schema && typeof schema.unwrap === 'function') {
-    const inner = schema.unwrap() as z.ZodTypeAny;
+    const inner = schema.unwrap();
     return resolveSchemaDescription(inner);
   }
 
@@ -277,7 +272,7 @@ function parseComponents(args: string[]): { builders: unknown[]; stores: unknown
 // EXECUTION
 // ============================================================================
 
-async function runPipeline(cli: Cli): Promise<void> {
+async function runPipeline(cli: z.infer<typeof CliSchema>): Promise<void> {
   logger.text('');
   logger.text(logger.bold(logger.cyan('Peam CLI')));
   logger.text('');
@@ -285,7 +280,7 @@ async function runPipeline(cli: Cli): Promise<void> {
   const allIndexData = [];
 
   for (const [i, builder] of cli.builders.entries()) {
-    const typedBuilder: Builder = builder;
+    const typedBuilder = builder;
     logger.text(logger.bold(`Builder ${i + 1}/${cli.builders.length}: ${typedBuilder.type}`));
     logger.text(`  ${logger.gray(JSON.stringify(typedBuilder, null, 2))}`);
     logger.text('');
@@ -375,4 +370,4 @@ if (require.main === module) {
   main();
 }
 
-export type { Cli };
+export default main;

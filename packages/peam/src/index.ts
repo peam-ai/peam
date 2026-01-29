@@ -1,1 +1,1 @@
-export { type Cli } from './cli';
+export * from './cli';
