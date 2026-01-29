@@ -1,7 +1,7 @@
 import { openai } from '@ai-sdk/openai';
 import { streamSearchText, streamSummarize } from '@peam-ai/ai';
 import { loggers } from '@peam-ai/logger';
-import { FileBasedSearchIndexExporter } from '@peam-ai/search';
+import { FileBasedSearchIndexStore } from '@peam-ai/search';
 import { createUIMessageStreamResponse } from 'ai';
 import { type CreateHandlerOptions, type HandlerRequestBody } from './types';
 import { getCurrentPage } from './utils/getCurrentPage';
@@ -16,18 +16,18 @@ const log = loggers.server;
  *
  * @param options - Configuration options for the handler
  * @param options.model - The language model to use (default: GPT-4o)
- * @param options.searchIndexExporter - The search index exporter to use for loading the search index (required)
+ * @param options.searchIndexStore - The search index store to use for loading the search index (required)
  * @returns An async function that handles HTTP requests
  *
  * @example
  * ```typescript
  * import { createHandler } from 'peam/server';
  * import { openai } from '@ai-sdk/openai';
- * import { FileBasedSearchIndexExporter } from '@peam-ai/search';
+ * import { FileBasedSearchIndexStore } from '@peam-ai/search';
  *
  * export const POST = createHandler({
  *   model: openai('gpt-4o'),
- *   searchIndexExporter: new FileBasedSearchIndexExporter({
+ *   searchIndexStore: new FileBasedSearchIndexStore({
  *     indexPath: 'generated/index.json'
  *   }),
  * });
@@ -90,16 +90,16 @@ export function createHandler(options: CreateHandlerOptions = {}) {
       const lastMessage = messages[messages.length - 1];
       const currentPage = getCurrentPage({ request: req, message: lastMessage });
 
-      options.searchIndexExporter =
-        options.searchIndexExporter ??
-        new FileBasedSearchIndexExporter({
+      options.searchIndexStore =
+        options.searchIndexStore ??
+        new FileBasedSearchIndexStore({
           indexPath: '.peam/index.json',
         });
 
-      if (!options.searchIndexExporter) {
+      if (!options.searchIndexStore) {
         return new Response(
           JSON.stringify({
-            error: 'Search index exporter not configured',
+            error: 'Search index store not configured',
           }),
           {
             status: 500,
@@ -108,7 +108,7 @@ export function createHandler(options: CreateHandlerOptions = {}) {
         );
       }
 
-      const searchEngine = await getSearchEngine(options.searchIndexExporter);
+      const searchEngine = await getSearchEngine(options.searchIndexStore);
 
       if (!searchEngine) {
         return new Response(

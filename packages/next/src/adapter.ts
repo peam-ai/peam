@@ -66,9 +66,9 @@ export function createPeamAdapter(config: ResolvedPeamAdapterConfig): NextAdapte
         return;
       }
 
-      await config.searchIndexExporter.export(searchIndexData);
+      await config.searchIndexStore.export(searchIndexData);
 
-      log.debug('Saved search index via exporter');
+      log.debug('Saved search index via store');
       log.debug('Extraction complete with total keys:', searchIndexData.keys.length);
     },
   };

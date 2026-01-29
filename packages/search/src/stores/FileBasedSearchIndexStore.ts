@@ -3,15 +3,15 @@ import * as fsSync from 'fs';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import type { SearchIndexData } from '../indexBuilder';
-import type { ExportOptions, SearchIndexExporter } from './SearchIndexExporter';
+import type { SearchIndexStore, StoreOptions } from './SearchIndexStore';
 
 const log = loggers.search;
 
 /**
- * Configuration for file-based search index exporter
- * @description Configuration for file-based search index exporter
+ * Configuration for file-based search index store
+ * @description Configuration for file-based search index store
  */
-export interface FileBasedSearchIndexExporterOptions {
+export interface FileBasedSearchIndexStoreOptions {
   /**
    * The path to the index file relative to baseDir
    * @description The path to the index file relative to baseDir
@@ -27,15 +27,15 @@ export interface FileBasedSearchIndexExporterOptions {
 }
 
 /**
- * File-based implementation of SearchIndexExporter
+ * File-based implementation of SearchIndexStore
  * Reads and writes search index data to/from a JSON file
  */
-export class FileBasedSearchIndexExporter implements SearchIndexExporter {
+export class FileBasedSearchIndexStore implements SearchIndexStore {
   private baseDir: string;
   private indexPath: string;
   private cachedData: SearchIndexData | null = null;
 
-  constructor(options: FileBasedSearchIndexExporterOptions) {
+  constructor(options: FileBasedSearchIndexStoreOptions) {
     this.baseDir = options.baseDir ?? process.cwd();
     this.indexPath = options.indexPath ?? '.peam/index.json';
   }
@@ -79,7 +79,7 @@ export class FileBasedSearchIndexExporter implements SearchIndexExporter {
     return data;
   }
 
-  async export(data: SearchIndexData, options: ExportOptions = { override: true }): Promise<void> {
+  async export(data: SearchIndexData, options: StoreOptions = { override: true }): Promise<void> {
     const fullPath = this.getFullPath();
 
     try {
@@ -105,7 +105,7 @@ export class FileBasedSearchIndexExporter implements SearchIndexExporter {
     }
   }
 
-  exportSync(data: SearchIndexData, options: ExportOptions = { override: true }): void {
+  exportSync(data: SearchIndexData, options: StoreOptions = { override: true }): void {
     const fullPath = this.getFullPath();
 
     try {

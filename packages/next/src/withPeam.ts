@@ -27,12 +27,12 @@ function addStubIndex() {
 
     const config = getConfig();
 
-    if (config.searchExporter?.type !== 'fileBased') {
+    if (config.searchStore?.type !== 'fileBased') {
       return;
     }
 
     const stubData = { keys: [], data: {} };
-    config.searchIndexExporter.exportSync?.(stubData, { override: false });
+    config.searchIndexStore.exportSync?.(stubData, { override: false });
   } catch (error) {
     log.error('Failed to create stub index:', error);
   }
@@ -60,14 +60,15 @@ function addAdapter(config: NextConfig): NextConfig {
 function addOutputFileTracing(nextConfig: NextConfig): NextConfig {
   const peamConfig = getConfig();
 
-  if (peamConfig.searchExporter?.type !== 'fileBased') {
+  if (peamConfig.searchStore?.type !== 'fileBased') {
     return nextConfig;
   }
 
   nextConfig = { ...nextConfig };
 
-  const exporterConfig = peamConfig.searchExporter.config;
-  const indexDir = path.dirname(exporterConfig.indexPath);
+  const storeConfig = peamConfig.searchStore.config;
+  const indexPath = storeConfig.indexPath ?? '.peam/index.json';
+  const indexDir = path.dirname(indexPath);
   const tracingConfig = {
     '/api/peam': [`./${indexDir}/**/*`],
   };

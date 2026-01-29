@@ -32,7 +32,7 @@ const SYMBOL_IMPORTS: Record<string, ImportMapping> = {
 
   // Types from '@peam-ai/next'
   PeamConfig: { module: '@peam-ai/next', isType: true },
-  SearchExporterConfig: { module: '@peam-ai/next', isType: true },
+  SearchStoreConfig: { module: '@peam-ai/next', isType: true },
 
   // AI SDK exports
   openai: { module: '@ai-sdk/openai' },

@@ -3,7 +3,7 @@
  */
 
 import { createBuilderFromConfig } from '@peam-ai/builder';
-import { createExporterFromConfig } from '@peam-ai/search';
+import { createStoreFromConfig } from '@peam-ai/search';
 import chalk from 'chalk';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -12,8 +12,8 @@ import { hideBin } from 'yargs/helpers';
 import { z } from 'zod';
 import { SearchBuilderConfigSchema as BuilderSchema } from './generated/builder-config.zod';
 import { FileBasedSearchIndexBuilderOptionsSchema } from './generated/builder-fileBased.zod';
-import { SearchExporterConfigSchema as ImporterSchema } from './generated/exporter-config.zod';
-import { FileBasedSearchIndexExporterOptionsSchema } from './generated/exporter-fileBased.zod';
+import { SearchStoreConfigSchema as StoreSchema } from './generated/store-config.zod';
+import { FileBasedSearchIndexStoreOptionsSchema } from './generated/store-fileBased.zod';
 
 const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
 
@@ -31,13 +31,13 @@ const CliSchema = z.object({
         config: FileBasedSearchIndexBuilderOptionsSchema.parse({}),
       },
     ]),
-  importers: z
-    .array(ImporterSchema)
-    .min(1, 'At least one importer is required')
+  stores: z
+    .array(StoreSchema)
+    .min(1, 'At least one store is required')
     .default([
       {
         type: 'fileBased',
-        config: FileBasedSearchIndexExporterOptionsSchema.parse({}),
+        config: FileBasedSearchIndexStoreOptionsSchema.parse({}),
       },
     ]),
   projectDir: z.string().default(process.cwd()),
@@ -58,9 +58,9 @@ const BUILDER_SCHEMAS = Object.fromEntries(
   })
 );
 
-const IMPORTER_SCHEMAS = {
-  [((ImporterSchema as z.ZodObject<z.ZodRawShape>).shape.type as z.ZodLiteral<string>).value]: (
-    ImporterSchema as z.ZodObject<z.ZodRawShape>
+const STORE_SCHEMAS = {
+  [((StoreSchema as z.ZodObject<z.ZodRawShape>).shape.type as z.ZodLiteral<string>).value]: (
+    StoreSchema as z.ZodObject<z.ZodRawShape>
   ).shape.config as z.ZodObject<z.ZodRawShape>,
 };
 
@@ -137,21 +137,21 @@ function showTopLevelHelp(): void {
   logger.text('');
   logger.text(logger.bold('How it works:'));
   logger.text('  1. ' + logger.cyan('Builders') + ' discover and parse content');
-  logger.text('  2. ' + logger.cyan('Importers') + ' save the generated index');
+  logger.text('  2. ' + logger.cyan('Stores') + ' save the generated index');
   logger.text('');
   logger.text(logger.bold('Available builders:'));
   Object.entries(BUILDER_SCHEMAS).forEach(([type]) => {
     logger.text(`  ${logger.cyan(type)}`);
   });
   logger.text('');
-  logger.text(logger.bold('Available importers:'));
-  Object.entries(IMPORTER_SCHEMAS).forEach(([type]) => {
+  logger.text(logger.bold('Available stores:'));
+  Object.entries(STORE_SCHEMAS).forEach(([type]) => {
     logger.text(`  ${logger.cyan(type)}`);
   });
   logger.text('');
   logger.text(logger.bold('Learn more:'));
   logger.text(`  ${logger.cyan('peam --help builders')}   Show builder details`);
-  logger.text(`  ${logger.cyan('peam --help importers')}  Show importer details`);
+  logger.text(`  ${logger.cyan('peam --help stores')}     Show store details`);
   logger.text('');
 }
 
@@ -179,9 +179,9 @@ function showComponentHelp(title: string, schemas: Record<string, z.ZodObject<z.
 // PARSING HELPERS
 // ============================================================================
 
-function parseComponents(args: string[]): { builders: unknown[]; importers: unknown[] } {
+function parseComponents(args: string[]): { builders: unknown[]; stores: unknown[] } {
   const builders: unknown[] = [];
-  const importers: unknown[] = [];
+  const stores: unknown[] = [];
   let current: { type: string; config: Record<string, unknown> } | null = null;
 
   const parseValue = (value: string): unknown => {
@@ -213,13 +213,13 @@ function parseComponents(args: string[]): { builders: unknown[]; importers: unkn
       case '--builder':
         startComponent(args[++i], BUILDER_SCHEMAS, builders, arg);
         break;
-      case '--importer':
-        startComponent(args[++i], IMPORTER_SCHEMAS, importers, arg);
+      case '--store':
+        startComponent(args[++i], STORE_SCHEMAS, stores, arg);
         break;
       default: {
         if (!arg.startsWith('--')) break;
         if (!current) {
-          logger.error(`${arg} must come after --builder or --importer`);
+          logger.error(`${arg} must come after --builder or --store`);
           process.exit(1);
         }
         const target = current as { type: string; config: Record<string, unknown> };
@@ -229,7 +229,7 @@ function parseComponents(args: string[]): { builders: unknown[]; importers: unkn
     }
   }
 
-  return { builders, importers };
+  return { builders, stores };
 }
 
 // ============================================================================
@@ -271,12 +271,12 @@ async function runPipeline(cli: Cli): Promise<void> {
 
   const merged = allIndexData[0]; // TODO: merge strategy
 
-  for (const [i, importer] of cli.importers.entries()) {
-    logger.text(logger.bold(`Importer ${i + 1}/${cli.importers.length}: ${importer.type}`));
-    logger.text(`  ${logger.gray(JSON.stringify(importer, null, 2))}`);
+  for (const [i, store] of cli.stores.entries()) {
+    logger.text(logger.bold(`Store ${i + 1}/${cli.stores.length}: ${store.type}`));
+    logger.text(`  ${logger.gray(JSON.stringify(store, null, 2))}`);
     logger.text('');
 
-    const instance = createExporterFromConfig(importer);
+    const instance = createStoreFromConfig(store);
     await instance.export(merged);
   }
 
@@ -302,7 +302,7 @@ async function main() {
     const idx = args.indexOf('--help') >= 0 ? args.indexOf('--help') : args.indexOf('-h');
     const next = args[idx + 1];
     if (next === 'builders') return showComponentHelp('Builders', BUILDER_SCHEMAS);
-    if (next === 'importers') return showComponentHelp('Importers', IMPORTER_SCHEMAS);
+    if (next === 'stores') return showComponentHelp('Stores', STORE_SCHEMAS);
     return showTopLevelHelp();
   }
 
@@ -311,11 +311,11 @@ async function main() {
   }
 
   try {
-    const { builders, importers } = parseComponents(args);
+    const { builders, stores } = parseComponents(args);
 
     const config = CliSchema.parse({
       builders: builders.length > 0 ? builders : undefined,
-      importers: importers.length > 0 ? importers : undefined,
+      stores: stores.length > 0 ? stores : undefined,
       projectDir: process.cwd(),
     });
     await runPipeline(config);

@@ -1,6 +1,6 @@
 import type { SearchIndexData } from '../indexBuilder';
 
-export type ExportOptions = {
+export type StoreOptions = {
   /**
    * Whether to override existing index data
    * @default false
@@ -9,9 +9,9 @@ export type ExportOptions = {
 };
 
 /**
- * Interface for exporting and importing search indexes
+ * Interface for storing and loading search indexes
  */
-export interface SearchIndexExporter {
+export interface SearchIndexStore {
   /**
    * Import a search index from storage
    * @returns The search index data or null if not available
@@ -21,14 +21,14 @@ export interface SearchIndexExporter {
   /**
    * Export a search index to storage
    * @param data The search index data to save
-   * @param options Exporter options
+   * @param options Store options
    */
-  export(data: SearchIndexData, options?: ExportOptions): Promise<void>;
+  export(data: SearchIndexData, options?: StoreOptions): Promise<void>;
 
   /**
    * Synchronous export of search index to storage
    * @param data
-   * @param options Exporter options
+   * @param options Store options
    */
-  exportSync?(data: SearchIndexData, options?: ExportOptions): void;
+  exportSync?(data: SearchIndexData, options?: StoreOptions): void;
 }

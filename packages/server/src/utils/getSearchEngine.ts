@@ -1,14 +1,14 @@
 import { loggers } from '@peam-ai/logger';
-import { SearchEngine, type SearchIndexExporter } from '@peam-ai/search';
+import { SearchEngine, type SearchIndexStore } from '@peam-ai/search';
 
 const log = loggers.server;
 let searchEngine: SearchEngine | null = null;
 
-export async function getSearchEngine(exporter: SearchIndexExporter): Promise<SearchEngine | undefined> {
+export async function getSearchEngine(store: SearchIndexStore): Promise<SearchEngine | undefined> {
   if (searchEngine) return searchEngine;
 
   try {
-    const indexData = await exporter.import();
+    const indexData = await store.import();
 
     if (!indexData || !indexData.keys || indexData.keys.length === 0) {
       log.debug('Search index not yet generated. Run build first to generate the index.');

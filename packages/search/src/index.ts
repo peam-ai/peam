@@ -7,9 +7,9 @@ export type { StructuredPageDocumentData } from './types';
 export type { SearchEngineConfig } from './searchEngine';
 
 export {
-  FileBasedSearchIndexExporter,
-  createExporterFromConfig,
-  type FileBasedSearchIndexExporterOptions,
-  type SearchExporterConfig,
-  type SearchIndexExporter,
-} from './exporters';
+  FileBasedSearchIndexStore,
+  createStoreFromConfig,
+  type FileBasedSearchIndexStoreOptions,
+  type SearchIndexStore,
+  type SearchStoreConfig,
+} from './stores';

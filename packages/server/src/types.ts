@@ -1,4 +1,4 @@
-import { type SearchIndexExporter } from '@peam-ai/search';
+import { type SearchIndexStore } from '@peam-ai/search';
 import { UIMessage, type LanguageModel } from 'ai';
 
 /**
@@ -29,10 +29,10 @@ export interface CreateHandlerOptions {
    */
   model?: LanguageModel;
   /**
-   * Search index exporter to use for loading the search index.
+   * Search index store to use for loading the search index.
    * If not provided, the handler will return an error when search is needed.
    */
-  searchIndexExporter?: SearchIndexExporter;
+  searchIndexStore?: SearchIndexStore;
 }
 
 /**

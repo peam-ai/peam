@@ -12,5 +12,5 @@ import { getConfig } from './config';
 const config = getConfig();
 
 export const POST = createHandler({
-  searchIndexExporter: config.searchIndexExporter,
+  searchIndexStore: config.searchIndexStore,
 });
