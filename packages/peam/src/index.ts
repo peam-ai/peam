@@ -1,1 +1,1 @@
-export { indexPages, type IndexerConfig } from './cli';
+export { type Cli } from './cli';

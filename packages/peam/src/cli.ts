@@ -1,311 +1,333 @@
 /**
- * Peam Static Site Indexer
- *
- * Scans a static site output directory, discovers HTML files,
- * parses them into structured pages, and creates a searchable index.
+ * Peam CLI
  */
 
-import { createBuilderFromConfig, type SearchBuilderConfig } from '@peam-ai/builder';
-import { createExporterFromConfig, type SearchExporterConfig } from '@peam-ai/search';
+import { createBuilderFromConfig } from '@peam-ai/builder';
+import { createExporterFromConfig } from '@peam-ai/search';
 import chalk from 'chalk';
-import { Command } from 'commander';
-import { existsSync, readFileSync } from 'fs';
-import { join, relative } from 'path';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import { z } from 'zod';
+import { SearchBuilderConfigSchema as BuilderSchema } from './generated/builder-config.zod';
+import { FileBasedSearchIndexBuilderOptionsSchema } from './generated/builder-fileBased.zod';
+import { SearchExporterConfigSchema as ImporterSchema } from './generated/exporter-config.zod';
+import { FileBasedSearchIndexExporterOptionsSchema } from './generated/exporter-fileBased.zod';
 
 const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8'));
 
-interface IndexerConfig {
-  source: string;
-  searchBuilder: SearchBuilderConfig;
-  searchExporter: SearchExporterConfig;
-  respectRobotsTxt: boolean;
-  robotsTxtPath?: string;
-  exclude: string[];
-  glob: string;
-  projectDir: string;
+// ============================================================================
+// CLI SCHEMAS
+// ============================================================================
+
+const CliSchema = z.object({
+  builders: z
+    .array(BuilderSchema)
+    .min(1, 'At least one builder is required')
+    .default([
+      {
+        type: 'fileBased',
+        config: FileBasedSearchIndexBuilderOptionsSchema.parse({}),
+      },
+    ]),
+  importers: z
+    .array(ImporterSchema)
+    .min(1, 'At least one importer is required')
+    .default([
+      {
+        type: 'fileBased',
+        config: FileBasedSearchIndexExporterOptionsSchema.parse({}),
+      },
+    ]),
+  projectDir: z.string().default(process.cwd()),
+});
+
+type Cli = z.infer<typeof CliSchema>;
+type Builder = z.infer<typeof BuilderSchema>;
+
+// ============================================================================
+// SCHEMA REGISTRY & METADATA EXTRACTION
+// ============================================================================
+
+const BUILDER_SCHEMAS = Object.fromEntries(
+  (BuilderSchema as unknown as z.ZodUnion<readonly z.ZodObject<z.ZodRawShape>[]>).options.map((option) => {
+    const typeLiteral = option.shape.type as z.ZodLiteral<string>;
+    const configSchema = option.shape.config as z.ZodObject<z.ZodRawShape>;
+    return [typeLiteral.value, configSchema];
+  })
+);
+
+const IMPORTER_SCHEMAS = {
+  [((ImporterSchema as z.ZodObject<z.ZodRawShape>).shape.type as z.ZodLiteral<string>).value]: (
+    ImporterSchema as z.ZodObject<z.ZodRawShape>
+  ).shape.config as z.ZodObject<z.ZodRawShape>,
+};
+
+interface SchemaMetadata {
+  description: string;
+  options: Record<string, { description: string; required: boolean; default?: unknown }>;
 }
 
-function parseExcludePatterns(value: string): string[] {
-  return value
-    .split(',')
-    .map((p) => p.trim())
-    .filter(Boolean);
-}
+function resolveSchemaDescription(schema: z.ZodTypeAny): string {
+  if (schema.description) return schema.description;
 
-/**
- * Parse exporterConfig key=value pairs
- */
-function parseExporterConfigEntry(value: string, previous: string[] = []): string[] {
-  return [...previous, value];
-}
-
-/**
- * Parse builderConfig key=value pairs
- */
-function parseBuilderConfigEntry(value: string, previous: string[] = []): string[] {
-  return [...previous, value];
-}
-
-/**
- * Parse command line options and extract builder configuration dynamically.
- * Supports --builderConfig key=value pairs
- */
-function parseBuilderConfig(
-  options: Record<string, unknown>,
-  builderType: string,
-  sourceDir: string,
-  glob: string,
-  respectRobotsTxt: boolean,
-  robotsTxtPath: string | undefined,
-  exclude: string[],
-  projectDir: string
-): SearchBuilderConfig {
-  const builderConfig: Record<string, unknown> = {
-    sourceDir,
-    glob,
-    respectRobotsTxt,
-    exclude,
-    projectDir,
-  };
-
-  if (robotsTxtPath) {
-    builderConfig.robotsTxtPath = robotsTxtPath;
+  if ('unwrap' in schema && typeof schema.unwrap === 'function') {
+    const inner = schema.unwrap() as z.ZodTypeAny;
+    return resolveSchemaDescription(inner);
   }
 
-  // Parse key=value pairs from --builderConfig options
-  if (Array.isArray(options.builderConfig)) {
-    for (const entry of options.builderConfig) {
-      if (typeof entry === 'string') {
-        const [key, ...valueParts] = entry.split('=');
-        const value = valueParts.join('=');
-        if (key && value !== undefined) {
-          builderConfig[key.trim()] = value.trim();
-        }
-      }
+  return '';
+}
+
+function getSchemaMetadata(schema: z.ZodObject<z.ZodRawShape>): SchemaMetadata {
+  const description = schema.description || '';
+  const shape = schema.shape;
+  const options: Record<string, { description: string; required: boolean; default?: unknown }> = {};
+
+  for (const [key, value] of Object.entries(shape)) {
+    if (key === 'type') continue; // Skip the discriminator field
+
+    const zodType = value as z.ZodTypeAny;
+    const desc = resolveSchemaDescription(zodType);
+
+    const testResult = zodType.safeParse(undefined);
+    const isOptional = testResult.success;
+
+    let defaultValue: unknown = undefined;
+    if (testResult.success && testResult.data !== undefined) {
+      defaultValue = testResult.data;
     }
+
+    options[key] = {
+      description: desc,
+      required: !isOptional && defaultValue === undefined,
+      ...(defaultValue !== undefined && { default: defaultValue }),
+    };
   }
 
-  return {
-    type: builderType,
-    config: builderConfig,
-  } as unknown as SearchBuilderConfig;
+  return { description, options };
 }
 
-/**
- * Parse command line options and extract exporter configuration dynamically.
- * Supports --exporterConfig key=value pairs
- */
-function parseExporterConfig(options: Record<string, unknown>, exporterType: string): SearchExporterConfig {
-  const exporterConfig: Record<string, unknown> = {};
+// ============================================================================
+// LOGGING
+// ============================================================================
 
-  // Parse key=value pairs from --exporterConfig options
-  if (Array.isArray(options.exporterConfig)) {
-    for (const entry of options.exporterConfig) {
-      if (typeof entry === 'string') {
-        const [key, ...valueParts] = entry.split('=');
-        const value = valueParts.join('=');
-        if (key && value !== undefined) {
-          exporterConfig[key.trim()] = value.trim();
-        }
-      }
-    }
-  }
-
-  return {
-    type: exporterType,
-    config: exporterConfig,
-  } as unknown as SearchExporterConfig;
-}
-
-const log = {
-  success: (message: string) => console.log(chalk.green('✓ ') + message),
-  error: (message: string) => console.error(chalk.red('✗ ') + message),
-  warn: (message: string) => console.warn(chalk.yellow('⚠ ') + message),
-  info: (message: string) => console.log(chalk.blue('ℹ ') + message),
-  text: (message: string) => console.log(message),
-
+const logger = {
+  success: (msg: string) => console.log(chalk.green('✓ ') + msg),
+  error: (msg: string) => console.error(chalk.red('✗ ') + msg),
+  warn: (msg: string) => console.warn(chalk.yellow('⚠ ') + msg),
+  info: (msg: string) => console.log(chalk.blue('ℹ ') + msg),
+  text: (msg: string) => console.log(msg),
   cyan: (text: string) => chalk.cyan(text),
   gray: (text: string) => chalk.gray(text),
   bold: (text: string) => chalk.bold(text),
   yellow: (text: string) => chalk.yellow(text),
-  red: (text: string) => chalk.red(text),
-  green: (text: string) => chalk.green(text),
 };
 
-async function indexPages(config: IndexerConfig): Promise<void> {
-  log.text('\n' + log.bold(log.cyan('Peam Static Site Indexer')) + '\n');
-  log.text(log.bold('Configuration:'));
-  log.text(`  Project Directory: ${log.gray(config.projectDir)}`);
-  log.text(`  Source Directory: ${log.gray(config.source)}`);
-  log.text(`  Glob Pattern: ${log.gray(config.glob)}`);
-  log.text(`  Exporter Type: ${log.gray(config.searchExporter.type)}`);
-  log.text(`  Exporter Config: ${log.gray(JSON.stringify(config.searchExporter.config, null, 2))}`);
-  log.text(`  Respect robots.txt: ${log.gray(config.respectRobotsTxt.toString())}`);
-  if (config.exclude.length > 0) {
-    log.text(`  Exclude Patterns: ${log.gray(config.exclude.join(', '))}`);
-  }
-  log.text('');
+// ============================================================================
+// HELP RENDERING
+// ============================================================================
 
-  const sourcePath = join(config.projectDir, config.source);
-  if (!existsSync(sourcePath)) {
-    log.error(`Source directory not found: ${sourcePath}`);
-    log.text(log.yellow('   Please build your site first or specify the correct --source directory'));
-    process.exit(1);
-  }
-
-  log.text(log.bold('Building search index from HTML files...'));
-  log.text('');
-
-  // Use builder to create the search index
-  const builder = createBuilderFromConfig(config.searchBuilder);
-  const searchIndexData = await builder.build();
-
-  if (!searchIndexData) {
-    log.text('');
-    log.warn('No search index data generated');
-    log.text(log.yellow('   Check that your source directory contains HTML files'));
-    log.text(log.yellow(`   Source: ${sourcePath}`));
-    if (config.searchBuilder.type === 'fileBased') {
-      log.text(log.yellow(`   Pattern: ${config.searchBuilder.config.glob}`));
-    }
-    process.exit(1);
-  }
-
-  log.text('');
-  log.success(`Successfully indexed ${log.bold(searchIndexData.keys.length.toString())} pages`);
-  log.text('');
-  log.text(log.bold('Saving index...'));
-  log.text('');
-
-  const searchIndexExporter = createExporterFromConfig(config.searchExporter);
-  await searchIndexExporter.export(searchIndexData);
-
-  const indexPathDisplay =
-    config.searchExporter.type === 'fileBased'
-      ? relative(config.projectDir, join(config.projectDir, config.searchExporter.config.indexPath))
-      : 'configured location';
-
-  log.success(`Index saved to: ${log.cyan(indexPathDisplay)}`);
-  log.text(`  Total pages indexed: ${log.bold(searchIndexData.keys.length.toString())}`);
-  log.text(
-    `  Index size: ${log.bold((Buffer.byteLength(JSON.stringify(searchIndexData), 'utf8') / 1024).toFixed(2))} KB`
-  );
-  log.text('');
-  log.success(log.bold('Indexing complete!'));
-  log.text('');
+function showTopLevelHelp(): void {
+  logger.text('');
+  logger.text(logger.bold(logger.cyan('Peam Static Site Indexer')));
+  logger.text('');
+  logger.text('Build search indexes from your content and export them to various destinations.');
+  logger.text('');
+  logger.text(logger.bold('How it works:'));
+  logger.text('  1. ' + logger.cyan('Builders') + ' discover and parse content');
+  logger.text('  2. ' + logger.cyan('Importers') + ' save the generated index');
+  logger.text('');
+  logger.text(logger.bold('Available builders:'));
+  Object.entries(BUILDER_SCHEMAS).forEach(([type]) => {
+    logger.text(`  ${logger.cyan(type)}`);
+  });
+  logger.text('');
+  logger.text(logger.bold('Available importers:'));
+  Object.entries(IMPORTER_SCHEMAS).forEach(([type]) => {
+    logger.text(`  ${logger.cyan(type)}`);
+  });
+  logger.text('');
+  logger.text(logger.bold('Learn more:'));
+  logger.text(`  ${logger.cyan('peam --help builders')}   Show builder details`);
+  logger.text(`  ${logger.cyan('peam --help importers')}  Show importer details`);
+  logger.text('');
 }
 
-function probeSourceDirectory(projectDir: string): string | null {
-  const commonDirs = ['.next', '.build', '.out', 'dist'];
-
-  for (const dir of commonDirs) {
-    const fullPath = join(projectDir, dir);
-    if (existsSync(fullPath)) {
-      return dir;
-    }
-  }
-
-  return null;
+function showComponentHelp(title: string, schemas: Record<string, z.ZodObject<z.ZodRawShape>>): void {
+  logger.text('');
+  logger.text(logger.bold(logger.cyan(title)));
+  logger.text('');
+  Object.entries(schemas).forEach(([type, schema]) => {
+    const meta = getSchemaMetadata(schema);
+    logger.text(logger.bold(logger.cyan(type)));
+    logger.text(`  ${meta.description}`);
+    logger.text('');
+    logger.text('  Options:');
+    Object.entries(meta.options).forEach(([name, opt]) => {
+      const req = opt.required ? logger.yellow(' (required)') : '';
+      const def = 'default' in opt ? logger.gray(` [${JSON.stringify(opt.default)}]`) : '';
+      logger.text(`    --${name}${req}${def}`);
+      logger.text(`      ${logger.gray(opt.description)}`);
+    });
+    logger.text('');
+  });
 }
 
-async function main() {
-  const program = new Command();
+// ============================================================================
+// PARSING HELPERS
+// ============================================================================
 
-  program
-    .name('peam')
-    .description('Peam static site indexer (Next.js, Hugo, etc.)')
-    .version(packageJson.version)
-    .option('--source <path>', 'Source directory containing HTML files (auto-detected if not provided)')
-    .option('--glob <pattern>', 'Glob pattern for HTML files', '**/*.{html,htm}')
-    .option('--builder <type>', 'Search builder type', 'fileBased')
-    .option('--builderConfig <key=value>', 'Builder config entry (repeatable)', parseBuilderConfigEntry, [])
-    .option('--exporter <type>', 'Search exporter type', 'fileBased')
-    .option('--exporterConfig <key=value>', 'Exporter config entry (repeatable)', parseExporterConfigEntry, [
-      `baseDir=${process.cwd()}`,
-      'indexPath=.peam/index.json',
-    ])
-    .option('--ignore-robots-txt', 'Disable robots.txt checking')
-    .option('--robots-path <path>', 'Custom path to robots.txt file')
-    .option('--exclude <patterns>', 'Comma-separated exclude patterns', parseExcludePatterns, [])
-    .option('--project-dir <path>', 'Project root directory', process.cwd())
-    .addHelpText(
-      'after',
-      `
-Examples:
-  # Auto-detect build directory
-  $ peam
+function parseComponents(args: string[]): { builders: unknown[]; importers: unknown[] } {
+  const builders: unknown[] = [];
+  const importers: unknown[] = [];
+  let current: { type: string; config: Record<string, unknown> } | null = null;
 
-  # Hugo
-  $ peam --source public
+  const parseValue = (value: string): unknown => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    if (!isNaN(Number(value))) return Number(value);
+    return value;
+  };
 
-  # Next.js
-  $ peam --source .next
+  const startComponent = (
+    type: string | undefined,
+    schemas: Record<string, z.ZodObject<z.ZodRawShape>>,
+    target: unknown[],
+    label: string
+  ) => {
+    if (!type || !(type in schemas)) {
+      logger.error(`Unknown ${label}: ${type}`);
+      logger.text(logger.yellow(`Available: ${Object.keys(schemas).join(', ')}`));
+      process.exit(1);
+    }
+    current = { type, config: {} };
+    target.push(current);
+  };
 
-  # Custom index path using file-based exporter
-  $ peam --source dist --exporterConfig indexPath=.search/index.json
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
 
-  # Multiple exporter config entries
-  $ peam --exporterConfig indexPath=custom/index.json --exporterConfig baseDir=/tmp
-
-  # Exclude patterns
-  $ peam --exclude "/admin/**,/api/*,/private-*"
-
-  # Custom builder configuration
-  $ peam --builder fileBased --builderConfig glob=**/*.html
-
-For Next.js 15+, the @peam-ai/next integration is recommended for production use.
-
-More information: https://peam.ai
-    `
-    )
-    .parse();
-
-  const options = program.opts();
-
-  try {
-    let sourceDir = options.source;
-    if (!sourceDir) {
-      const probedDir = probeSourceDirectory(options.projectDir);
-      if (probedDir) {
-        sourceDir = probedDir;
-        log.info(`Auto-detected source directory: ${log.cyan(probedDir)}`);
-        log.text('');
-      } else {
-        log.error('No build output directory found');
-        log.text(log.yellow('   Searched for: .next, .build, .out'));
-        log.text(log.yellow('   Please build your site first or specify --source <directory>'));
-        process.exit(1);
+    switch (arg) {
+      case '--builder':
+        startComponent(args[++i], BUILDER_SCHEMAS, builders, arg);
+        break;
+      case '--importer':
+        startComponent(args[++i], IMPORTER_SCHEMAS, importers, arg);
+        break;
+      default: {
+        if (!arg.startsWith('--')) break;
+        if (!current) {
+          logger.error(`${arg} must come after --builder or --importer`);
+          process.exit(1);
+        }
+        const target = current as { type: string; config: Record<string, unknown> };
+        target.config[arg.slice(2)] = parseValue(args[++i]);
+        break;
       }
     }
+  }
 
-    const searchBuilder = parseBuilderConfig(
-      options,
-      options.builder,
-      sourceDir,
-      options.glob,
-      !options.ignoreRobotsTxt,
-      options.robotsPath,
-      options.exclude,
-      options.projectDir
-    );
+  return { builders, importers };
+}
 
-    const searchExporter = parseExporterConfig(options, options.exporter);
+// ============================================================================
+// EXECUTION
+// ============================================================================
 
-    const config: IndexerConfig = {
-      source: sourceDir,
-      glob: options.glob,
-      searchBuilder,
-      searchExporter,
-      respectRobotsTxt: !options.ignoreRobotsTxt,
-      robotsTxtPath: options.robotsPath,
-      exclude: options.exclude,
-      projectDir: options.projectDir,
-    };
+async function runPipeline(cli: Cli): Promise<void> {
+  logger.text('');
+  logger.text(logger.bold(logger.cyan('Peam CLI')));
+  logger.text('');
 
-    await indexPages(config);
+  const allIndexData = [];
+
+  for (const [i, builder] of cli.builders.entries()) {
+    const typedBuilder: Builder = builder;
+    logger.text(logger.bold(`Builder ${i + 1}/${cli.builders.length}: ${typedBuilder.type}`));
+    logger.text(`  ${logger.gray(JSON.stringify(typedBuilder, null, 2))}`);
+    logger.text('');
+
+    // Create builder instance - handle each type with proper narrowing
+    const instance = createBuilderFromConfig(typedBuilder);
+
+    const data = await instance.build();
+
+    if (!data) {
+      logger.warn(`No data from builder ${i + 1}`);
+      continue;
+    }
+
+    logger.success(`Indexed ${logger.bold(String(data.keys.length))} pages`);
+    logger.text('');
+    allIndexData.push(data);
+  }
+
+  if (allIndexData.length === 0) {
+    logger.error('No data generated');
+    process.exit(1);
+  }
+
+  const merged = allIndexData[0]; // TODO: merge strategy
+
+  for (const [i, importer] of cli.importers.entries()) {
+    logger.text(logger.bold(`Importer ${i + 1}/${cli.importers.length}: ${importer.type}`));
+    logger.text(`  ${logger.gray(JSON.stringify(importer, null, 2))}`);
+    logger.text('');
+
+    const instance = createExporterFromConfig(importer);
+    await instance.export(merged);
+  }
+
+  logger.text(`Pages: ${logger.bold(String(merged.keys.length))}`);
+  logger.text(`Size: ${logger.bold((Buffer.byteLength(JSON.stringify(merged), 'utf8') / 1024).toFixed(2))} KB`);
+
+  logger.success(logger.bold('Pipeline complete!'));
+  logger.text('');
+}
+
+// ============================================================================
+// MAIN
+// ============================================================================
+
+async function main() {
+  // Use yargs for version parsing, but we handle everything else manually
+  yargs(hideBin(process.argv)).scriptName('peam').version(packageJson.version).help(false).parse();
+
+  const args = process.argv.slice(2);
+
+  // Custom help
+  if (args.includes('--help') || args.includes('-h')) {
+    const idx = args.indexOf('--help') >= 0 ? args.indexOf('--help') : args.indexOf('-h');
+    const next = args[idx + 1];
+    if (next === 'builders') return showComponentHelp('Builders', BUILDER_SCHEMAS);
+    if (next === 'importers') return showComponentHelp('Importers', IMPORTER_SCHEMAS);
+    return showTopLevelHelp();
+  }
+
+  if (args.includes('--version') || args.includes('-v')) {
+    return logger.text(packageJson.version);
+  }
+
+  try {
+    const { builders, importers } = parseComponents(args);
+
+    const config = CliSchema.parse({
+      builders: builders.length > 0 ? builders : undefined,
+      importers: importers.length > 0 ? importers : undefined,
+      projectDir: process.cwd(),
+    });
+    await runPipeline(config);
   } catch (error) {
-    log.text('');
-    log.error(`Fatal error: ${error}`);
+    if (error instanceof z.ZodError) {
+      logger.error('Validation failed:');
+      error.issues.forEach((err) => {
+        logger.text(logger.yellow(`  ${err.path.join('.')}: ${err.message}`));
+      });
+    } else {
+      logger.error(`Error: ${error}`);
+    }
     process.exit(1);
   }
 }
@@ -314,4 +336,4 @@ if (require.main === module) {
   main();
 }
 
-export { indexPages, type IndexerConfig };
+export type { Cli };
