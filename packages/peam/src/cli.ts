@@ -3,7 +3,7 @@
  */
 
 import { createBuilderFromConfig } from '@peam-ai/builder';
-import { createStoreFromConfig } from '@peam-ai/search';
+import { createStoreFromConfig, type SearchIndexData } from '@peam-ai/search';
 import chalk from 'chalk';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -64,6 +64,9 @@ const STORE_SCHEMAS = {
   ).shape.config as z.ZodObject<z.ZodRawShape>,
 };
 
+const DEFAULT_BUILDER_TYPE = CliSchema.parse({}).builders[0]?.type;
+const DEFAULT_STORE_TYPE = CliSchema.parse({}).stores[0]?.type;
+
 interface SchemaMetadata {
   description: string;
   options: Record<string, { description: string; required: boolean; default?: unknown }>;
@@ -123,6 +126,22 @@ const logger = {
   gray: (text: string) => chalk.gray(text),
   bold: (text: string) => chalk.bold(text),
   yellow: (text: string) => chalk.yellow(text),
+};
+
+const PEAM_DOCUMENT_IDS_KEY = 'peam.documentIds';
+
+const pageCount = (data: SearchIndexData): number => {
+  const raw = data.data?.[PEAM_DOCUMENT_IDS_KEY];
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed.length;
+    } catch {
+      // fall back below
+    }
+  }
+  if (Array.isArray(raw)) return raw.length;
+  return data.keys.length;
 };
 
 // ============================================================================
@@ -211,10 +230,32 @@ function parseComponents(args: string[]): { builders: unknown[]; stores: unknown
 
     switch (arg) {
       case '--builder':
-        startComponent(args[++i], BUILDER_SCHEMAS, builders, arg);
+        if (args[i + 1] && !args[i + 1].startsWith('--')) {
+          const nextType = args[i + 1];
+          if (!(nextType in BUILDER_SCHEMAS)) {
+            logger.error(`Unknown ${arg}: ${nextType}`);
+            logger.text(logger.yellow(`Available: ${Object.keys(BUILDER_SCHEMAS).join(', ')}`));
+            process.exit(1);
+          }
+          startComponent(nextType, BUILDER_SCHEMAS, builders, arg);
+          i++;
+        } else {
+          startComponent(DEFAULT_BUILDER_TYPE, BUILDER_SCHEMAS, builders, arg);
+        }
         break;
       case '--store':
-        startComponent(args[++i], STORE_SCHEMAS, stores, arg);
+        if (args[i + 1] && !args[i + 1].startsWith('--')) {
+          const nextType = args[i + 1];
+          if (!(nextType in STORE_SCHEMAS)) {
+            logger.error(`Unknown ${arg}: ${nextType}`);
+            logger.text(logger.yellow(`Available: ${Object.keys(STORE_SCHEMAS).join(', ')}`));
+            process.exit(1);
+          }
+          startComponent(nextType, STORE_SCHEMAS, stores, arg);
+          i++;
+        } else {
+          startComponent(DEFAULT_STORE_TYPE, STORE_SCHEMAS, stores, arg);
+        }
         break;
       default: {
         if (!arg.startsWith('--')) break;
@@ -259,7 +300,7 @@ async function runPipeline(cli: Cli): Promise<void> {
       continue;
     }
 
-    logger.success(`Indexed ${logger.bold(String(data.keys.length))} pages`);
+    logger.success(`Indexed ${logger.bold(String(pageCount(data)))} pages`);
     logger.text('');
     allIndexData.push(data);
   }
@@ -280,7 +321,7 @@ async function runPipeline(cli: Cli): Promise<void> {
     await instance.export(merged);
   }
 
-  logger.text(`Pages: ${logger.bold(String(merged.keys.length))}`);
+  logger.success(`Saved ${logger.bold(String(pageCount(merged)))} pages`);
   logger.text(`Size: ${logger.bold((Buffer.byteLength(JSON.stringify(merged), 'utf8') / 1024).toFixed(2))} KB`);
 
   logger.success(logger.bold('Pipeline complete!'));
