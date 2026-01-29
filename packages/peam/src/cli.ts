@@ -290,7 +290,6 @@ async function runPipeline(cli: Cli): Promise<void> {
     logger.text(`  ${logger.gray(JSON.stringify(typedBuilder, null, 2))}`);
     logger.text('');
 
-    // Create builder instance - handle each type with proper narrowing
     const instance = createBuilderFromConfig(typedBuilder);
 
     const data = await instance.build();
@@ -333,7 +332,6 @@ async function runPipeline(cli: Cli): Promise<void> {
 // ============================================================================
 
 async function main() {
-  // Use yargs for version parsing, but we handle everything else manually
   yargs(hideBin(process.argv)).scriptName('peam').version(packageJson.version).help(false).parse();
 
   const args = process.argv.slice(2);
