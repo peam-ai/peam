@@ -2,10 +2,10 @@
 import { z } from "zod";
 
 export const FileBasedSearchIndexBuilderOptionsSchema = z.object({
-    sourceDir: z.string().optional().describe("Directory containing HTML files (auto-detected if not provided)"),
+    sourceDir: z.string().optional().describe("Directory containing files to index (auto-detected if not provided)"),
     projectDir: z.string().optional().describe("Project root directory"),
     glob: z.string().optional().describe("Glob pattern for HTML files").default("**\\/*.{html,htm}"),
     respectRobotsTxt: z.boolean().optional().describe("Respect robots.txt rules").default(true),
-    robotsTxtPath: z.string().optional().describe("Custom path to robots.txt"),
-    exclude: z.union([z.array(z.string()), z.string()]).optional().describe("Patterns to exclude (comma-separated)").default([])
+    robotsTxtPath: z.string().optional().describe("Path to robots.txt file"),
+    exclude: z.union([z.array(z.string()), z.string()]).optional().describe("Patterns to exclude from indexing (comma-separated)").default([])
 });

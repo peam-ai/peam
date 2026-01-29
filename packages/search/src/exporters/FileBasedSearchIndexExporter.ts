@@ -7,14 +7,21 @@ import type { ExportOptions, SearchIndexExporter } from './SearchIndexExporter';
 
 const log = loggers.search;
 
+/**
+ * Configuration for file-based search index exporter
+ * @description Configuration for file-based search index exporter
+ */
 export interface FileBasedSearchIndexExporterOptions {
   /**
    * The path to the index file relative to baseDir
+   * @description The path to the index file relative to baseDir
+   * @default .peam/index.json
    */
-  indexPath: string;
+  indexPath?: string;
 
   /**
    * The directory where the index file is located
+   * @description The directory where the index file is located
    */
   baseDir?: string;
 }
@@ -30,7 +37,7 @@ export class FileBasedSearchIndexExporter implements SearchIndexExporter {
 
   constructor(options: FileBasedSearchIndexExporterOptions) {
     this.baseDir = options.baseDir ?? process.cwd();
-    this.indexPath = options.indexPath;
+    this.indexPath = options.indexPath ?? '.peam/index.json';
   }
 
   private getFullPath(): string {

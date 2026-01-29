@@ -75,4 +75,5 @@ export const loggers = {
   ai: createLogger('peam:ai'),
   ui: createLogger('peam:ui'),
   search: createLogger('peam:search'),
+  builder: createLogger('peam:builder'),
 };

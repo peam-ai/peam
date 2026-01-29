@@ -9,50 +9,69 @@ import {
 } from '@peam-ai/parser';
 import { buildSearchIndex, type SearchIndexData } from '@peam-ai/search';
 import fg from 'fast-glob';
+import { existsSync } from 'fs';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import type { SearchIndexBuilder } from './SearchIndexBuilder';
 
-const log = loggers.search;
+const log = loggers.builder;
+const sourceDirsToProbe = ['.next', '.build', '.out', 'dist'];
 
+function probeSourceDirectory(projectDir: string): string | undefined {
+  for (const dir of sourceDirsToProbe) {
+    if (existsSync(path.join(projectDir, dir))) return dir;
+  }
+  return undefined;
+}
+
+/**
+ * Configuration for file-based search index builder
+ * @description Scan a directory for files
+ */
 export interface FileBasedSearchIndexBuilderOptions {
   /**
-   * The source directory containing HTML files
+   * The source directory containing files to index  (auto-detected if not provided)
+   * @description Directory containing files to index (auto-detected if not provided)
    */
-  sourceDir: string;
+  sourceDir?: string;
 
   /**
-   * The project directory (base directory)
+   * Project root directory
+   * @description Project root directory
    */
   projectDir?: string;
 
   /**
    * Glob pattern for HTML files
-   * @default '**\/*.{html,htm}'
+   * @description Glob pattern for HTML files
+   * @default **\/*.{html,htm}
    */
   glob?: string;
 
   /**
-   * Whether to respect robots.txt
+   * Whether to respect robots.txt rules
+   * @description Respect robots.txt rules
    * @default true
    */
   respectRobotsTxt?: boolean;
 
   /**
-   * Path to robots.txt file (optional)
+   * Path to robots.txt file
+   * @description Path to robots.txt file
    */
   robotsTxtPath?: string;
 
   /**
    * Patterns to exclude from indexing
+   * @description Patterns to exclude from indexing (comma-separated)
    * @default []
    */
-  exclude?: string[];
+  exclude?: string[] | string;
 }
 
 /**
  * File-based implementation of SearchIndexBuilder
- * Reads HTML files from a directory and builds search index
+ * Reads files from a directory and builds search index
  */
 export class FileBasedSearchIndexBuilder implements SearchIndexBuilder {
   private sourceDir: string;
@@ -63,12 +82,25 @@ export class FileBasedSearchIndexBuilder implements SearchIndexBuilder {
   private exclude: string[];
 
   constructor(options: FileBasedSearchIndexBuilderOptions) {
-    this.sourceDir = options.sourceDir;
     this.projectDir = options.projectDir ?? process.cwd();
+    const resolvedSourceDir = options.sourceDir ?? probeSourceDirectory(this.projectDir);
+    if (!resolvedSourceDir) {
+      throw new Error('sourceDir is required for FileBasedSearchIndexBuilder');
+    }
+    this.sourceDir = resolvedSourceDir;
     this.glob = options.glob ?? '**/*.{html,htm}';
     this.respectRobotsTxt = options.respectRobotsTxt ?? true;
     this.robotsTxtPath = options.robotsTxtPath;
-    this.exclude = options.exclude ?? [];
+    if (Array.isArray(options.exclude)) {
+      this.exclude = options.exclude.map((value) => value.trim()).filter(Boolean);
+    } else if (typeof options.exclude === 'string') {
+      this.exclude = options.exclude
+        .split(',')
+        .map((value) => value.trim())
+        .filter(Boolean);
+    } else {
+      this.exclude = [];
+    }
   }
 
   private async discoverHtmlFiles(): Promise<
@@ -106,7 +138,7 @@ export class FileBasedSearchIndexBuilder implements SearchIndexBuilder {
         });
       }
     } catch (error) {
-      log.warn('Error discovering HTML files:', error);
+      log.warn('Error discovering files:', error);
     }
 
     return pages;
@@ -119,11 +151,11 @@ export class FileBasedSearchIndexBuilder implements SearchIndexBuilder {
       const discoveredPages = await this.discoverHtmlFiles();
 
       if (discoveredPages.length === 0) {
-        log.warn('No HTML files found in', this.sourceDir);
+        log.warn('No files found in', this.sourceDir);
         return null;
       }
 
-      log.debug('Found', discoveredPages.length, 'HTML files');
+      log.debug('Found', discoveredPages.length, 'files');
 
       // Remove duplicates
       const uniquePages = new Map<string, (typeof discoveredPages)[0]>();

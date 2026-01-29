@@ -2,6 +2,6 @@
 import { z } from "zod";
 
 export const FileBasedSearchIndexExporterOptionsSchema = z.object({
-    indexPath: z.string().describe("Path to save the index file").default(".peam/index.json"),
-    baseDir: z.string().optional().describe("Base directory for the index path")
+    indexPath: z.string().optional().describe("The path to the index file relative to baseDir").default(".peam/index.json"),
+    baseDir: z.string().optional().describe("The directory where the index file is located")
 });

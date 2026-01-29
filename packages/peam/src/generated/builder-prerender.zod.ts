@@ -12,6 +12,6 @@ export const PrerenderSearchIndexBuilderOptionsSchema = z.object({
     prerenders: z.union([z.array(PrerenderPageSchema), z.string()]).describe("Array of prerendered pages (JSON)"),
     projectDir: z.string().describe("Project root directory"),
     respectRobotsTxt: z.boolean().optional().describe("Respect robots.txt rules").default(true),
-    robotsTxtPath: z.string().optional().describe("Custom path to robots.txt"),
+    robotsTxtPath: z.string().optional().describe("Path to robots.txt file"),
     exclude: z.union([z.array(z.string()), z.string()]).optional().describe("Patterns to exclude (comma-separated)").default([])
 });

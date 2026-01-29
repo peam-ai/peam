@@ -11,8 +11,11 @@ import { buildSearchIndex, type SearchIndexData } from '@peam-ai/search';
 import { readFileSync } from 'fs';
 import type { SearchIndexBuilder } from './SearchIndexBuilder';
 
-const log = loggers.search;
+const log = loggers.builder;
 
+/**
+ * A page to be prerendered
+ */
 export interface PrerenderPage {
   pathname: string;
   fallback?: {
@@ -20,39 +23,47 @@ export interface PrerenderPage {
   };
 }
 
+/**
+ * Configuration for prerender search index builder
+ * @description Index prerendered pages
+ */
 export interface PrerenderSearchIndexBuilderOptions {
   /**
    * The prerender pages from the framework build
+   * @description Array of prerendered pages (JSON)
    */
-  prerenders: PrerenderPage[];
+  prerenders: PrerenderPage[] | string;
 
   /**
    * The project directory
+   * @description Project root directory
    */
   projectDir: string;
 
   /**
    * Whether to respect robots.txt
+   * @description Respect robots.txt rules
    * @default true
    */
   respectRobotsTxt?: boolean;
 
   /**
-   * Path to robots.txt file (optional)
+   * Path to robots.txt file
+   * @description Path to robots.txt file
    */
   robotsTxtPath?: string;
 
   /**
    * Patterns to exclude from indexing
+   * @description Patterns to exclude (comma-separated)
    * @default []
    */
-  exclude?: string[];
+  exclude?: string[] | string;
 }
 
 /**
  * Prerender implementation of SearchIndexBuilder
  * Reads and parses HTML from prerendered pages to build search index
- * Framework-agnostic - works with any framework that provides prerendered HTML
  */
 export class PrerenderSearchIndexBuilder implements SearchIndexBuilder {
   private prerenders: PrerenderPage[];
@@ -62,11 +73,21 @@ export class PrerenderSearchIndexBuilder implements SearchIndexBuilder {
   private exclude: string[];
 
   constructor(options: PrerenderSearchIndexBuilderOptions) {
-    this.prerenders = options.prerenders;
+    this.prerenders =
+      typeof options.prerenders === 'string' ? (JSON.parse(options.prerenders) as PrerenderPage[]) : options.prerenders;
     this.projectDir = options.projectDir;
     this.respectRobotsTxt = options.respectRobotsTxt ?? true;
     this.robotsTxtPath = options.robotsTxtPath;
-    this.exclude = options.exclude ?? [];
+    if (Array.isArray(options.exclude)) {
+      this.exclude = options.exclude.map((value) => value.trim()).filter(Boolean);
+    } else if (typeof options.exclude === 'string') {
+      this.exclude = options.exclude
+        .split(',')
+        .map((value) => value.trim())
+        .filter(Boolean);
+    } else {
+      this.exclude = [];
+    }
   }
 
   private extractRobotsFromPrerender(prerender: PrerenderPage): string | null {
