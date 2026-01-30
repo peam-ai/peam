@@ -14,6 +14,7 @@ const artifactPrefixes = [
   'static/chunks/pages/',
   'static/',
   'server/',
+  'client/',
 ];
 
 function probeSourceDirectory(projectDir: string): string | undefined {
