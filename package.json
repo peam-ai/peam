@@ -12,6 +12,7 @@
     "test:format": "turbo run test:format",
     "test:unit": "turbo run test:unit -- --passWithNoTests",
     "test:docs": "pnpm --filter @peam-ai/docs-typecheck test:docs",
+    "test:examples": "pnpm --filter @peam-ai/examples-tests test:unit",
     "changeset": "changeset",
     "changeset:version": "changeset version",
     "changeset:publish": "pnpm build && changeset publish",

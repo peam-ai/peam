@@ -1,0 +1,21 @@
+{
+  "name": "@peam-ai/examples-tests",
+  "description": "Test suite for Peam examples",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:unit": "vitest run --config vitest.config.ts",
+    "test:lint": "eslint",
+    "test:format": "prettier --check \"src/**/*.ts*\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@types/node": "^22.5.0",
+    "eslint": "^9.18.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.20.0",
+    "vitest": "^2.1.8"
+  }
+}
