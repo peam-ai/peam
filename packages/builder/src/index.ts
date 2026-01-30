@@ -1,5 +1,6 @@
 export { SearchIndexBuilder } from './builder/SearchIndexBuilder';
 export type { PageCandidate } from './builder/types';
+export { CommonFilter } from './filters/CommonFilter';
 export { ExcludePatternFilter } from './filters/ExcludePatternFilter';
 export { PrerenderPathFilter } from './filters/PrerenderPathFilter';
 export { RobotsTxtFilter } from './filters/RobotsTxtFilter';

@@ -20,7 +20,6 @@ export function parseHTML(html: string, options: ParseOptions = {}): StructuredP
     return undefined;
   }
 
-  log.debug('Starting parse with options', options);
   const dom = new JSDOM(html);
   const document = dom.window.document;
 

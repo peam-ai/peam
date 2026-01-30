@@ -40,10 +40,7 @@ const CliSchema = z.object({
         config: FileBasedSearchIndexStoreOptionsSchema.parse({}),
       },
     ]),
-  exclude: z
-    .union([z.string(), z.array(z.string())])
-    .optional()
-    .default([]),
+  exclude: z.union([z.string(), z.array(z.string())]).optional(),
   robotsTxt: z.union([z.string(), z.boolean()]).optional(),
   projectDir: z.string().default(process.cwd()),
 });

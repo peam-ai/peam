@@ -1,6 +1,7 @@
 import { loggers } from '@peam-ai/logger';
 import { PrerenderSearchIndexSource } from '../sources/PrerenderSearchIndexSource';
 import { SearchIndexSource } from '../sources/SearchIndexSource';
+import { CommonFilter } from './CommonFilter';
 import { ExcludePatternFilter } from './ExcludePatternFilter';
 import { PrerenderPathFilter } from './PrerenderPathFilter';
 import { RobotsTxtFilter } from './RobotsTxtFilter';
@@ -31,13 +32,18 @@ export function createFiltersFromConfig(
   config?: SearchIndexBuilderFilterConfig
 ): SearchIndexFilter[] {
   const filters: SearchIndexFilter[] = [];
+  const exclude = normalizeExclude(config?.exclude);
+
+  // if exclude is defined but empty, skip CommonFilter
+  if (!(config?.exclude && exclude.length == 0)) {
+    filters.push(new CommonFilter());
+  }
 
   const hasPrerenderSource = sources.some((source) => source instanceof PrerenderSearchIndexSource);
   if (hasPrerenderSource) {
     filters.push(new PrerenderPathFilter());
   }
 
-  const exclude = normalizeExclude(config?.exclude);
   if (exclude.length > 0) {
     filters.push(new ExcludePatternFilter({ exclude }));
   }

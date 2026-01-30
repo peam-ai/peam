@@ -7,6 +7,7 @@ const log = loggers.builder;
 
 export interface ExcludePatternFilterConfig {
   exclude: string[];
+  label?: string;
 }
 
 export class ExcludePatternFilter implements SearchIndexFilter {
@@ -31,9 +32,11 @@ export class ExcludePatternFilter implements SearchIndexFilter {
 
     for (const page of pages) {
       if (this.matchesExcludePattern(page.path)) {
-        log.debug('Path excluded by user pattern:', page.path);
+        const label = this.options.label ?? 'user pattern';
+        log.debug(`Path excluded by ${label}:`, page.path);
         continue;
       }
+
       filtered.push(page);
     }
 

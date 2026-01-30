@@ -96,7 +96,6 @@ export class FileBasedSearchIndexSource implements SearchIndexSource {
         absolute: true,
         onlyFiles: true,
         dot: false,
-        ignore: ['**/_next/**', '**/_astro/**', '**/404.{html,htm}', '**/500.{html,htm}'],
       });
 
       for (const filePath of files) {
