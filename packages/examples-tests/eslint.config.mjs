@@ -1,18 +1,19 @@
-import js from '@eslint/js';
+// @ts-check
+import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
 export default [
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
+  {
+    ignores: ['dist/**', '*.config.*'],
+  },
+  eslint.configs.recommended,
+  ...tseslint.configs.strict,
   {
     languageOptions: {
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: new URL('.', import.meta.url).pathname,
+        tsconfigRootDir: import.meta.dirname,
       },
-    },
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
 ];
