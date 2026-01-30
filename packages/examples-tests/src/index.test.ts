@@ -57,6 +57,16 @@ describe('examples tests', () => {
     expect(index.data).toBeDefined();
   });
 
+  test.each(EXAMPLE_DIRS)('documentIds length for %s', async (example) => {
+    // Arrange
+    const index = await readIndex(example.dir);
+    const rawIds = index.data?.['peam.documentIds'];
+    const normalized = normalizeDocumentIds(rawIds);
+
+    // Act, Assert
+    expect(normalized.length).equals(3);
+  });
+
   test.each(EXAMPLE_DIRS)('documentIds include core routes for %s', async (example) => {
     // Arrange
     const index = await readIndex(example.dir);

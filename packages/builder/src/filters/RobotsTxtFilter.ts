@@ -1,5 +1,6 @@
 import { loggers } from '@peam-ai/logger';
-import { existsSync, readFileSync } from 'fs';
+import fg from 'fast-glob';
+import { readFileSync } from 'fs';
 import * as fs from 'fs/promises';
 import { join } from 'path';
 import robotsParser from 'robots-parser';
@@ -31,7 +32,6 @@ interface RobotsTxtResult {
 
 export class RobotsTxtFilter implements SearchIndexFilter {
   private parserResult: RobotsTxtResult | null = null;
-  private static getDefaultSearchPaths = ['public/robots.txt', 'app/robots.txt', 'src/app/robots.txt', 'robots.txt'];
 
   constructor(private readonly options: RobotsTxtFilterOptions) {}
 
@@ -110,26 +110,27 @@ export class RobotsTxtFilter implements SearchIndexFilter {
     let robotsContent: string | null = null;
     let foundPath: string | null = null;
 
-    if (robotsTxtPath && typeof robotsTxtPath === 'string' && robotsTxtPath.length > 0) {
+    if (robotsTxtPath && robotsTxtPath.length > 0) {
       const customPath = join(projectDir, robotsTxtPath);
-      if (existsSync(customPath)) {
+      try {
         robotsContent = readFileSync(customPath, 'utf-8');
         foundPath = customPath;
+      } catch {
+        log.error('Could not read robots.txt from custom path:', customPath);
+        return null;
+      }
+    } else {
+      const discoveredPath = this.findRobotsFile(projectDir);
+      if (discoveredPath) {
+        robotsContent = readFileSync(discoveredPath, 'utf-8');
+        log.debug('Discovered robots.txt at:', discoveredPath);
+
+        foundPath = discoveredPath;
       }
     }
 
     if (!robotsContent) {
-      for (const searchPath of RobotsTxtFilter.getDefaultSearchPaths) {
-        const fullPath = join(projectDir, searchPath);
-        if (existsSync(fullPath)) {
-          robotsContent = readFileSync(fullPath, 'utf-8');
-          foundPath = fullPath;
-          break;
-        }
-      }
-    }
-
-    if (!robotsContent) {
+      log.warn('No robots.txt file found in:', projectDir);
       return null;
     }
 
@@ -137,6 +138,18 @@ export class RobotsTxtFilter implements SearchIndexFilter {
       parser: this.createRobotsParser(robotsContent),
       path: foundPath || '',
     };
+  }
+
+  private findRobotsFile(projectDir: string): string | null {
+    return (
+      fg.sync(['**/robots.txt', '**/robots.txt.body'], {
+        cwd: projectDir,
+        absolute: true,
+        dot: true,
+        onlyFiles: true,
+        suppressErrors: true,
+      })[0] ?? null
+    );
   }
 
   private isPathAllowedByRobots(pathname: string, robots: RobotsParser | null): boolean {

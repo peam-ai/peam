@@ -4,7 +4,7 @@ import type { SearchIndexFilter } from './SearchIndexFilter';
 
 const log = loggers.builder;
 
-const STATIC_ASSET_REGEX = /\.(ico|png|jpg|jpeg|svg|gif|webp|txt|xml|json|css|js|woff|woff2|ttf|eot)$/i;
+const STATIC_ASSET_REGEX = /\.(ico|png|jpg|jpeg|svg|gif|webp|xml|json|css|js|woff|woff2|ttf|eot)$/i;
 
 type PrerenderPathFilterReason = 'dynamic-route' | 'internal-route' | 'rsc-file' | 'segment-file' | 'static-asset';
 
