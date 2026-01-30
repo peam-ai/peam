@@ -1,5 +1,5 @@
 import type { NextAdapter } from 'next';
-import { PrerenderSearchIndexBuilder } from 'peam/builder';
+import { SearchIndexBuilder } from 'peam/builder';
 import { loggers } from 'peam/logger';
 import { type ResolvedPeamAdapterConfig } from './config';
 
@@ -50,16 +50,24 @@ export function createPeamAdapter(config: ResolvedPeamAdapterConfig): NextAdapte
       const projectDir = ctx.projectDir || process.cwd();
       const prerenders = normalizePrerenders(outputs);
 
-      const builder = new PrerenderSearchIndexBuilder({
-        prerenders,
-        projectDir,
-        respectRobotsTxt: config.respectRobotsTxt,
-        robotsTxtPath: config.robotsTxtPath,
-        exclude: config.exclude,
-      });
+      const pipeline = SearchIndexBuilder.fromConfigs(
+        [
+          {
+            type: 'prerender',
+            config: {
+              prerenders,
+              projectDir,
+            },
+          },
+        ],
+        {
+          robotsTxt: config.robotsTxt,
+          exclude: config.exclude,
+        }
+      );
 
       log.debug('Building search index from prerender outputs...');
-      const searchIndexData = await builder.build();
+      const searchIndexData = await pipeline.build();
 
       if (!searchIndexData) {
         log.warn('No search index data generated');

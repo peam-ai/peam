@@ -2,7 +2,7 @@
  * Peam CLI
  */
 
-import { createBuilderFromConfig } from '@peam-ai/builder';
+import { SearchIndexBuilder } from '@peam-ai/builder';
 import { createStoreFromConfig, type SearchIndexData } from '@peam-ai/search';
 import chalk from 'chalk';
 import { readFileSync } from 'fs';
@@ -10,8 +10,8 @@ import { join } from 'path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { z } from 'zod';
-import { SearchBuilderConfigSchema as BuilderSchema } from './generated/builder-config.zod';
-import { FileBasedSearchIndexBuilderOptionsSchema } from './generated/builder-fileBased.zod';
+import { SearchIndexSourceConfigSchema as SourceSchema } from './generated/source-config.zod';
+import { FileBasedSearchIndexSourceOptionsSchema } from './generated/source-fileBased.zod';
 import { SearchStoreConfigSchema as StoreSchema } from './generated/store-config.zod';
 import { FileBasedSearchIndexStoreOptionsSchema } from './generated/store-fileBased.zod';
 
@@ -22,13 +22,13 @@ const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 
 // ============================================================================
 
 const CliSchema = z.object({
-  builders: z
-    .array(BuilderSchema)
-    .min(1, 'At least one builder is required')
+  sources: z
+    .array(SourceSchema)
+    .min(1, 'At least one source is required')
     .default([
       {
         type: 'fileBased',
-        config: FileBasedSearchIndexBuilderOptionsSchema.parse({}),
+        config: FileBasedSearchIndexSourceOptionsSchema.parse({}),
       },
     ]),
   stores: z
@@ -40,6 +40,11 @@ const CliSchema = z.object({
         config: FileBasedSearchIndexStoreOptionsSchema.parse({}),
       },
     ]),
+  exclude: z
+    .union([z.string(), z.array(z.string())])
+    .optional()
+    .default([]),
+  robotsTxt: z.union([z.string(), z.boolean()]).optional(),
   projectDir: z.string().default(process.cwd()),
 });
 
@@ -47,19 +52,19 @@ const CliSchema = z.object({
 // SCHEMA REGISTRY & METADATA EXTRACTION
 // ============================================================================
 
-const BUILDER_SCHEMAS = Object.fromEntries(
-  BuilderSchema.options.map((option) => {
+const SOURCE_SCHEMAS: Record<string, z.ZodTypeAny> = Object.fromEntries(
+  SourceSchema.options.map((option: z.ZodObject<z.ZodRawShape>) => {
     const typeLiteral = option.shape.type as z.ZodLiteral<string>;
-    const configSchema = option.shape.config;
+    const configSchema = option.shape.config as z.ZodTypeAny;
     return [typeLiteral.value, configSchema];
   })
 );
 
-const STORE_SCHEMAS = {
-  [(StoreSchema.shape.type as z.ZodLiteral<string>).value]: StoreSchema.shape.config,
+const STORE_SCHEMAS: Record<string, z.ZodTypeAny> = {
+  [(StoreSchema.shape.type as z.ZodLiteral<string>).value]: StoreSchema.shape.config as z.ZodTypeAny,
 };
 
-const DEFAULT_BUILDER_TYPE = CliSchema.parse({}).builders[0]?.type;
+const DEFAULT_SOURCE_TYPE = CliSchema.parse({}).sources[0]?.type;
 const DEFAULT_STORE_TYPE = CliSchema.parse({}).stores[0]?.type;
 
 interface SchemaMetadata {
@@ -150,11 +155,11 @@ function showTopLevelHelp(): void {
   logger.text('Build search indexes from your content and export them to various destinations.');
   logger.text('');
   logger.text(logger.bold('How it works:'));
-  logger.text('  1. ' + logger.cyan('Builders') + ' discover and parse content');
+  logger.text('  1. ' + logger.cyan('Sources') + ' discover and parse content');
   logger.text('  2. ' + logger.cyan('Stores') + ' save the generated index');
   logger.text('');
-  logger.text(logger.bold('Available builders:'));
-  Object.entries(BUILDER_SCHEMAS).forEach(([type]) => {
+  logger.text(logger.bold('Available sources:'));
+  Object.entries(SOURCE_SCHEMAS).forEach(([type]) => {
     logger.text(`  ${logger.cyan(type)}`);
   });
   logger.text('');
@@ -164,17 +169,17 @@ function showTopLevelHelp(): void {
   });
   logger.text('');
   logger.text(logger.bold('Learn more:'));
-  logger.text(`  ${logger.cyan('peam --help builders')}   Show builder details`);
+  logger.text(`  ${logger.cyan('peam --help sources')}   Show source details`);
   logger.text(`  ${logger.cyan('peam --help stores')}     Show store details`);
   logger.text('');
 }
 
-function showComponentHelp(title: string, schemas: Record<string, z.ZodObject<z.ZodRawShape>>): void {
+function showComponentHelp(title: string, schemas: Record<string, z.ZodTypeAny>): void {
   logger.text('');
   logger.text(logger.bold(logger.cyan(title)));
   logger.text('');
   Object.entries(schemas).forEach(([type, schema]) => {
-    const meta = getSchemaMetadata(schema);
+    const meta = getSchemaMetadata(schema as z.ZodObject<z.ZodRawShape>);
     logger.text(logger.bold(logger.cyan(type)));
     logger.text(`  ${meta.description}`);
     logger.text('');
@@ -193,9 +198,16 @@ function showComponentHelp(title: string, schemas: Record<string, z.ZodObject<z.
 // PARSING HELPERS
 // ============================================================================
 
-function parseComponents(args: string[]): { builders: unknown[]; stores: unknown[] } {
-  const builders: unknown[] = [];
+function parseComponents(args: string[]): {
+  sources: unknown[];
+  stores: unknown[];
+  filterOptions: { exclude: string[]; robotsTxt?: string | boolean };
+} {
+  const sources: unknown[] = [];
   const stores: unknown[] = [];
+  const filterOptions: { exclude: string[]; robotsTxt?: string | boolean } = {
+    exclude: [],
+  };
   let current: { type: string; config: Record<string, unknown> } | null = null;
 
   const parseValue = (value: string): unknown => {
@@ -207,7 +219,7 @@ function parseComponents(args: string[]): { builders: unknown[]; stores: unknown
 
   const startComponent = (
     type: string | undefined,
-    schemas: Record<string, z.ZodObject<z.ZodRawShape>>,
+    schemas: Record<string, z.ZodTypeAny>,
     target: unknown[],
     label: string
   ) => {
@@ -224,18 +236,26 @@ function parseComponents(args: string[]): { builders: unknown[]; stores: unknown
     const arg = args[i];
 
     switch (arg) {
-      case '--builder':
+      case '--exclude': {
+        filterOptions.exclude.push(String(args[++i] ?? ''));
+        break;
+      }
+      case '--robotsTxt': {
+        filterOptions.robotsTxt = parseValue(args[++i]) as string | boolean;
+        break;
+      }
+      case '--source':
         if (args[i + 1] && !args[i + 1].startsWith('--')) {
           const nextType = args[i + 1];
-          if (!(nextType in BUILDER_SCHEMAS)) {
+          if (!(nextType in SOURCE_SCHEMAS)) {
             logger.error(`Unknown ${arg}: ${nextType}`);
-            logger.text(logger.yellow(`Available: ${Object.keys(BUILDER_SCHEMAS).join(', ')}`));
+            logger.text(logger.yellow(`Available: ${Object.keys(SOURCE_SCHEMAS).join(', ')}`));
             process.exit(1);
           }
-          startComponent(nextType, BUILDER_SCHEMAS, builders, arg);
+          startComponent(nextType, SOURCE_SCHEMAS, sources, arg);
           i++;
         } else {
-          startComponent(DEFAULT_BUILDER_TYPE, BUILDER_SCHEMAS, builders, arg);
+          startComponent(DEFAULT_SOURCE_TYPE, SOURCE_SCHEMAS, sources, arg);
         }
         break;
       case '--store':
@@ -255,7 +275,7 @@ function parseComponents(args: string[]): { builders: unknown[]; stores: unknown
       default: {
         if (!arg.startsWith('--')) break;
         if (!current) {
-          logger.error(`${arg} must come after --builder or --store`);
+          logger.error(`${arg} must come after --source or --store`);
           process.exit(1);
         }
         const target = current as { type: string; config: Record<string, unknown> };
@@ -265,7 +285,7 @@ function parseComponents(args: string[]): { builders: unknown[]; stores: unknown
     }
   }
 
-  return { builders, stores };
+  return { sources, stores, filterOptions };
 }
 
 // ============================================================================
@@ -277,34 +297,23 @@ async function runPipeline(cli: z.infer<typeof CliSchema>): Promise<void> {
   logger.text(logger.bold(logger.cyan('Peam CLI')));
   logger.text('');
 
-  const allIndexData = [];
-
-  for (const [i, builder] of cli.builders.entries()) {
-    const typedBuilder = builder;
-    logger.text(logger.bold(`Builder ${i + 1}/${cli.builders.length}: ${typedBuilder.type}`));
-    logger.text(`  ${logger.gray(JSON.stringify(typedBuilder, null, 2))}`);
+  for (const [i, source] of cli.sources.entries()) {
+    const typedSource = source;
+    logger.text(logger.bold(`Source ${i + 1}/${cli.sources.length}: ${typedSource.type}`));
+    logger.text(`  ${logger.gray(JSON.stringify(typedSource, null, 2))}`);
     logger.text('');
-
-    const instance = createBuilderFromConfig(typedBuilder);
-
-    const data = await instance.build();
-
-    if (!data) {
-      logger.warn(`No data from builder ${i + 1}`);
-      continue;
-    }
-
-    logger.success(`Indexed ${logger.bold(String(pageCount(data)))} pages`);
-    logger.text('');
-    allIndexData.push(data);
   }
 
-  if (allIndexData.length === 0) {
+  const pipeline = SearchIndexBuilder.fromConfigs(cli.sources, {
+    exclude: cli.exclude,
+    robotsTxt: cli.robotsTxt,
+  });
+  const merged = await pipeline.build();
+
+  if (!merged) {
     logger.error('No data generated');
     process.exit(1);
   }
-
-  const merged = allIndexData[0]; // TODO: merge strategy
 
   for (const [i, store] of cli.stores.entries()) {
     logger.text(logger.bold(`Store ${i + 1}/${cli.stores.length}: ${store.type}`));
@@ -335,7 +344,7 @@ async function main() {
   if (args.includes('--help') || args.includes('-h')) {
     const idx = args.indexOf('--help') >= 0 ? args.indexOf('--help') : args.indexOf('-h');
     const next = args[idx + 1];
-    if (next === 'builders') return showComponentHelp('Builders', BUILDER_SCHEMAS);
+    if (next === 'sources') return showComponentHelp('Sources', SOURCE_SCHEMAS);
     if (next === 'stores') return showComponentHelp('Stores', STORE_SCHEMAS);
     return showTopLevelHelp();
   }
@@ -345,11 +354,13 @@ async function main() {
   }
 
   try {
-    const { builders, stores } = parseComponents(args);
+    const { sources, stores, filterOptions } = parseComponents(args);
 
     const config = CliSchema.parse({
-      builders: builders.length > 0 ? builders : undefined,
+      sources: sources.length > 0 ? sources : undefined,
       stores: stores.length > 0 ? stores : undefined,
+      exclude: filterOptions.exclude.length > 0 ? filterOptions.exclude : undefined,
+      robotsTxt: filterOptions.robotsTxt,
       projectDir: process.cwd(),
     });
     await runPipeline(config);

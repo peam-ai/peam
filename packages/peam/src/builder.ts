@@ -1,15 +1,15 @@
-/**
- * Re-export builders from @peam-ai/builder
- * Separate entry point to avoid loading heavy dependencies (jsdom)
- */
-
 export {
-  FileBasedSearchIndexBuilder,
-  PrerenderSearchIndexBuilder,
-  createBuilderFromConfig,
-  type FileBasedSearchIndexBuilderOptions,
+  ExcludePatternFilter,
+  FileBasedSearchIndexSource,
+  PrerenderSearchIndexSource,
+  RobotsTxtFilter,
+  SearchIndexBuilder,
+  createSourceFromConfig,
+  type FileBasedSearchIndexSourceOptions,
+  type PageCandidate,
   type PrerenderPage,
-  type PrerenderSearchIndexBuilderOptions,
-  type SearchBuilderConfig,
-  type SearchIndexBuilder,
+  type PrerenderSearchIndexSourceOptions,
+  type SearchIndexFilter,
+  type SearchIndexSource,
+  type SearchIndexSourceConfig,
 } from '@peam-ai/builder';

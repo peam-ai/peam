@@ -8,17 +8,12 @@ export interface PeamConfig {
    */
   searchStore?: SearchStoreConfig;
   /**
-   * Whether to respect robots.txt rules when indexing pages
-   * @default true
-   */
-  respectRobotsTxt?: boolean;
-  /**
-   * Path to a custom robots.txt file relative to the project root
-   * If not specified, the adapter will look for static or dynamic robots.txt files in standard locations
+   * Path to a custom robots.txt file or false to disable robots.txt filtering
+   * If undefined, the adapter will look for static or dynamic robots.txt files in standard locations
    * @example 'custom/robots.txt' or 'config/production-robots.txt'
    * @default undefined
    */
-  robotsTxtPath?: string;
+  robotsTxt?: string | boolean;
   /**
    * Array of wildcard patterns to exclude from indexing
    * Supports * (matches any characters except /), ** (matches any characters including /), and ? (single character)
@@ -28,8 +23,8 @@ export interface PeamConfig {
   exclude?: string[];
 }
 
-export type ResolvedPeamAdapterConfig = Required<Omit<PeamConfig, 'robotsTxtPath'>> & {
-  robotsTxtPath?: string;
+export type ResolvedPeamAdapterConfig = Required<Omit<PeamConfig, 'robotsTxt'>> & {
+  robotsTxt?: string | boolean;
   searchIndexStore: SearchIndexStore;
 };
 
@@ -38,8 +33,7 @@ const defaultConfig = {
     type: 'fileBased' as const,
     config: { indexPath: '.peam/index.json' },
   },
-  respectRobotsTxt: true,
-  robotsTxtPath: undefined,
+  robotsTxt: undefined,
   exclude: [],
 } satisfies PeamConfig;
 
@@ -48,13 +42,12 @@ export function setNextConfig(nextConfig: NextConfig, peamConfig?: PeamConfig): 
     PEAM_SEARCH_STORE_TYPE: peamConfig?.searchStore?.type ?? defaultConfig.searchStore.type,
     PEAM_SEARCH_STORE_CONFIG:
       JSON.stringify(peamConfig?.searchStore?.config) ?? JSON.stringify(defaultConfig.searchStore.config),
-    PEAM_RESPECT_ROBOTS_TXT: String(peamConfig?.respectRobotsTxt ?? defaultConfig.respectRobotsTxt),
     PEAM_EXCLUDE: JSON.stringify(peamConfig?.exclude) ?? JSON.stringify(defaultConfig.exclude),
-    PEAM_ROBOTS_TXT_PATH: '',
+    PEAM_ROBOTS_TXT: '',
   };
 
-  if (peamConfig?.robotsTxtPath) {
-    envVars.PEAM_ROBOTS_TXT_PATH = String(peamConfig.robotsTxtPath);
+  if (peamConfig?.robotsTxt !== undefined) {
+    envVars.PEAM_ROBOTS_TXT = String(peamConfig.robotsTxt);
   }
 
   // Set build time vars
@@ -82,10 +75,16 @@ export const getConfig = (): ResolvedPeamAdapterConfig => {
   const resolvedConfig = {
     searchStore: searchStoreConfig,
     searchIndexStore: createStoreFromConfig(searchStoreConfig),
-    respectRobotsTxt: process.env.PEAM_RESPECT_ROBOTS_TXT === 'true',
-    robotsTxtPath: process.env.PEAM_ROBOTS_TXT_PATH || undefined,
+    robotsTxt: parseRobotsTxtEnv(process.env.PEAM_ROBOTS_TXT),
     exclude: process.env.PEAM_EXCLUDE ? JSON.parse(process.env.PEAM_EXCLUDE) : [],
   };
 
   return resolvedConfig;
 };
+
+function parseRobotsTxtEnv(value: string | undefined): string | boolean | undefined {
+  if (value === undefined || value === '') return undefined;
+  if (value === 'false') return false;
+  if (value === 'true') return true;
+  return value;
+}

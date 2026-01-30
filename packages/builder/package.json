@@ -39,7 +39,9 @@
     "@peam-ai/logger": "workspace:*",
     "@peam-ai/parser": "workspace:*",
     "@peam-ai/search": "workspace:*",
-    "fast-glob": "^3.3.2"
+    "fast-glob": "^3.3.2",
+    "matcher": "^6.0.0",
+    "robots-parser": "^3.0.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
