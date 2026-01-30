@@ -18,9 +18,14 @@ const artifactPrefixes = [
 ];
 
 function probeSourceDirectory(projectDir: string): string | undefined {
+  log.debug('Probing for source directory in project:', projectDir);
   for (const dir of sourceDirsToProbe) {
-    if (existsSync(path.join(projectDir, dir))) return dir;
+    if (existsSync(path.join(projectDir, dir))) {
+      log.debug('Using source directory:', dir);
+      return dir;
+    }
   }
+
   return undefined;
 }
 
