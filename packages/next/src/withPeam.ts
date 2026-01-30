@@ -41,9 +41,9 @@ function addStubIndex() {
 function addAdapter(config: NextConfig): NextConfig {
   const nextVersion = getNextVersion();
 
-  if (!nextVersion || nextVersion.major < 16) {
+  if (!nextVersion || nextVersion.major < 15) {
     log.warn(
-      'Peam adapter requires Next.js 16 or higher, skipping adapter configuration. Make sure the postbuild script is set up correctly, See more here: https://peam.ai/docs.'
+      'Peam adapter requires Next.js 15 or higher, skipping adapter configuration. Make sure the postbuild script is set up correctly, See more here: https://peam.ai/docs.'
     );
     return config;
   }

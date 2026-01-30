@@ -7,6 +7,7 @@ This directory contains example applications demonstrating how to integrate Peam
 ### Next.js
 
 - **[Next.js 16](./nextjs-16)** - Next.js 16 example with App Router and `withPeam` integration
+- **[Next.js 15](./nextjs-15)** - Next.js 15 example with App Router and `withPeam` integration
 - **[Next.js 14](./nextjs-14)** - Next.js 14 example with App Router and CLI-based indexing
 
 ### Vite

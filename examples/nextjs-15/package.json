@@ -1,5 +1,5 @@
 {
-  "name": "nextjs-16-example",
+  "name": "nextjs-15-example",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@peam-ai/next": "workspace:*",
-    "next": "^16.0.0",
+    "next": "^15.0.0",
     "peam": "workspace:*",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -21,7 +21,7 @@
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",
     "eslint": "^8",
-    "eslint-config-next": "^16.0.0",
+    "eslint-config-next": "^15.0.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
