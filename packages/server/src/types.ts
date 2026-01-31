@@ -1,5 +1,6 @@
 import { type SearchIndexStore } from '@peam-ai/search';
 import { UIMessage, type LanguageModel } from 'ai';
+import type { ConversationSummarizer, SummarizationOptions, Summary } from './summarization/ConversationSummarizer';
 
 /**
  * Metadata about the current page the user is on.
@@ -28,32 +29,32 @@ export interface CreateHandlerOptions {
    * Defaults to OpenAI GPT-4o if not provided.
    */
   model?: LanguageModel;
+
   /**
    * Search index store to use for loading the search index.
-   * If not provided, the handler will return an error when search is needed.
    */
   searchIndexStore?: SearchIndexStore;
+
+  /**
+   * Options for message summarization.
+   */
+  summarization?: SummarizationOptions | false;
+
+  /**
+   * Custom summarizer implementation.
+   */
+  summarizer?: ConversationSummarizer;
 }
 
 /**
  * Request body structure for chat API.
  */
 export interface ChatRequestBody {
-  mode?: 'chat';
   messages: UIMessage[];
-  summary?: string;
+  summary?: Summary;
 }
 
 /**
- * Request body structure for summarization API.
+ * Request body structure for chat API.
  */
-export interface SummarizeRequestBody {
-  mode: 'summarize';
-  messages: UIMessage[];
-  previousSummary?: string;
-}
-
-/**
- * Conditional request body type based on mode.
- */
-export type HandlerRequestBody = ChatRequestBody | SummarizeRequestBody;
+export type HandlerRequestBody = ChatRequestBody;

@@ -12,12 +12,7 @@ import { useEffect, useRef } from 'react';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAISidepaneProps extends AskAIBaseProps {}
 
-export function AskAISidepane({
-  suggestedPrompts,
-  button,
-  maxMessages,
-  inlineButton = false,
-}: AskAISidepaneProps = {}) {
+export function AskAISidepane({ endpoint, suggestedPrompts, button, inlineButton = false }: AskAISidepaneProps = {}) {
   const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
   const isMobile = useIsMobile();
   const originalBodyStyles = useRef<{ marginRight: string; transition: string } | null>(null);
@@ -122,10 +117,10 @@ export function AskAISidepane({
 
             <div className="flex-1 min-h-0 h-0">
               <Chat
+                endpoint={endpoint}
                 chatPersistence={chatPersistence}
                 suggestedPrompts={suggestedPrompts}
                 onClearRef={(clearFn) => (chatClearRef.current = clearFn)}
-                maxMessages={maxMessages}
               />
             </div>
           </div>

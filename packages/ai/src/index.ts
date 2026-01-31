@@ -1,2 +1,2 @@
 export { streamSearchText, type CurrentPageMetadata } from './streamSearchText';
-export { streamSummarize, type StreamSummarizeOptions } from './streamSummarize';
+export { summarizeMessages, type SummarizeMessagesOptions } from './streamSummarize';

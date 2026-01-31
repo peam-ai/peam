@@ -3,20 +3,19 @@ import type { UIMessage } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 
 export interface BoundedChatTransportOptions {
-  api: string;
-  maxMessages?: number;
+  endpoint: string;
 }
 
 /**
  * Custom chat transport that implements bounded context.
  */
 export class BoundedChatTransport extends DefaultChatTransport<UIMessage> {
-  constructor(options: BoundedChatTransportOptions) {
+  constructor({ endpoint }: BoundedChatTransportOptions) {
     super({
-      api: options.api,
+      api: endpoint,
       prepareSendMessagesRequest: ({ messages, body }) => {
-        const lastSummarizedMessageId = body?.lastSummarizedMessageId;
-        const recentMessages = getRecentMessages(messages, lastSummarizedMessageId, options.maxMessages);
+        const lastSummarizedMessageId = body?.summary?.lastSummarizedMessageId;
+        const recentMessages = getRecentMessages(messages, lastSummarizedMessageId);
 
         return {
           body: {

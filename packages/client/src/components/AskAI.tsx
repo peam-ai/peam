@@ -12,6 +12,12 @@ export type AskAIType = 'chat' | 'dialog' | 'sidepane';
 
 export interface AskAIBaseProps {
   /**
+   * API endpoint for handling AI requests.
+   * @default '/api/peam'
+   */
+  endpoint?: string;
+
+  /**
    * Array of suggested prompts to display to the user.
    */
   suggestedPrompts?: string[];

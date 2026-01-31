@@ -10,7 +10,7 @@ import { Trash2, X } from 'lucide-react';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAIDialogProps extends AskAIBaseProps {}
 
-export function AskAIDialog({ suggestedPrompts, button, maxMessages, inlineButton }: AskAIDialogProps = {}) {
+export function AskAIDialog({ endpoint, suggestedPrompts, button, inlineButton }: AskAIDialogProps = {}) {
   const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
 
   return (
@@ -70,10 +70,10 @@ export function AskAIDialog({ suggestedPrompts, button, maxMessages, inlineButto
 
               <div className="flex-1 min-h-0 h-0">
                 <Chat
+                  endpoint={endpoint}
                   chatPersistence={chatPersistence}
                   suggestedPrompts={suggestedPrompts}
                   onClearRef={(clearFn) => (chatClearRef.current = clearFn)}
-                  maxMessages={maxMessages}
                 />
               </div>
             </div>

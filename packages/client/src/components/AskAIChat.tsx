@@ -11,9 +11,9 @@ import { Trash2, X } from 'lucide-react';
 export interface AskAIChatProps extends AskAIBaseProps {}
 
 export function AskAIChat({
+  endpoint,
   suggestedPrompts,
   button,
-  maxMessages,
   inlineButton = false,
   buttonVariant,
 }: AskAIChatProps = {}) {
@@ -77,10 +77,10 @@ export function AskAIChat({
 
             <div className="flex-1 min-h-0 h-0">
               <Chat
+                endpoint={endpoint}
                 chatPersistence={chatPersistence}
                 suggestedPrompts={suggestedPrompts}
                 onClearRef={(clearFn) => (chatClearRef.current = clearFn)}
-                maxMessages={maxMessages}
               />
             </div>
           </div>

@@ -28,7 +28,6 @@ import { SpeechInput } from '@/components/ai-elements/speech-input';
 import { PeamIcon } from '@/components/icons/peam';
 import { SuggestedPrompts } from '@/components/SuggestedPrompts';
 import { useChatPersistence } from '@/hooks/useChatPersistence';
-import { useSummarization } from '@/hooks/useSummarization';
 import { BoundedChatTransport } from '@/lib/BoundedChatTransport';
 import { useChat } from '@ai-sdk/react';
 import { loggers } from '@peam-ai/logger';
@@ -39,14 +38,19 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 const log = loggers.ui;
 
 export interface ChatProps {
+  endpoint?: string;
   chatPersistence: ReturnType<typeof useChatPersistence>;
   suggestedPrompts?: string[];
   onClearRef?: (clearFn: () => void) => void;
   chatTransport?: HttpChatTransport<UIMessage>;
-  maxMessages?: number;
 }
 
-export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransport, maxMessages }: ChatProps) => {
+type SummaryPayload = {
+  text: string;
+  lastSummarizedMessageId: string;
+};
+
+export const Chat = ({ endpoint, chatPersistence, suggestedPrompts, onClearRef, chatTransport }: ChatProps) => {
   const [input, setInput] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -54,8 +58,8 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
   const isSyncing = useRef(false);
   const lastSavedMessageCount = useRef(0);
 
-  const { initialMessages, isLoading, saveMessages, clearMessages } = chatPersistence;
-  const { summary, lastSummarizedMessageId, maybeTriggerSummarization } = useSummarization({ maxMessages });
+  const { initialMessages, isLoading, saveMessages, clearMessages, saveSummary, summary, lastSummarizedMessageId } =
+    chatPersistence;
 
   const {
     messages,
@@ -68,9 +72,25 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
     transport:
       chatTransport ??
       new BoundedChatTransport({
-        api: '/api/peam',
-        maxMessages,
+        endpoint: endpoint ?? '/api/peam',
       }),
+    onData: (part) => {
+      if (!saveSummary || part.type !== 'data-summary') {
+        return;
+      }
+
+      const summaryData = part.data as SummaryPayload | undefined;
+
+      if (!summaryData?.text || !summaryData.lastSummarizedMessageId) {
+        return;
+      }
+
+      if (summaryData.lastSummarizedMessageId === lastSummarizedMessageId) {
+        return;
+      }
+
+      saveSummary(summaryData.text, summaryData.lastSummarizedMessageId);
+    },
   });
 
   const isIdle = useMemo(() => status !== 'submitted' && status !== 'streaming', [status]);
@@ -106,19 +126,6 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
     }
   }, [messages, saveMessages, isInitialized, isIdle]);
 
-  // Trigger summarization
-  useEffect(() => {
-    if (!isIdle || !isInitialized) {
-      return;
-    }
-
-    const timeoutId = setTimeout(() => {
-      maybeTriggerSummarization(messages);
-    }, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [messages, isIdle, isInitialized, maybeTriggerSummarization]);
-
   const sendMessage = useCallback(
     (message: { text: string }) => {
       _sendMessage(
@@ -135,7 +142,7 @@ export const Chat = ({ chatPersistence, suggestedPrompts, onClearRef, chatTransp
           },
         },
         {
-          body: { summary, lastSummarizedMessageId },
+          body: summary && lastSummarizedMessageId ? { summary: { text: summary, lastSummarizedMessageId } } : {},
         }
       );
     },

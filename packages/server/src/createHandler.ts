@@ -1,8 +1,9 @@
 import { openai } from '@ai-sdk/openai';
-import { streamSearchText, streamSummarize } from '@peam-ai/ai';
+import { streamSearchText } from '@peam-ai/ai';
 import { loggers } from '@peam-ai/logger';
 import { FileBasedSearchIndexStore } from '@peam-ai/search';
-import { createUIMessageStreamResponse } from 'ai';
+import { createUIMessageStream, createUIMessageStreamResponse } from 'ai';
+import { WindowedConversationSummarizer } from './summarization/WindowedConversationSummarizer';
 import { type CreateHandlerOptions, type HandlerRequestBody } from './types';
 import { getCurrentPage } from './utils/getCurrentPage';
 import { getSearchEngine } from './utils/getSearchEngine';
@@ -35,11 +36,33 @@ const log = loggers.server;
  */
 export function createHandler(options: CreateHandlerOptions = {}) {
   const model = options.model || openai('gpt-4o');
+  const summarizer =
+    options.summarization === false
+      ? null
+      : (options.summarizer ??
+        new WindowedConversationSummarizer({
+          model,
+          ...options.summarization,
+        }));
 
-  const handler = async (req: Request): Promise<Response> => {
+  const handler = async (request: Request | { request: Request }): Promise<Response> => {
     try {
+      const req = 'request' in request ? request.request : request;
+
+      if (req.method.toLowerCase() !== 'post') {
+        return new Response(
+          JSON.stringify({
+            error: 'Method not allowed',
+          }),
+          {
+            status: 405,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+      }
+
       const body = (await req.json()) as HandlerRequestBody;
-      const { messages, mode } = body;
+      const { messages, summary } = body;
 
       if (!messages || messages.length === 0) {
         return new Response(
@@ -73,30 +96,17 @@ export function createHandler(options: CreateHandlerOptions = {}) {
         }
       }
 
-      // Handle summarization
-      if (mode === 'summarize') {
-        const { previousSummary } = body;
-        const stream = streamSummarize({
-          model,
-          messages,
-          previousSummary,
-        });
-
-        return createUIMessageStreamResponse({ stream });
-      }
-
       // Handle chat
-      const { summary } = body;
       const lastMessage = messages[messages.length - 1];
       const currentPage = getCurrentPage({ request: req, message: lastMessage });
 
-      options.searchIndexStore =
+      const searchIndexStore =
         options.searchIndexStore ??
         new FileBasedSearchIndexStore({
           indexPath: '.peam/index.json',
         });
 
-      if (!options.searchIndexStore) {
+      if (!searchIndexStore) {
         return new Response(
           JSON.stringify({
             error: 'Search index store not configured',
@@ -108,7 +118,7 @@ export function createHandler(options: CreateHandlerOptions = {}) {
         );
       }
 
-      const searchEngine = await getSearchEngine(options.searchIndexStore);
+      const searchEngine = await getSearchEngine(searchIndexStore);
 
       if (!searchEngine) {
         return new Response(
@@ -122,12 +132,33 @@ export function createHandler(options: CreateHandlerOptions = {}) {
         );
       }
 
-      const stream = streamSearchText({
-        model,
-        searchEngine,
-        messages,
-        currentPage,
-        summary,
+      const previousSummary = summary?.text;
+
+      const stream = createUIMessageStream({
+        originalMessages: messages,
+        execute: async ({ writer }) => {
+          const chatStream = streamSearchText({
+            model,
+            searchEngine,
+            messages,
+            currentPage,
+            summary: previousSummary,
+          });
+
+          writer.merge(chatStream);
+
+          const summaryUpdate = await summarizer?.summarize({
+            messages,
+            previousSummary: summary,
+          });
+
+          if (summaryUpdate) {
+            writer.write({
+              type: 'data-summary',
+              data: summaryUpdate,
+            });
+          }
+        },
       });
 
       return createUIMessageStreamResponse({ stream });
