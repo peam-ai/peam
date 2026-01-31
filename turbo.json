@@ -3,7 +3,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "examples/**/.peam/**"]
+      "outputs": ["dist/**"]
     },
     "build:watch": {
       "dependsOn": ["^build"],
