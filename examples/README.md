@@ -14,6 +14,10 @@ This directory contains example applications demonstrating how to integrate Peam
 
 - **[Vite + React](./vite-react)** - Vite with React example using Vike for SSR and Express API server
 
+### Astro
+
+- **[Astro + React](./astro-react)** - Astro example with React islands and Peam integration
+
 ## Contributing
 
 Feel free to add more examples for other frameworks.

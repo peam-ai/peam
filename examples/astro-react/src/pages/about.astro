@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'About Us - Astro + React Example';
+const description = 'Learn more about our Astro + React example application';
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+    <div class="container mx-auto px-4 py-16">
+      <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-bold text-gray-900 mb-6">
+          About Us
+        </h1>
+        <div class="bg-white rounded-lg shadow-md p-8 mb-6">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+            Our Mission
+          </h2>
+          <p class="text-gray-600 leading-relaxed mb-4">
+            We're dedicated to creating simple, efficient, and powerful examples
+            that help developers understand how to integrate Peam with their
+            Astro applications.
+          </p>
+          <p class="text-gray-600 leading-relaxed">
+            This example showcases Astro with React, combined with the beautiful
+            styling capabilities of Tailwind CSS, all integrated with Peam's
+            powerful functionality.
+          </p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-8">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+            What We Offer
+          </h2>
+          <ul class="space-y-3">
+            <li class="flex items-start">
+              <span class="text-blue-600 mr-2">✓</span>
+              <span class="text-gray-600">Clean and maintainable code examples</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-blue-600 mr-2">✓</span>
+              <span class="text-gray-600">Modern development practices</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-blue-600 mr-2">✓</span>
+              <span class="text-gray-600">Easy-to-understand implementations</span>
+            </li>
+            <li class="flex items-start">
+              <span class="text-blue-600 mr-2">✓</span>
+              <span class="text-gray-600">Full TypeScript support</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
