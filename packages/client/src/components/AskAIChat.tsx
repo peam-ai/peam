@@ -10,7 +10,13 @@ import { Trash2, X } from 'lucide-react';
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface AskAIChatProps extends AskAIBaseProps {}
 
-export function AskAIChat({ suggestedPrompts, button, maxMessages, inlineButton = false }: AskAIChatProps = {}) {
+export function AskAIChat({
+  suggestedPrompts,
+  button,
+  maxMessages,
+  inlineButton = false,
+  buttonVariant,
+}: AskAIChatProps = {}) {
   const { isOpen, chatClearRef, chatPersistence, handleToggle, handleOpen, handleClose, handleClear } = useAskAI();
 
   return (
@@ -18,7 +24,13 @@ export function AskAIChat({ suggestedPrompts, button, maxMessages, inlineButton 
       {button ? (
         button({ isOpen, toggle: handleToggle, open: handleOpen, close: handleClose })
       ) : (
-        <PeamButton onClick={handleToggle} isOpen={isOpen} inlineButton={inlineButton} className="z-50" />
+        <PeamButton
+          onClick={handleToggle}
+          isOpen={isOpen}
+          inlineButton={inlineButton}
+          variant={buttonVariant}
+          className="z-50"
+        />
       )}
 
       {isOpen && (

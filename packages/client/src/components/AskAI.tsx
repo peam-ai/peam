@@ -6,6 +6,7 @@ import { AskAISidepane, type AskAISidepaneProps } from '@/components/AskAISidepa
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { cn } from '@/lib/utils';
 import type { ReactNode } from 'react';
+import { PeamButtonVariant } from './PeamButton';
 
 export type AskAIType = 'chat' | 'dialog' | 'sidepane';
 
@@ -14,20 +15,30 @@ export interface AskAIBaseProps {
    * Array of suggested prompts to display to the user.
    */
   suggestedPrompts?: string[];
+
   /**
    * Maximum number of messages to keep in context before summarizing.
    * @default 10
    */
   maxMessages?: number;
+
   /**
    * Render the button inline instead of as a floating button.
    * @default false
    */
   inlineButton?: boolean;
+
+  /**
+   * Variant of the default button.
+   * @default 'icon-label'
+   */
+  buttonVariant?: PeamButtonVariant;
+
   /**
    * Additional CSS classes to apply to the root container.
    */
   className?: string;
+
   /**
    * Custom button component.
    *
