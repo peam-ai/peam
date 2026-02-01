@@ -76,4 +76,39 @@ describe('DefaultChatRuntime', () => {
     // Assert
     expect(response.status).toBe(200);
   });
+
+  it('passes currentPage to stream when available', async () => {
+    // Arrange
+    const runtime = new DefaultChatRuntime({ summarization: false });
+    const messages = [
+      {
+        ...createMessage('1', 'hello'),
+        metadata: {
+          currentPage: {
+            title: 'Docs',
+            origin: 'https://example.com',
+            path: '/docs',
+          },
+        },
+      },
+    ];
+    const runtimeInternals = runtime as unknown as RuntimeInternals;
+    runtimeInternals.resolveExecutionContext = vi.fn().mockResolvedValue({
+      searchEngine: {},
+    });
+    const streamSpy = vi.spyOn(runtimeInternals, 'stream').mockReturnValue(new ReadableStream());
+
+    // Act
+    await runtime.handler(createJsonRequest({ messages }));
+
+    // Assert
+    expect(streamSpy).toHaveBeenCalled();
+    const streamCalls = (streamSpy.mock.calls as unknown[][]) ?? [];
+    const streamInput = streamCalls[0]?.[0] as { currentPage?: unknown } | undefined;
+    expect(streamInput?.currentPage).toEqual({
+      title: 'Docs',
+      origin: 'https://example.com',
+      path: '/docs',
+    });
+  });
 });
