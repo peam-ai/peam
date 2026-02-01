@@ -28,7 +28,9 @@ export const getCurrentPage = ({
   request: Request;
   message: UIMessage;
 }): CurrentPageMetadata | undefined => {
-  const messageMetadata = message.metadata as { currentPage?: { title: string; origin: string; path: string } };
+  const messageMetadata = (message.metadata ?? {}) as {
+    currentPage?: CurrentPageMetadata;
+  };
   const messageCurrentPage = messageMetadata.currentPage;
 
   if (messageCurrentPage && messageCurrentPage.path && messageCurrentPage.origin) {
