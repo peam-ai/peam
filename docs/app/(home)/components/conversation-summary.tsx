@@ -102,10 +102,9 @@ const SummaryIndicator = () => (
 export const ConversationSummary = () => {
   const [isReady, setIsReady] = useState(false);
   const step = 0.2;
-  const firstRoundStart = 0;
   const summarizingGap = 3;
-  const secondRoundStart = firstRoundStart + step * (FIRST_ROUND_MESSAGES.length - 1) + summarizingGap;
-  const firstRoundDelays = FIRST_ROUND_MESSAGES.map((_, index) => `${(firstRoundStart + step * index).toFixed(1)}s`);
+  const secondRoundStart = step * (FIRST_ROUND_MESSAGES.length - 1) + summarizingGap;
+  const firstRoundDelays = FIRST_ROUND_MESSAGES.map((_, index) => `${(step * index).toFixed(1)}s`);
   const secondRoundDelays = SECOND_ROUND_MESSAGES.map((_, index) => `${(secondRoundStart + step * index).toFixed(1)}s`);
 
   useEffect(() => {
