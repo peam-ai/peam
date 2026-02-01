@@ -13,8 +13,9 @@ Creates a Next.js API route handler that processes AI chat requests with any Ver
 
 ```typescript
 import type { LanguageModelV1 } from 'ai';
+import type { SearchIndexStore } from '@peam-ai/search';
 
-export interface CreateHandlerOptions {
+export interface CreateChatOptions {
   /**
    * The AI model to use for generating responses
    * Can be any model from the Vercel AI SDK
@@ -22,12 +23,18 @@ export interface CreateHandlerOptions {
   model: LanguageModelV1;
 
   /**
-   * Optional function to export search index data
+   * Maximum allowed length for a single message
+   * @default 30000
    */
-  searchIndexExporter?: () => Promise<SearchIndex>;
+  maxMessageLength?: number;
+
+  /**
+   * Search index store to use for loading the search index
+   */
+  searchIndexStore?: SearchIndexStore;
 }
 
-function createHandler(options: CreateHandlerOptions): (request: Request) => Promise<Response>;
+function createHandler(options: CreateChatOptions): (request: Request) => Promise<Response>;
 ```
 
 ## Usage
@@ -98,13 +105,13 @@ export const POST = createHandler({
 // app/api/chat/route.ts
 import { createHandler } from 'peam/server';
 import { openai } from '@ai-sdk/openai';
+import { FileBasedSearchIndexStore } from '@peam-ai/search';
 
 export const POST = createHandler({
   model: openai('gpt-4o'),
-  searchIndexExporter: async () => {
-    // Optional: provide custom search index
-    return myCustomSearchIndex;
-  },
+  searchIndexStore: new FileBasedSearchIndexStore({
+    indexPath: 'generated/index.json',
+  }),
 });
 
 export const runtime = 'edge'; // Optional: use Edge Runtime
@@ -124,10 +131,11 @@ The `createHandler` function works with any model from the [Vercel AI SDK](https
 
 ## Parameters
 
-| Parameter             | Type                         | Required | Description                  |
-| --------------------- | ---------------------------- | -------- | ---------------------------- |
-| `model`               | `LanguageModelV1`            | Yes      | AI model from Vercel AI SDK  |
-| `searchIndexExporter` | `() => Promise<SearchIndex>` | No       | Custom search index provider |
+| Parameter          | Type               | Required | Description                      |
+| ------------------ | ------------------ | -------- | -------------------------------- |
+| `model`            | `LanguageModelV1`  | Yes      | AI model from Vercel AI SDK      |
+| `maxMessageLength` | `number`           | No       | Max length for a single message  |
+| `searchIndexStore` | `SearchIndexStore` | No       | Search index store for retrieval |
 
 ## Return Value
 

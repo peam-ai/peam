@@ -25,7 +25,7 @@ const SYMBOL_IMPORTS: Record<string, ImportMapping> = {
   createHandler: { module: 'peam/server' },
 
   // Types from 'peam/server'
-  CreateHandlerOptions: { module: 'peam/server', isType: true },
+  CreateChatOptions: { module: 'peam/server', isType: true },
 
   // From '@peam-ai/next'
   withPeam: { module: '@peam-ai/next' },

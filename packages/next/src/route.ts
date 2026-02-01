@@ -1,4 +1,4 @@
-import { createHandler } from 'peam/server';
+import { createChat } from 'peam/server';
 import { getConfig } from './config';
 
 /**
@@ -11,6 +11,6 @@ import { getConfig } from './config';
  */
 const config = getConfig();
 
-export const POST = createHandler({
+export const POST = createChat({
   searchIndexStore: config.searchIndexStore,
-});
+}).handler;

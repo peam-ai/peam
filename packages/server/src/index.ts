@@ -1,6 +1,7 @@
-import { createHandler } from './createHandler';
+import { createChat } from './chat/DefaultChatRuntime';
 
-export { createHandler } from './createHandler';
+export { type ChatExecutionContext, type ChatRuntime, type ChatStreamInput } from './chat/ChatRuntime';
+export { createChat, DefaultChatRuntime, type ChatRequestBody, type ChatRuntimeOptions } from './chat/DefaultChatRuntime';
 export {
   type ConversationSummarizer,
   type SummarizationOptions,
@@ -9,6 +10,6 @@ export {
   type SummaryUpdate,
 } from './summarization/ConversationSummarizer';
 export { WindowedConversationSummarizer } from './summarization/WindowedConversationSummarizer';
-export type { ChatRequestBody, CreateHandlerOptions, CurrentPageMetadata } from './types';
 export { getSearchEngine } from './utils/getSearchEngine';
-export const POST = createHandler();
+
+export const POST = createChat().handler;
