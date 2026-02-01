@@ -104,9 +104,7 @@ export default function Page() {
   return (
     <AskAI
       type="dialog"
-      button={({ isOpen, toggle }) => (
-        <Button onClick={toggle}>{isOpen ? 'Close' : 'Ask a Question'}</Button>
-      )}
+      button={({ isOpen, toggle }) => <Button onClick={toggle}>{isOpen ? 'Close' : 'Ask a Question'}</Button>}
     />
   );
 }
@@ -129,16 +127,16 @@ export default function Page() {
 
 ## Props
 
-| Prop               | Type                               | Default       | Description                                           |
-| ------------------ | ---------------------------------- | ------------- | ----------------------------------------------------- |
-| `type`             | `'chat' \| 'dialog' \| 'sidepane'` | `'chat'`      | Display mode for the chat interface                   |
-| `endpoint`         | `string`                           | `'/api/peam'` | API endpoint used by the chat transport               |
-| `suggestedPrompts` | `string[]`                         | `undefined`   | Suggested prompts to display to the user              |
-| `maxMessages`      | `number`                           | `10`          | Max messages before summarization (see Notes)         |
-| `inlineButton`     | `boolean`                          | `false`       | Render the default button inline instead of floating  |
-| `buttonVariant`    | `'icon' \| 'iconLabel'`            | `'iconLabel'` | Variant for the default button                        |
-| `className`        | `string`                           | `undefined`   | Additional CSS classes for the root container         |
-| `button`           | `function`                         | `undefined`   | Custom button render function                         |
+| Prop               | Type                               | Default       | Description                                          |
+| ------------------ | ---------------------------------- | ------------- | ---------------------------------------------------- |
+| `type`             | `'chat' \| 'dialog' \| 'sidepane'` | `'chat'`      | Display mode for the chat interface                  |
+| `endpoint`         | `string`                           | `'/api/peam'` | API endpoint used by the chat transport              |
+| `suggestedPrompts` | `string[]`                         | `undefined`   | Suggested prompts to display to the user             |
+| `maxMessages`      | `number`                           | `10`          | Max messages before summarization (see Notes)        |
+| `inlineButton`     | `boolean`                          | `false`       | Render the default button inline instead of floating |
+| `buttonVariant`    | `'icon' \| 'iconLabel'`            | `'iconLabel'` | Variant for the default button                       |
+| `className`        | `string`                           | `undefined`   | Additional CSS classes for the root container        |
+| `button`           | `function`                         | `undefined`   | Custom button render function                        |
 
 ## Notes
 

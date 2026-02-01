@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
-import { PeamLogo } from '../peam-logo';
+import { PeamLogo } from '@/components/peam-logo';
 import { DesktopMenu } from './desktop-menu';
 import { GitHubButton } from './github-button';
 import { MobileMenu } from './mobile-menu';

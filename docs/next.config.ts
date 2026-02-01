@@ -28,6 +28,10 @@ const config: NextConfig = {
       ],
       afterFiles: [
         {
+          source: '/docs/api-references',
+          destination: '/docs/api-reference',
+        },
+        {
           source: '/docs/:path*.(mdx|md)',
           destination: '/llms.mdx/:path*',
         },
@@ -36,6 +40,16 @@ const config: NextConfig = {
   },
   redirects: () => {
     return [
+      {
+        source: '/docs',
+        destination: '/docs/getting-started',
+        permanent: true,
+      },
+      {
+        source: '/docs/:path(next|vite|astro)',
+        destination: '/docs/getting-started/:path',
+        permanent: true,
+      },
       {
         source: '/err/:slug',
         destination: '/docs/errors/:slug',

@@ -8,3 +8,5 @@ export const nav = [
     href: 'https://github.com/peam-ai/peam',
   },
 ];
+
+export const title = 'Peam Documentation';

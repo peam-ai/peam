@@ -1,3 +1,4 @@
+import { Footer } from '@/components/geistdocs/footer';
 import { Navbar } from '@/components/geistdocs/navbar';
 import { GeistdocsProvider } from '@/components/geistdocs/provider';
 import { ThemedAskAI } from '@/components/themed-askai';
@@ -32,6 +33,7 @@ const Layout = ({ children }: LayoutProps<'/'>) => (
         </Navbar>
         {children}
         <ThemedAskAI type="sidepane" />
+        <Footer />
       </GeistdocsProvider>
     </body>
   </html>

@@ -1,7 +1,6 @@
 {
   "title": "API Reference",
   "pages": [
-    "index",
     "---Client Components---",
     "client/ask-ai",
     "client/ask-ai-chat",

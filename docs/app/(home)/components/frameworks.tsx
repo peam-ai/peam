@@ -613,10 +613,7 @@ export const Frameworks = () => {
             <AstroDark className="size-[60px] absolute top-0 left-0 opacity-10 blur-md hidden dark:block" />
             <AstroLight className="size-[64px] absolute top-0 left-0 opacity-10 blur-md dark:hidden" />
           </Link>
-          <Link
-            href="/docs"
-            className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out"
-          >
+          <Link href="/docs" className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out">
             <Express className="size-[64px] dark:invert relative z-10" />
             <Express className="size-[72px] absolute top-0 left-0 opacity-10 blur-md dark:invert" />
           </Link>
@@ -624,31 +621,19 @@ export const Frameworks = () => {
             <Fastify className="size-[64px] dark:invert" />
             <Fastify className="size-[72px] absolute top-0 left-0 opacity-10 blur-md dark:invert" />
           </Link>
-          <Link
-            href="/docs"
-            className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out"
-          >
+          <Link href="/docs" className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out">
             <Hono className="size-[56px] relative z-10" />
             <Hono className="size-[64px] absolute top-0 left-0 opacity-10 blur-md" />
           </Link>
-          <Link
-            href="/docs"
-            className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out"
-          >
+          <Link href="/docs" className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out">
             <Nitro className="size-[56px] relative z-10" />
             <Nitro className="size-[64px] absolute top-0 left-0 opacity-10 blur-md" />
           </Link>
-          <Link
-            href="/docs"
-            className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out"
-          >
+          <Link href="/docs" className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out">
             <Nuxt className="size-[56px] relative z-10" />
             <Nuxt className="size-[64px] absolute top-0 left-0 opacity-10 blur-md" />
           </Link>
-          <Link
-            href="/docs"
-            className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out"
-          >
+          <Link href="/docs" className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out">
             <SvelteKit className="size-[56px] relative z-10" />
             <SvelteKit className="size-[64px] absolute top-0 left-0 opacity-10 blur-md" />
           </Link>

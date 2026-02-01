@@ -6,7 +6,7 @@ import { RootProvider } from 'fumadocs-ui/provider/next';
 import type { ComponentProps } from 'react';
 import { Toaster } from '@/components/ui/sonner';
 import { cn } from '@/lib/utils';
-import { TooltipProvider } from '../ui/tooltip';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { SearchDialog } from './search';
 
 type GeistdocsProviderProps = ComponentProps<typeof RootProvider> & {

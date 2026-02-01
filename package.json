@@ -18,7 +18,7 @@
     "changeset:publish": "pnpm build && changeset publish",
     "publish-packages": "turbo run build test && changeset version && changeset publish"
   },
-  "packageManager": "pnpm@10.28.1",
+  "packageManager": "pnpm@10.28.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/peam-ai/peam.git"

@@ -5,52 +5,35 @@ description: Complete API reference for Peam
 
 # API Reference
 
-Complete reference documentation for all Peam APIs.
+Complete reference documentation for all Peam APIs. Choose a section to get started.
 
-## Client Components
-
-Client-side React components for adding AI chat to your application.
-
-- [**AskAI**](/docs/api-reference/client/ask-ai) - Main component with chat, dialog, and sidepane modes
-- [**AskAIChat**](/docs/api-reference/client/ask-ai-chat) - Inline chat component
-- [**AskAIDialog**](/docs/api-reference/client/ask-ai-dialog) - Dialog chat component
-- [**AskAISidepane**](/docs/api-reference/client/ask-ai-sidepane) - Sidepane chat component
-
-## Server API
-
-Server-side functions for handling AI requests.
-
-- [**createChat**](/docs/api-reference/server/create-chat) - Create a chat runtime and handler
-
-## Next.js Integration
-
-Next.js specific configuration and utilities.
-
-- [**withPeam**](/docs/api-reference/next/with-peam) - Next.js config wrapper
-- [**route**](/docs/api-reference/next/route) - Default Next.js route handler
-
-## Quick Reference
-
-### Client Component
-
-```tsx
-import { AskAI } from 'peam/client';
-
-<AskAI />;
-```
-
-### Server Handler
-
-```typescript
-import { createChat } from 'peam/server';
-
-export const POST = createChat().handler;
-```
-
-### Next.js Integration
-
-```typescript
-import withPeam from '@peam-ai/next';
-
-export default withPeam()(nextConfig);
-```
+<div className="not-prose grid grid-cols-1 gap-4 sm:grid-cols-2">
+  <a
+    href="/docs/api-reference/client/ask-ai"
+    className="rounded-xl border bg-card p-4 text-card-foreground shadow-sm transition hover:border-foreground/30 hover:bg-muted/40"
+  >
+    <div className="text-sm font-medium">Client API</div>
+    <p className="mt-1 text-sm text-muted-foreground">React components like AskAI, Chat, Dialog, and Sidepane.</p>
+  </a>
+  <a
+    href="/docs/api-reference/server/create-chat"
+    className="rounded-xl border bg-card p-4 text-card-foreground shadow-sm transition hover:border-foreground/30 hover:bg-muted/40"
+  >
+    <div className="text-sm font-medium">Server API</div>
+    <p className="mt-1 text-sm text-muted-foreground">Server-side handlers for chat runtimes and requests.</p>
+  </a>
+  <a
+    href="/docs/api-reference/next/with-peam"
+    className="rounded-xl border bg-card p-4 text-card-foreground shadow-sm transition hover:border-foreground/30 hover:bg-muted/40"
+  >
+    <div className="text-sm font-medium">Next.js Integration</div>
+    <p className="mt-1 text-sm text-muted-foreground">Configure Next.js with Peam and related utilities.</p>
+  </a>
+  <a
+    href="/docs/api-reference/next/route"
+    className="rounded-xl border bg-card p-4 text-card-foreground shadow-sm transition hover:border-foreground/30 hover:bg-muted/40"
+  >
+    <div className="text-sm font-medium">Route Handler</div>
+    <p className="mt-1 text-sm text-muted-foreground">Default Next.js route handler for API requests.</p>
+  </a>
+</div>

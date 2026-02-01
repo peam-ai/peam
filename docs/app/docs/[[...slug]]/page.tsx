@@ -10,9 +10,9 @@ import {
 import { EditSource } from '@/components/geistdocs/edit-source';
 import { getMDXComponents } from '@/components/geistdocs/mdx-components';
 import { ScrollTop } from '@/components/geistdocs/scroll-top';
-import { TableOfContents } from '@/components/geistdocs/toc';
 import * as AccordionComponents from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 import { Step, Steps } from 'fumadocs-ui/components/steps';
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
@@ -37,12 +37,14 @@ const Page = async (props: PageProps<'/docs/[[...slug]]'>) => {
     <DocsPage
       slug={params.slug}
       tableOfContent={{
-        component: (
-          <TableOfContents>
+        style: 'clerk',
+        footer: (
+          <div className="my-3 space-y-3">
+            <Separator />
             <EditSource path={page.path} />
             <ScrollTop />
             <CopyPage text={markdown} />
-          </TableOfContents>
+          </div>
         ),
       }}
       toc={page.data.toc}

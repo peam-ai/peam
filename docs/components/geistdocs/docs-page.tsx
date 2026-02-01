@@ -18,7 +18,7 @@ type PageProps = ComponentProps<typeof FumadocsDocsPage> & {
   slug: string[] | undefined;
 };
 
-export const DocsPage = ({ slug, children, ...props }: PageProps) => {
+export const DocsPage = ({ slug, children, breadcrumb, ...props }: PageProps) => {
   const page = source.getPage(slug);
 
   if (!page) {
@@ -29,6 +29,7 @@ export const DocsPage = ({ slug, children, ...props }: PageProps) => {
     <FumadocsDocsPage
       full={page.data.full}
       toc={page.data.toc}
+      breadcrumb={{ includePage: true, ...breadcrumb }}
       {...props}
       article={{ className: 'max-w-[754px]', ...props.article }}
       container={{

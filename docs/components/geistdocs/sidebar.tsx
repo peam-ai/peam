@@ -9,8 +9,8 @@ import {
   SidebarFolderTrigger,
   SidebarItem,
   SidebarSeparator,
-  type SidebarComponents,
-} from 'fumadocs-ui/components/layout/sidebar';
+} from 'fumadocs-ui/components/sidebar/base';
+import type { SidebarPageTreeComponents } from 'fumadocs-ui/components/sidebar/page-tree';
 import { useTreeContext, useTreePath } from 'fumadocs-ui/contexts/tree';
 import { ExternalLinkIcon } from 'lucide-react';
 import { Fragment } from 'react';
@@ -29,16 +29,16 @@ export const Sidebar = () => {
   const { root } = useTreeContext();
   const { isOpen, setIsOpen } = useSidebarContext();
 
-  const renderSidebarList = (items: Node[], level = 1) =>
+  const renderSidebarList = (items: Node[]) =>
     items.map((item) => {
       if (item.type === 'separator') {
         return <Separator item={item} key={item.$id} />;
       }
 
       if (item.type === 'folder') {
-        const children = renderSidebarList(item.children, level + 1);
+        const children = renderSidebarList(item.children);
         return (
-          <Folder item={item} level={level} key={item.$id}>
+          <Folder item={item} key={item.$id}>
             {children}
           </Folder>
         );
@@ -97,20 +97,21 @@ export const Sidebar = () => {
   );
 };
 
-export const Folder: SidebarComponents['Folder'] = ({
+export const Folder: SidebarPageTreeComponents['Folder'] = ({
   children,
   item,
 }) => {
   const path = useTreePath();
   const defaultOpen = item.defaultOpen ?? path.includes(item);
+  const href = item.index?.url;
 
   return (
     <SidebarFolder defaultOpen={defaultOpen}>
-      {item.index ? (
+      {href ? (
         <SidebarFolderLink
           className="flex items-center gap-2 text-pretty py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground data-[active=true]:text-foreground [&_svg]:size-3.5"
-          external={item.index.external}
-          href={item.index.url}
+          external={item.index?.external}
+          href={href}
         >
           {item.icon}
           {item.name}
@@ -126,7 +127,7 @@ export const Folder: SidebarComponents['Folder'] = ({
   );
 };
 
-export const Item: SidebarComponents['Item'] = ({ item }) => (
+export const Item: SidebarPageTreeComponents['Item'] = ({ item }) => (
   <SidebarItem
     className="block w-full truncate text-pretty py-1.5 text-muted-foreground text-sm transition-colors hover:text-foreground data-[active=true]:text-foreground"
     external={item.external}
@@ -137,7 +138,7 @@ export const Item: SidebarComponents['Item'] = ({ item }) => (
   </SidebarItem>
 );
 
-export const Separator: SidebarComponents['Separator'] = ({ item }) => (
+export const Separator: SidebarPageTreeComponents['Separator'] = ({ item }) => (
   <SidebarSeparator className="mt-4 mb-2 flex items-center gap-2 px-0 font-medium text-sm first-child:mt-0">
     {item.icon}
     {item.name}
