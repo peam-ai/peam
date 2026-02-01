@@ -37,11 +37,6 @@ const config: NextConfig = {
   redirects: () => {
     return [
       {
-        source: '/docs',
-        destination: '/docs/getting-started',
-        permanent: true,
-      },
-      {
         source: '/err/:slug',
         destination: '/docs/errors/:slug',
         permanent: true,

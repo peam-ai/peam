@@ -1,0 +1,34 @@
+---
+title: DefaultChatRuntime
+description: Default chat runtime implementation
+---
+
+# DefaultChatRuntime
+
+The default implementation of `ChatRuntime`. It powers the server-side chat behavior, including streaming responses and request handling.
+
+## Type Definition
+
+```ts
+import type { ChatRuntime, ChatRuntimeOptions, ChatRequestBody } from 'peam/server';
+
+export class DefaultChatRuntime implements ChatRuntime {
+  constructor(options?: ChatRuntimeOptions);
+  stream(input: ChatStreamInput, context: ChatExecutionContext): ReadableStream<InferUIMessageChunk<UIMessage>>;
+  handler(request: Request): Promise<Response>;
+}
+```
+
+## Usage
+
+```ts
+import { DefaultChatRuntime } from 'peam/server';
+
+const runtime = new DefaultChatRuntime();
+export const POST = runtime.handler;
+```
+
+## Notes
+
+- If `searchIndexStore` is not provided, it uses a file-based store at `.peam/index.json`.
+- The handler expects the `ChatRequestBody` payload (see [createChat](/docs/api-reference/server/create-chat)).

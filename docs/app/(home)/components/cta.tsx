@@ -7,7 +7,7 @@ export const CTA = () => (
       Add AI to your website today.
     </h2>
     <Button asChild className="w-fit text-base h-12" size="lg">
-      <Link href="/docs/getting-started">Get started</Link>
+      <Link href="/docs">Get started</Link>
     </Button>
   </section>
 );

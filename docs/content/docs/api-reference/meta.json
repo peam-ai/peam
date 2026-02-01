@@ -4,9 +4,13 @@
     "index",
     "---Client Components---",
     "client/ask-ai",
+    "client/ask-ai-chat",
+    "client/ask-ai-dialog",
+    "client/ask-ai-sidepane",
     "---Server API---",
-    "server/create-handler",
+    "server/create-chat",
     "---Next.js Integration---",
-    "next/with-peam"
+    "next/with-peam",
+    "next/route"
   ]
 }

@@ -1,0 +1,24 @@
+---
+title: WindowedConversationSummarizer
+description: Default summarizer for chat history
+---
+
+# WindowedConversationSummarizer
+
+Summarizes conversations after a fixed number of messages to keep the context window bounded.
+
+## Type Definition
+
+```ts
+import type { SummarizationOptions } from 'peam/server';
+
+export class WindowedConversationSummarizer {
+  constructor(options: SummarizationOptions);
+  summarize(input: SummarizerInput): Promise<SummaryUpdate | null>;
+}
+```
+
+## Notes
+
+- Uses `maxMessages` with a default of $10$.
+- Used automatically by `DefaultChatRuntime` unless `summarization` is set to `false`.

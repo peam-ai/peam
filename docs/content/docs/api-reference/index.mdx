@@ -11,19 +11,23 @@ Complete reference documentation for all Peam APIs.
 
 Client-side React components for adding AI chat to your application.
 
-- [**AskAI**](/docs/api-reference/client/ask-ai) - Main component with dialog, sidepane, and chat modes
+- [**AskAI**](/docs/api-reference/client/ask-ai) - Main component with chat, dialog, and sidepane modes
+- [**AskAIChat**](/docs/api-reference/client/ask-ai-chat) - Inline chat component
+- [**AskAIDialog**](/docs/api-reference/client/ask-ai-dialog) - Dialog chat component
+- [**AskAISidepane**](/docs/api-reference/client/ask-ai-sidepane) - Sidepane chat component
 
 ## Server API
 
 Server-side functions for handling AI requests.
 
-- [**createHandler**](/docs/api-reference/server/create-handler) - Create API route handler
+- [**createChat**](/docs/api-reference/server/create-chat) - Create a chat runtime and handler
 
 ## Next.js Integration
 
 Next.js specific configuration and utilities.
 
 - [**withPeam**](/docs/api-reference/next/with-peam) - Next.js config wrapper
+- [**route**](/docs/api-reference/next/route) - Default Next.js route handler
 
 ## Quick Reference
 
@@ -32,26 +36,21 @@ Next.js specific configuration and utilities.
 ```tsx
 import { AskAI } from 'peam/client';
 
-<AskAI type="dialog" />;
+<AskAI />;
 ```
 
 ### Server Handler
 
 ```typescript
-import { createHandler } from 'peam/server';
-import { openai } from '@ai-sdk/openai';
+import { createChat } from 'peam/server';
 
-export const POST = createHandler({
-  model: openai('gpt-4o'),
-});
+export const POST = createChat().handler;
 ```
 
 ### Next.js Integration
 
 ```typescript
-import { withPeam } from '@peam-ai/next';
+import withPeam from '@peam-ai/next';
 
-export default withPeam({
-  outputDir: '.peam',
-})(nextConfig);
+export default withPeam()(nextConfig);
 ```

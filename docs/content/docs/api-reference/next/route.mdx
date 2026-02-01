@@ -1,0 +1,33 @@
+---
+title: route
+description: Default Next.js route handler for Peam
+---
+
+# route
+
+Exports a ready-to-use `POST` handler for Next.js route handlers. The handler uses `createChat` and the configuration produced by `withPeam()`.
+
+## Source
+
+```ts
+import { createChat } from 'peam/server';
+import { getConfig } from './config';
+
+const config = getConfig();
+
+export const POST = createChat({
+  searchIndexStore: config.searchIndexStore,
+}).handler;
+```
+
+## Usage
+
+```ts
+export const maxDuration = 30;
+export { POST } from '@peam-ai/next/route';
+```
+
+## Notes
+
+- `withPeam()` must run during build so `getConfig()` can resolve the search store settings.
+- The handler reads the search index via the configured `SearchIndexStore`.

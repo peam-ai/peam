@@ -1,0 +1,21 @@
+---
+title: getSearchEngine
+description: Load a SearchEngine from a SearchIndexStore
+---
+
+# getSearchEngine
+
+Loads and caches a `SearchEngine` instance from a `SearchIndexStore`.
+
+## Type Definition
+
+```ts
+import type { SearchEngine, SearchIndexStore } from '@peam-ai/search';
+
+export function getSearchEngine(store: SearchIndexStore): Promise<SearchEngine | undefined>;
+```
+
+## Notes
+
+- Returns `undefined` if the index is missing or empty.
+- Caches the `SearchEngine` instance in memory.

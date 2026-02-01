@@ -1,0 +1,33 @@
+---
+title: AskAISidepane
+description: Sidepane chat component
+---
+
+# AskAISidepane
+
+Sidepane chat UI that slides in from the right on desktop and from the bottom on mobile. It shares the same base props as `AskAI`.
+
+## Type Definition
+
+```ts
+import type { AskAIBaseProps } from 'peam/client';
+
+export interface AskAISidepaneProps extends AskAIBaseProps {}
+
+export function AskAISidepane(props?: AskAISidepaneProps): JSX.Element;
+```
+
+## Usage
+
+```tsx
+import { AskAISidepane } from 'peam/client';
+
+export default function Page() {
+  return <AskAISidepane />;
+}
+```
+
+## Notes
+
+- Uses `AskAIBaseProps` (see [AskAI](/docs/api-reference/client/ask-ai)).
+- On desktop, opening the sidepane temporarily applies a right margin to the document body.

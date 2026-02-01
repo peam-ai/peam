@@ -1,3 +1,11 @@
 {
-  "pages": ["introduction", "---", "getting-started", "foundations", "how-it-works", "api-reference"]
+  "pages": [
+    "---Get Started---",
+    "next",
+    "vite",
+    "astro",
+    "foundations",
+    "how-it-works",
+    "api-reference"
+  ]
 }

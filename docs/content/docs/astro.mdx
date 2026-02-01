@@ -1,0 +1,70 @@
+---
+title: Astro
+description: Add Peam to Astro with React islands for a lightweight, search-ready experience
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import Link from 'fumadocs-core/link';
+
+# Overview
+
+This guide mirrors the Astro example in <Link href="https://github.com/peam-ai/peam/tree/main/examples/astro-react" external>examples/astro-react</Link>.
+
+<Steps>
+  <Step>
+    ## Install Dependencies
+
+    ```bash
+    npm install peam
+    ```
+  </Step>
+
+  <Step>
+    ## Add AskAI in the Base Layout
+
+    ```astro
+    ---
+    import { AskAI } from 'peam/client';
+    import '../styles/global.css';
+
+    interface Props {
+      title: string;
+      description?: string;
+    }
+
+    const { title, description } = Astro.props as Props;
+    ---
+
+    <html lang="en">
+      <head>
+        <!-- ... -->
+      </head>
+      <body class="antialiased">
+        <!-- ... -->
+        <slot />
+        <!-- [!code highlight] -->
+        <AskAI client:only="react" />
+      </body>
+    </html>
+    ```
+  </Step>
+
+  <Step>
+    ## Add the API Route
+
+    Create `src/pages/api/peam.ts` and add:
+
+    ```ts
+    // [!code highlight]
+    export { POST } from 'peam/server';
+    export const prerender = false;
+    ```
+  </Step>
+</Steps>
+
+<Alert className="border-border/60 bg-muted/60 text-foreground">
+  <AlertDescription>
+    Browse the full app in <Link href="https://github.com/peam-ai/peam/tree/main/examples/astro-react" external>examples/astro-react</Link>.
+  </AlertDescription>
+</Alert>

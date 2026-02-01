@@ -1,6 +1,6 @@
 ---
 title: AskAI
-description: AI chat component with dialog, sidepane, and inline chat modes
+description: AI chat component with chat, dialog, and sidepane modes
 ---
 
 # AskAI
@@ -9,43 +9,72 @@ The main AI chat component with multiple display modes.
 
 ## Type Definition
 
-```typescript
+```ts
+import type { ReactNode } from 'react';
+import type { AskAIChatProps, AskAIDialogProps, AskAISidepaneProps } from 'peam/client';
+
+export type AskAIType = 'chat' | 'dialog' | 'sidepane';
+
 export interface AskAIBaseProps {
   /**
-   * Suggested prompts to display to the user
+   * API endpoint for handling AI requests.
+   * @default '/api/peam'
+   */
+  endpoint?: string;
+
+  /**
+   * Array of suggested prompts to display to the user.
    */
   suggestedPrompts?: string[];
 
   /**
-   * Maximum number of messages to show
-   * @default 50
+   * Maximum number of messages to keep in context before summarizing.
+   * @default 10
    */
   maxMessages?: number;
 
   /**
-   * Custom inline button (for chat mode)
+   * Render the button inline instead of as a floating button.
+   * @default false
    */
-  inlineButton?: React.ReactNode;
+  inlineButton?: boolean;
 
   /**
-   * Custom trigger button (for dialog/sidepane modes)
+   * Variant of the default button.
+   * @default 'iconLabel'
    */
-  button?: React.ReactNode;
+  buttonVariant?: 'icon' | 'iconLabel';
 
   /**
-   * Display mode for the chat interface
-   * - 'chat': Inline chat
-   * - 'dialog': Modal dialog
-   * - 'sidepane': Side panel
-   * @default 'dialog'
+   * Additional CSS classes to apply to the root container.
    */
-  type?: 'chat' | 'dialog' | 'sidepane';
+  className?: string;
+
+  /**
+   * Custom button component.
+   */
+  button?: (props: { isOpen: boolean; toggle: () => void; open: () => void; close: () => void }) => ReactNode;
 }
+
+export type AskAIProps =
+  | ({ type?: 'chat' } & AskAIChatProps)
+  | ({ type: 'dialog' } & AskAIDialogProps)
+  | ({ type: 'sidepane' } & AskAISidepaneProps);
 ```
 
 ## Usage
 
-### Dialog Mode (Default)
+### Chat Mode (Default)
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return <AskAI type="chat" />;
+}
+```
+
+### Dialog Mode
 
 ```tsx
 import { AskAI } from 'peam/client';
@@ -65,16 +94,6 @@ export default function Page() {
 }
 ```
 
-### Inline Chat Mode
-
-```tsx
-import { AskAI } from 'peam/client';
-
-export default function Page() {
-  return <AskAI type="chat" />;
-}
-```
-
 ### With Custom Button
 
 ```tsx
@@ -82,7 +101,14 @@ import { AskAI } from 'peam/client';
 import { Button } from '@/components/ui/button';
 
 export default function Page() {
-  return <AskAI type="dialog" button={<Button>Ask a Question</Button>} />;
+  return (
+    <AskAI
+      type="dialog"
+      button={({ isOpen, toggle }) => (
+        <Button onClick={toggle}>{isOpen ? 'Close' : 'Ask a Question'}</Button>
+      )}
+    />
+  );
 }
 ```
 
@@ -101,30 +127,23 @@ export default function Page() {
 }
 ```
 
-### With Custom Inline Button
-
-```tsx
-import { AskAI } from 'peam/client';
-
-export default function Page() {
-  return <AskAI type="chat" inlineButton={<button>Send Message</button>} />;
-}
-```
-
 ## Props
 
-| Prop               | Type                               | Default     | Description                                       |
-| ------------------ | ---------------------------------- | ----------- | ------------------------------------------------- |
-| `type`             | `'chat' \| 'dialog' \| 'sidepane'` | `'dialog'`  | Display mode for the chat interface               |
-| `suggestedPrompts` | `string[]`                         | `undefined` | Suggested prompts to display to the user          |
-| `maxMessages`      | `number`                           | `50`        | Maximum number of messages to show                |
-| `button`           | `React.ReactNode`                  | `undefined` | Custom trigger button (for dialog/sidepane modes) |
-| `inlineButton`     | `React.ReactNode`                  | `undefined` | Custom inline button (for chat mode)              |
+| Prop               | Type                               | Default       | Description                                           |
+| ------------------ | ---------------------------------- | ------------- | ----------------------------------------------------- |
+| `type`             | `'chat' \| 'dialog' \| 'sidepane'` | `'chat'`      | Display mode for the chat interface                   |
+| `endpoint`         | `string`                           | `'/api/peam'` | API endpoint used by the chat transport               |
+| `suggestedPrompts` | `string[]`                         | `undefined`   | Suggested prompts to display to the user              |
+| `maxMessages`      | `number`                           | `10`          | Max messages before summarization (see Notes)         |
+| `inlineButton`     | `boolean`                          | `false`       | Render the default button inline instead of floating  |
+| `buttonVariant`    | `'icon' \| 'iconLabel'`            | `'iconLabel'` | Variant for the default button                        |
+| `className`        | `string`                           | `undefined`   | Additional CSS classes for the root container         |
+| `button`           | `function`                         | `undefined`   | Custom button render function                         |
 
 ## Notes
 
-- **Dialog mode** opens the chat in a modal overlay
-- **Sidepane mode** slides the chat in from the side
-- **Chat mode** displays the chat inline on the page
-- Custom buttons allow you to match your app's design system
-- Suggested prompts help guide users with common questions
+- **Dialog mode** opens the chat in a modal overlay.
+- **Sidepane mode** slides the chat in from the side.
+- **Chat mode** displays the chat inline on the page.
+- `buttonVariant` is used by the default `PeamButton` in chat mode.
+- `maxMessages` is defined on the props type but is not currently wired into the client components.

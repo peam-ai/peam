@@ -1,0 +1,81 @@
+---
+title: Vite
+description: Wire Peam into a Vite + React SSR stack with a focused, minimal server route
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import Link from 'fumadocs-core/link';
+
+# Overview
+
+This guide is based on the Vite + React example in <Link href="https://github.com/peam-ai/peam/tree/main/examples/vite-react" external>examples/vite-react</Link>.
+
+<Steps>
+  <Step>
+    ## Install Dependencies
+
+    ```bash
+    npm install peam
+    ```
+  </Step>
+
+  <Step>
+    ## Add AskAI to the Root Layout
+
+    ```tsx
+    export { Layout };
+
+    import { AskAI } from 'peam/client';
+    import type { ReactNode } from 'react';
+    import '../index.css';
+
+    function Layout({ children }: { children: ReactNode }) {
+      return (
+        <html lang="en">
+          <head>
+            {/* ... */}
+          </head>
+          <body>
+            {/* ... */}
+            {children}
+            // [!code highlight]
+            <AskAI />
+          </body>
+        </html>
+      );
+    }
+    ```
+  </Step>
+
+  <Step>
+    ## Add an API Endpoint in the Express Server
+
+    The server handler is built with `createChat()` from `peam/server` and invoked per request.
+
+    Create or edit `api/server.ts` and add the /api/peam route:
+
+    ```ts
+    import { createChat } from 'peam/server';
+
+    // ... Express setup
+
+    const chat = createChat();
+
+    // [!code highlight]
+    app.post('/api/peam', async (req, res) => {
+      // ... convert to Request
+      const response = await chat.handler(request);
+      // ... stream response
+    });
+
+    // ... server startup
+    ```
+  </Step>
+</Steps>
+
+<Alert className="border-border/60 bg-muted/60 text-foreground">
+  <AlertDescription>
+    Browse the full app in <Link href="https://github.com/peam-ai/peam/tree/main/examples/vite-react" external>examples/vite-react</Link>.
+  </AlertDescription>
+</Alert>

@@ -87,7 +87,7 @@ export const Hero = ({ title, description: _description }: HeroProps) => {
           </div>
         </div>
         <Link
-          href="/docs/getting-started"
+          href="/docs"
           className="mt-2 inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
         >
           Get Started

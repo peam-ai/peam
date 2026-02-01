@@ -1,0 +1,25 @@
+---
+title: POST
+description: Default HTTP handler exported from peam/server
+---
+
+# POST
+
+A ready-to-use HTTP handler exported from `peam/server`. It is equivalent to:
+
+```ts
+import { createChat } from 'peam/server';
+
+export const POST = createChat().handler;
+```
+
+## Usage
+
+```ts
+export { POST } from 'peam/server';
+```
+
+## Notes
+
+- Uses the default chat runtime configuration.
+- Expects a POST request with the `ChatRequestBody` shape (`messages` and optional `summary`).

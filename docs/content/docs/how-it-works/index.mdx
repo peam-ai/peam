@@ -5,16 +5,55 @@ description: Understanding how Peam works under the hood
 
 # How It Works
 
-Understand the architecture and inner workings of Peam.
+Peam has two main parts: a build-time indexing pipeline and a runtime chat/search pipeline.
 
-## Coming Soon
+## Build-Time Indexing
 
-This section is under development. Check back soon for detailed information about:
+### 1. Discover pages
 
-- Architecture overview
-- Indexing process
-- Search mechanism
-- AI integration
-- Performance optimization
+`SearchIndexBuilder` collects pages from configured sources (for example, prerender outputs in the Next.js adapter).
 
-For now, check out the [Getting Started](/docs/getting-started) guide to begin using Peam.
+### 2. Filter pages
+
+Filters are applied in order:
+
+- `CommonFilter` (baseline checks)
+- `PrerenderPathFilter` (when prerender sources are used)
+- `ExcludePatternFilter` (from `exclude` patterns)
+- `RobotsTxtFilter` (from `robotsTxt` config)
+
+### 3. Parse and structure HTML
+
+Each page is parsed with `parseHTML` from `@peam-ai/parser` to produce structured content.
+
+### 4. Build the search index
+
+`buildSearchIndex` creates a search index from structured pages and returns `SearchIndexData`.
+
+### 5. Export the index
+
+The index is exported via a `SearchIndexStore`. The default is `FileBasedSearchIndexStore`, which writes to `.peam/index.json`.
+
+## Runtime Chat & Search
+
+### 1. Client sends messages
+
+`AskAI` renders the chat UI and uses `BoundedChatTransport` to send requests to the `endpoint` (default `/api/peam`). Each message includes `metadata.currentPage` (title, origin, path). If a summary exists, it is sent in the request body.
+
+### 2. Server validates and resolves context
+
+`createChat().handler` validates the request, extracts the current page from message metadata (or the `referer` header), then loads the search index via `getSearchEngine` (cached in memory).
+
+### 3. AI response with search tools
+
+`streamSearchText` runs the model with tools created by `createSearchTools`:
+
+- `search`
+- `getDocument`
+- `listDocuments`
+
+These tools write `source-url` parts into the stream, which the UI renders as sources.
+
+### 4. Conversation summarization
+
+`WindowedConversationSummarizer` summarizes every $N$ messages (default $N = 10$). The summary is emitted as a `data-summary` stream part, which the client stores and reuses to keep the context window small.

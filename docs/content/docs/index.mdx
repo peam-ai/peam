@@ -1,0 +1,34 @@
+---
+title: Getting Started
+description: Choose your framework to get Peam running quickly
+---
+
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { AstroDark, AstroLight, Next, Vite } from '@/app/(home)/components/frameworks';
+import Link from 'fumadocs-core/link';
+
+# Frameworks
+
+Pick a guide below, or browse the full examples folder on GitHub: <Link href="https://github.com/peam-ai/peam/tree/main/examples" external>examples</Link>.
+
+<Cards>
+  <Card href="/docs/next">
+    <div className="flex flex-col items-center justify-center gap-2">
+      <Next className="size-16" />
+      <span className="font-medium">Next.js</span>
+    </div>
+  </Card>
+  <Card href="/docs/vite">
+    <div className="flex flex-col items-center justify-center gap-2">
+      <Vite className="size-16" />
+      <span className="font-medium">Vite</span>
+    </div>
+  </Card>
+  <Card href="/docs/astro">
+    <div className="flex flex-col items-center justify-center gap-2">
+      <AstroLight className="size-16 dark:hidden" />
+      <AstroDark className="size-16 hidden dark:block" />
+      <span className="font-medium">Astro</span>
+    </div>
+  </Card>
+</Cards>

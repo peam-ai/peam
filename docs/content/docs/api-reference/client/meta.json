@@ -1,4 +1,4 @@
 {
   "title": "Client",
-  "pages": ["ask-ai"]
+  "pages": ["ask-ai", "ask-ai-chat", "ask-ai-dialog", "ask-ai-sidepane"]
 }

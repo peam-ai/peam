@@ -1,0 +1,109 @@
+---
+title: Next.js
+description: Peam integration for Next.js with clear steps and real-world wiring
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import Link from 'fumadocs-core/link';
+
+# Overview
+
+This guide consolidates these examples:
+
+- <Link href="https://github.com/peam-ai/peam/tree/main/examples/nextjs-14" external>examples/nextjs-14</Link>
+- <Link href="https://github.com/peam-ai/peam/tree/main/examples/nextjs-15" external>examples/nextjs-15</Link>
+- <Link href="https://github.com/peam-ai/peam/tree/main/examples/nextjs-16" external>examples/nextjs-16</Link>
+
+## Requirements
+
+- `withPeam()` must be present in your Next.js config.
+
+## Setup
+
+<Steps>
+  <Step>
+    ## Install Dependencies
+
+    ```bash
+    npm install peam @peam-ai/next
+    ```
+  </Step>
+
+  <Step>
+    ## Add AskAI to the Root Layout
+
+    ```tsx
+    import type { Metadata } from 'next';
+    import { AskAI } from 'peam/client';
+    import './globals.css';
+
+    export const metadata: Metadata = {
+      title: 'Next.js Example - Peam',
+      description: 'A simple Next.js example application with Peam',
+    };
+
+    export default function RootLayout({
+      children,
+    }: Readonly<{
+      children: React.ReactNode;
+    }>) {
+      return (
+        <html lang="en">
+          <body className="antialiased">
+            {/* ... */}
+            {children}
+            // [!code highlight]
+            <AskAI />
+          </body>
+        </html>
+      );
+    }
+    ```
+  </Step>
+
+  <Step>
+    ## Add the Peam API Route
+
+    Create `app/api/peam/route.ts` in your project and add:
+
+    ```ts
+    export const maxDuration = 30;
+    // [!code highlight]
+    export { POST } from '@peam-ai/next/route';
+    ```
+  </Step>
+
+  <Step>
+    ## Wrap Next.js Config with withPeam
+
+    ```ts
+    import withPeam from '@peam-ai/next';
+
+    const nextConfig = {
+      /* config options here */
+    };
+
+    export default withPeam()(nextConfig);
+    ```
+  </Step>
+
+</Steps>
+
+<Alert className="border-yellow-300 bg-yellow-50 text-yellow-900 dark:bg-yellow-950/40 dark:text-yellow-200">
+  <AlertTitle>Next.js 14 or older</AlertTitle>
+  <AlertDescription>
+    Next.js 15+ uses the build adapter configured by `withPeam()`. For Next.js 14 (or older), add a
+    `postbuild` script that runs `peam` to generate the index after `next build`.
+  </AlertDescription>
+</Alert>
+&nbsp;
+<Alert className="border-border/60 bg-muted/60 text-foreground">
+  <AlertDescription>
+    Browse the example apps for a complete setup: <Link href="https://github.com/peam-ai/peam/tree/main/examples/nextjs-14" external>examples/nextjs-14</Link>,
+    <Link href="https://github.com/peam-ai/peam/tree/main/examples/nextjs-15" external>examples/nextjs-15</Link>, and
+    <Link href="https://github.com/peam-ai/peam/tree/main/examples/nextjs-16" external>examples/nextjs-16</Link>.
+  </AlertDescription>
+</Alert>
+
+See the [API Reference](/docs/api-reference) for all available options.

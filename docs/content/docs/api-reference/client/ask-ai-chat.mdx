@@ -1,0 +1,33 @@
+---
+title: AskAIChat
+description: Inline chat component
+---
+
+# AskAIChat
+
+Inline chat UI that renders the Ask AI experience directly on the page. It shares the same base props as `AskAI`.
+
+## Type Definition
+
+```ts
+import type { AskAIBaseProps } from 'peam/client';
+
+export interface AskAIChatProps extends AskAIBaseProps {}
+
+export function AskAIChat(props?: AskAIChatProps): JSX.Element;
+```
+
+## Usage
+
+```tsx
+import { AskAIChat } from 'peam/client';
+
+export default function Page() {
+  return <AskAIChat />;
+}
+```
+
+## Notes
+
+- Uses `AskAIBaseProps` (see [AskAI](/docs/api-reference/client/ask-ai)).
+- The default button variant is `iconLabel` unless overridden with `buttonVariant`.
