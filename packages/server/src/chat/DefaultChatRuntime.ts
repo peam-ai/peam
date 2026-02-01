@@ -76,7 +76,7 @@ export class DefaultChatRuntime implements ChatRuntime {
       });
   }
 
-  stream = ({ messages, summary, currentPage }: ChatStreamInput, { searchEngine }: ChatExecutionContext) => {
+  stream({ messages, summary, currentPage }: ChatStreamInput, { searchEngine }: ChatExecutionContext) {
     const previousSummary = summary?.text;
 
     return createUIMessageStream({
@@ -105,9 +105,9 @@ export class DefaultChatRuntime implements ChatRuntime {
         }
       },
     });
-  };
+  }
 
-  private resolveExecutionContext = async (): Promise<ChatExecutionContext> => {
+  private async resolveExecutionContext() {
     if (!this.searchIndexStore) {
       throw new Error('Search index store not configured');
     }
@@ -119,10 +119,13 @@ export class DefaultChatRuntime implements ChatRuntime {
     }
 
     return { searchEngine };
-  };
+  }
 
-  async handler(req: Request): Promise<Response> {
+  handler = async (request: Request): Promise<Response> => {
     try {
+      // Take care of nested request object (e.g. from Astro)
+      const req = 'request' in request && request.request instanceof Request ? request.request : request;
+
       if (req.method !== 'POST') {
         return new Response(
           JSON.stringify({
@@ -191,7 +194,7 @@ export class DefaultChatRuntime implements ChatRuntime {
         }
       );
     }
-  }
+  };
 }
 
 export function createChat(options: ChatRuntimeOptions = {}) {
