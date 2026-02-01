@@ -70,7 +70,7 @@ export function PeamButton({
       aria-expanded={isOpen}
     >
       <PeamButtonIcon isOpen={isOpen} showCloseIcon={showCloseIcon} className={'size-4'} />
-      <span>Ask AI</span>
+      {isOpen ? <span>Close</span> : <span>Ask AI</span>}
     </Button>
   );
 }
