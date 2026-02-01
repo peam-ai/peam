@@ -1,6 +1,9 @@
 'use client';
 
-import { Bot, User } from 'lucide-react';
+import { Bot, FileText, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+import { Spinner } from '@/components/ui/spinner';
 
 interface Message {
   id: number;
@@ -28,7 +31,89 @@ const SECOND_ROUND_MESSAGES: Message[] = [
   { id: 10, type: 'ai', text: 'Yes! All components are fully customizable with Tailwind classes or custom CSS.' },
 ];
 
+interface MessageBubbleProps {
+  message: Message;
+  delay: string;
+}
+
+const MessageBubble = ({ message, delay }: MessageBubbleProps) => {
+  const isUser = message.type === 'user';
+
+  return (
+    <div
+      className={`conversation-message flex gap-3 items-start ${isUser ? 'justify-end' : ''}`}
+      style={{
+        ['--delay' as string]: delay,
+      }}
+    >
+      {!isUser && (
+        <div className="size-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+          <Bot className="size-4" />
+        </div>
+      )}
+      <div
+        className={`flex-1 rounded-lg p-3 max-w-[80%] border ${
+          isUser ? 'bg-primary/10 border-primary/20' : 'bg-accent/50'
+        }`}
+      >
+        <p className="text-sm">{message.text}</p>
+      </div>
+      {isUser && (
+        <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+          <User className="size-4" />
+        </div>
+      )}
+    </div>
+  );
+};
+
+interface MessageListProps {
+  messages: Message[];
+  delays: string[];
+  className?: string;
+}
+
+const MessageList = ({ messages, delays, className }: MessageListProps) => (
+  <div className={`space-y-3 overflow-hidden ${className ?? ''}`.trim()}>
+    {messages.map((message, index) => (
+      <MessageBubble key={message.id} message={message} delay={delays[index] ?? '0s'} />
+    ))}
+  </div>
+);
+
+const LoadingSpinner = () => (
+  <div className="flex items-center gap-2 opacity-0 animate-[loadingSpinnerTimeline_var(--cycle)_ease-in-out_infinite] motion-reduce:opacity-100 motion-reduce:animate-none">
+    <Spinner className="text-muted-foreground" />
+    <span className="text-xs text-muted-foreground">Summarizing...</span>
+  </div>
+);
+
+const SummaryIndicator = () => (
+  <div className="summary-indicator flex items-center justify-center gap-2 py-4">
+    <div className="h-px flex-1 bg-border" />
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/30">
+      <FileText className="size-4 text-green-600 dark:text-green-500" />
+      <span className="text-xs font-medium text-green-600 dark:text-green-500">Messages summarized</span>
+    </div>
+    <div className="h-px flex-1 bg-border" />
+  </div>
+);
+
 export const ConversationSummary = () => {
+  const [isReady, setIsReady] = useState(false);
+  const step = 0.2;
+  const firstRoundStart = 0;
+  const summarizingGap = 3;
+  const secondRoundStart = firstRoundStart + step * (FIRST_ROUND_MESSAGES.length - 1) + summarizingGap;
+  const firstRoundDelays = FIRST_ROUND_MESSAGES.map((_, index) => `${(firstRoundStart + step * index).toFixed(1)}s`);
+  const secondRoundDelays = SECOND_ROUND_MESSAGES.map((_, index) => `${(secondRoundStart + step * index).toFixed(1)}s`);
+
+  useEffect(() => {
+    const animationFrame = requestAnimationFrame(() => setIsReady(true));
+
+    return () => cancelAnimationFrame(animationFrame);
+  }, []);
+
   return (
     <section className="px-8 sm:px-12 py-12 sm:py-16">
       <div className="max-w-4xl mx-auto space-y-8">
@@ -41,384 +126,171 @@ export const ConversationSummary = () => {
           </p>
         </div>
 
-        <div className="relative max-w-2xl mx-auto h-[420px]">
-          <div className="space-y-3 conversation-demo absolute inset-0">
-            {/* First round messages */}
-            <div className="message message-1 flex gap-3 items-start opacity-0 justify-end">
-              <div className="flex-1 bg-primary/10 border border-primary/20 rounded-lg p-3 max-w-[80%]">
-                <p className="text-sm">{FIRST_ROUND_MESSAGES[0].text}</p>
-              </div>
-              <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <User className="size-4" />
-              </div>
-            </div>
-
-            <div className="message message-2 flex gap-3 items-start opacity-0">
-              <div className="size-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-                <Bot className="size-4" />
-              </div>
-              <div className="flex-1 bg-accent/50 border rounded-lg p-3 max-w-[80%]">
-                <p className="text-sm">{FIRST_ROUND_MESSAGES[1].text}</p>
-              </div>
-            </div>
-
-            <div className="message message-3 flex gap-3 items-start opacity-0 justify-end">
-              <div className="flex-1 bg-primary/10 border border-primary/20 rounded-lg p-3 max-w-[80%]">
-                <p className="text-sm">{FIRST_ROUND_MESSAGES[2].text}</p>
-              </div>
-              <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <User className="size-4" />
-              </div>
-            </div>
-
-            <div className="message message-4 flex gap-3 items-start opacity-0">
-              <div className="size-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-                <Bot className="size-4" />
-              </div>
-              <div className="flex-1 bg-accent/50 border rounded-lg p-3 max-w-[80%]">
-                <p className="text-sm">{FIRST_ROUND_MESSAGES[3].text}</p>
-              </div>
-            </div>
-
-            <div className="message message-5 flex gap-3 items-start opacity-0 justify-end">
-              <div className="flex-1 bg-primary/10 border border-primary/20 rounded-lg p-3 max-w-[80%]">
-                <p className="text-sm">{FIRST_ROUND_MESSAGES[4].text}</p>
-              </div>
-              <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <User className="size-4" />
-              </div>
-            </div>
-
-            {/* Loading spinner */}
-            <div className="loading-spinner flex items-center gap-2 opacity-0">
-              <div className="size-4 border-2 border-muted-foreground/20 border-t-muted-foreground rounded-full animate-spin" />
-              <span className="text-xs text-muted-foreground">Summarizing...</span>
-            </div>
-
-            {/* Summary indicator */}
-            <div className="summary-indicator flex items-center justify-center gap-2 py-4 opacity-0">
-              <div className="h-px flex-1 bg-border" />
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/30">
-                <svg
-                  className="size-4 text-green-600 dark:text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <span className="text-xs font-medium text-green-600 dark:text-green-500">Messages summarized</span>
-              </div>
-              <div className="h-px flex-1 bg-border" />
-            </div>
-
-            {/* Second round messages */}
-            <div className="message message-6 flex gap-3 items-start opacity-0">
-              <div className="size-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-                <Bot className="size-4" />
-              </div>
-              <div className="flex-1 bg-accent/50 border rounded-lg p-3 max-w-[80%]">
-                <p className="text-sm">{SECOND_ROUND_MESSAGES[0].text}</p>
-              </div>
-            </div>
-
-            <div className="message message-7 flex gap-3 items-start opacity-0 justify-end">
-              <div className="flex-1 bg-primary/10 border border-primary/20 rounded-lg p-3 max-w-[80%]">
-                <p className="text-sm">{SECOND_ROUND_MESSAGES[1].text}</p>
-              </div>
-              <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <User className="size-4" />
-              </div>
-            </div>
-
-            <div className="message message-8 flex gap-3 items-start opacity-0">
-              <div className="size-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-                <Bot className="size-4" />
-              </div>
-              <div className="flex-1 bg-accent/50 border rounded-lg p-3 max-w-[80%]">
-                <p className="text-sm">{SECOND_ROUND_MESSAGES[2].text}</p>
-              </div>
-            </div>
-
-            <div className="message message-9 flex gap-3 items-start opacity-0 justify-end">
-              <div className="flex-1 bg-primary/10 border border-primary/20 rounded-lg p-3 max-w-[80%]">
-                <p className="text-sm">{SECOND_ROUND_MESSAGES[3].text}</p>
-              </div>
-              <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                <User className="size-4" />
-              </div>
-            </div>
-
-            <div className="message message-10 flex gap-3 items-start opacity-0">
-              <div className="size-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-                <Bot className="size-4" />
-              </div>
-              <div className="flex-1 bg-accent/50 border rounded-lg p-3 max-w-[80%]">
-                <p className="text-sm">{SECOND_ROUND_MESSAGES[4].text}</p>
-              </div>
-            </div>
+        <div className="relative max-w-2xl mx-auto h-105">
+          <div
+            className={`conversation-demo absolute inset-0 flex flex-col transition-opacity duration-300 ${
+              isReady ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <MessageList className="first-round" messages={FIRST_ROUND_MESSAGES} delays={firstRoundDelays} />
+            <LoadingSpinner />
+            <SummaryIndicator />
+            <MessageList className="second-round" messages={SECOND_ROUND_MESSAGES} delays={secondRoundDelays} />
           </div>
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes message1Timeline {
-          0% {
-            opacity: 0;
-            transform: translateY(10px);
-            max-height: 0;
-            margin: 0;
-          }
-          4% {
-            opacity: 0;
-            transform: translateY(10px);
-            max-height: 0;
-            margin: 0;
-          }
-          6% {
-            opacity: 1;
-            transform: translateY(0);
-            max-height: 100px;
-            margin: 0.75rem 0;
-          }
-          44% {
-            opacity: 1;
-            transform: translateY(0);
-            max-height: 100px;
-            margin: 0.75rem 0;
-          }
-          50% {
-            opacity: 0;
-            max-height: 0;
-            margin: 0;
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(10px);
-            max-height: 0;
-            margin: 0;
-          }
+      <style jsx global>{`
+        .conversation-demo {
+          --cycle: 7s;
         }
 
-        @keyframes message2Timeline {
+        .conversation-message {
+          opacity: 0;
+          animation: messageIn var(--cycle) ease-in-out infinite;
+          animation-delay: var(--delay, 0s);
+          animation-fill-mode: both;
+        }
+
+        .first-round {
+          opacity: 0;
+          animation: firstRoundCollapse var(--cycle) ease-in-out infinite;
+          transform-origin: top;
+        }
+
+        .second-round {
+          opacity: 0;
+          animation: secondRoundReveal var(--cycle) ease-in-out infinite;
+          transform-origin: top;
+        }
+
+        .summary-indicator {
+          opacity: 0;
+          animation: summaryTimeline var(--cycle) ease-in-out infinite;
+        }
+
+        @keyframes messageIn {
           0% {
             opacity: 0;
             transform: translateY(10px);
-            max-height: 0;
-            margin: 0;
           }
           10% {
             opacity: 0;
             transform: translateY(10px);
-            max-height: 0;
-            margin: 0;
           }
-          11% {
+          18% {
             opacity: 1;
             transform: translateY(0);
-            max-height: 100px;
-            margin: 0.75rem 0;
           }
-          44% {
+          72% {
             opacity: 1;
             transform: translateY(0);
-            max-height: 100px;
-            margin: 0.75rem 0;
           }
-          50% {
+          86% {
             opacity: 0;
-            max-height: 0;
-            margin: 0;
+            transform: translateY(-6px);
           }
           100% {
             opacity: 0;
-            transform: translateY(10px);
-            max-height: 0;
-            margin: 0;
+            transform: translateY(-6px);
           }
         }
 
-        @keyframes message3Timeline {
+        @keyframes firstRoundCollapse {
           0% {
-            opacity: 0;
-            transform: translateY(10px);
-            max-height: 0;
-            margin: 0;
-          }
-          16% {
-            opacity: 0;
-            transform: translateY(10px);
-            max-height: 0;
-            margin: 0;
-          }
-          17% {
             opacity: 1;
+            max-height: 520px;
             transform: translateY(0);
-            max-height: 100px;
-            margin: 0.75rem 0;
           }
           44% {
             opacity: 1;
+            max-height: 520px;
             transform: translateY(0);
-            max-height: 100px;
-            margin: 0.75rem 0;
           }
-          50% {
+          52% {
             opacity: 0;
             max-height: 0;
-            margin: 0;
+            transform: translateY(-8px);
           }
           100% {
             opacity: 0;
-            transform: translateY(10px);
             max-height: 0;
-            margin: 0;
+            transform: translateY(-8px);
           }
         }
 
-        @keyframes message4Timeline {
+        @keyframes secondRoundReveal {
           0% {
             opacity: 0;
-            transform: translateY(10px);
             max-height: 0;
-            margin: 0;
+            transform: translateY(6px);
           }
-          22% {
-            opacity: 0;
-            transform: translateY(10px);
-            max-height: 0;
-            margin: 0;
-          }
-          23% {
-            opacity: 1;
-            transform: translateY(0);
-            max-height: 100px;
-            margin: 0.75rem 0;
-          }
-          44% {
-            opacity: 1;
-            transform: translateY(0);
-            max-height: 100px;
-            margin: 0.75rem 0;
-          }
-          50% {
+          52% {
             opacity: 0;
             max-height: 0;
-            margin: 0;
+            transform: translateY(6px);
+          }
+          60% {
+            opacity: 1;
+            max-height: 520px;
+            transform: translateY(0);
           }
           100% {
-            opacity: 0;
-            transform: translateY(10px);
-            max-height: 0;
-            margin: 0;
-          }
-        }
-
-        @keyframes message5Timeline {
-          0% {
-            opacity: 0;
-            transform: translateY(10px);
-            max-height: 0;
-            margin: 0;
-          }
-          28% {
-            opacity: 0;
-            transform: translateY(10px);
-            max-height: 0;
-            margin: 0;
-          }
-          29% {
             opacity: 1;
+            max-height: 520px;
             transform: translateY(0);
-            max-height: 100px;
-            margin: 0.75rem 0;
-          }
-          44% {
-            opacity: 1;
-            transform: translateY(0);
-            max-height: 100px;
-            margin: 0.75rem 0;
-          }
-          50% {
-            opacity: 0;
-            max-height: 0;
-            margin: 0;
-          }
-          100% {
-            opacity: 0;
-            transform: translateY(10px);
-            max-height: 0;
-            margin: 0;
           }
         }
 
         @keyframes loadingSpinnerTimeline {
           0% {
             opacity: 0;
-            transform: translateY(10px);
-            max-height: 50px;
-            margin: 0.75rem 0;
-          }
-          32% {
-            opacity: 0;
-            transform: translateY(10px);
-            max-height: 50px;
-            margin: 0.75rem 0;
+            max-height: 0;
+            margin: 0;
+            transform: translateY(8px);
           }
           34% {
-            opacity: 1;
-            transform: translateY(0);
-            max-height: 50px;
-            margin: 0.75rem 0;
-          }
-          50% {
-            opacity: 1;
-            transform: translateY(0);
-            max-height: 50px;
-            margin: 0.75rem 0;
-          }
-          50.01% {
             opacity: 0;
             max-height: 0;
             margin: 0;
+            transform: translateY(8px);
+          }
+          38% {
+            opacity: 1;
+            max-height: 60px;
+            margin: 0.75rem 0;
+            transform: translateY(0);
+          }
+          48% {
+            opacity: 1;
+            max-height: 60px;
+            margin: 0.75rem 0;
+            transform: translateY(0);
+          }
+          52% {
+            opacity: 0;
+            max-height: 0;
+            margin: 0;
+            transform: translateY(-8px);
           }
           100% {
             opacity: 0;
             max-height: 0;
             margin: 0;
+            transform: translateY(-8px);
           }
         }
 
         @keyframes summaryTimeline {
           0% {
             opacity: 0;
+            transform: translateY(6px);
           }
-          50% {
+          48% {
             opacity: 0;
+            transform: translateY(6px);
           }
-          51% {
-            opacity: 1;
-          }
-          100% {
-            opacity: 1;
-          }
-        }
-
-        @keyframes message6Timeline {
-          0% {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          60% {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          61% {
+          54% {
             opacity: 1;
             transform: translateY(0);
           }
@@ -426,151 +298,18 @@ export const ConversationSummary = () => {
             opacity: 1;
             transform: translateY(0);
           }
-        }
-
-        @keyframes message7Timeline {
-          0% {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          64% {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          65% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes message8Timeline {
-          0% {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          68% {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          69% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes message9Timeline {
-          0% {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          72% {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          73% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes message10Timeline {
-          0% {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          76% {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          77% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .conversation-demo {
-          animation: none;
-        }
-
-        .message-1 {
-          animation: message1Timeline 7s ease-in-out infinite;
-        }
-
-        .message-2 {
-          animation: message2Timeline 7s ease-in-out infinite;
-        }
-
-        .message-3 {
-          animation: message3Timeline 7s ease-in-out infinite;
-        }
-
-        .message-4 {
-          animation: message4Timeline 7s ease-in-out infinite;
-        }
-
-        .message-5 {
-          animation: message5Timeline 7s ease-in-out infinite;
-        }
-
-        .loading-spinner {
-          animation: loadingSpinnerTimeline 7s ease-in-out infinite;
-        }
-
-        .summary-indicator {
-          animation: summaryTimeline 7s ease-in-out infinite;
-        }
-
-        .message-6 {
-          animation: message6Timeline 7s ease-in-out infinite;
-        }
-
-        .message-7 {
-          animation: message7Timeline 7s ease-in-out infinite;
-        }
-
-        .message-8 {
-          animation: message8Timeline 7s ease-in-out infinite;
-        }
-
-        .message-9 {
-          animation: message9Timeline 7s ease-in-out infinite;
-        }
-
-        .message-10 {
-          animation: message10Timeline 7s ease-in-out infinite;
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .message-1,
-          .message-2,
-          .message-3,
-          .message-4,
-          .message-5,
-          .loading-spinner,
-          .summary-indicator,
-          .message-6,
-          .message-7,
-          .message-8,
-          .message-9,
-          .message-10 {
+          .conversation-message,
+          .first-round,
+          .second-round,
+          .summary-indicator {
             animation: none;
             opacity: 1;
+            max-height: none;
+            transform: none;
+            margin: 0;
           }
         }
       `}</style>
