@@ -1,61 +1,22 @@
-import { useChatPersistence } from '@/hooks/useChatPersistence';
-import { useEffect, useRef, useState } from 'react';
+import { useAskAIContext } from '@/ask-ai/context';
+import { useRef } from 'react';
 
 export function useAskAI() {
-  const [isOpen, setIsOpen] = useState(false);
+  const context = useAskAIContext();
   const chatClearRef = useRef<(() => void) | null>(null);
-  const chatPersistence = useChatPersistence();
 
-  const handleToggle = () => {
-    setIsOpen((prev) => !prev);
-  };
-
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
-  const handleClear = () => {
-    if (chatClearRef.current) {
-      chatClearRef.current();
-    }
-  };
-
-  useEffect(() => {
-    const handleKeyboard = (event: KeyboardEvent) => {
-      const isEscape = event.key === 'Escape' || event.key === 'Esc' || event.keyCode === 27;
-      if (isEscape && isOpen) {
-        handleClose();
-        return;
-      }
-
-      const isIKey = event.key === 'i' || event.key === 'I' || event.keyCode === 73;
-      const hasModifier = event.metaKey;
-
-      if (hasModifier && isIKey) {
-        event.preventDefault();
-        event.stopPropagation();
-        setIsOpen((prev) => !prev);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyboard);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyboard);
-    };
-  }, [isOpen]);
+  chatClearRef.current = context.clearMessages;
 
   return {
-    isOpen,
+    isOpen: context.open,
+    handleToggle: context.toggleOpen,
+    handleOpen: () => context.setOpen(true),
+    handleClose: () => context.setOpen(false),
+    handleClear: context.clearMessages,
+    chatPersistence: {
+      initialMessages: context.initialMessages,
+      isLoading: context.isLoading,
+    },
     chatClearRef,
-    chatPersistence,
-    handleToggle,
-    handleOpen,
-    handleClose,
-    handleClear,
   };
 }

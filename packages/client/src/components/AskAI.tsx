@@ -1,87 +1,32 @@
 'use client';
 
-import { AskAIChat, type AskAIChatProps } from '@/components/AskAIChat';
-import { AskAIDialog, type AskAIDialogProps } from '@/components/AskAIDialog';
-import { AskAISidepane, type AskAISidepaneProps } from '@/components/AskAISidepane';
-import { useDarkMode } from '@/hooks/useDarkMode';
-import { cn } from '@/lib/utils';
-import type { ReactNode } from 'react';
-import { PeamButtonVariant } from './PeamButton';
+import { AskAIChat } from '@/ask-ai/chat';
+import { AskAIDialog } from '@/ask-ai/dialog';
+import { AskAIInline } from '@/ask-ai/inline';
+import { AskAIInput } from '@/ask-ai/input';
+import { AskAIMessages } from '@/ask-ai/messages';
+import { AskAIRoot } from '@/ask-ai/root';
+import { AskAISidepane } from '@/ask-ai/sidepane';
+import { AskAI as AskAISimple } from '@/ask-ai/simple';
+import { AskAITrigger } from '@/ask-ai/trigger';
 
-export type AskAIType = 'chat' | 'dialog' | 'sidepane';
+export const AskAI = Object.assign(AskAISimple, {
+  Root: AskAIRoot,
+  Trigger: AskAITrigger,
+  Dialog: AskAIDialog,
+  Chat: AskAIChat,
+  Sidepane: AskAISidepane,
+  Messages: AskAIMessages,
+  Input: AskAIInput,
+  Inline: AskAIInline,
+  Simple: AskAISimple,
+});
 
-export interface AskAIBaseProps {
-  /**
-   * API endpoint for handling AI requests.
-   * @default '/api/peam'
-   */
-  endpoint?: string;
-
-  /**
-   * Array of suggested prompts to display to the user.
-   */
-  suggestedPrompts?: string[];
-
-  /**
-   * Maximum number of messages to keep in context before summarizing.
-   * @default 10
-   */
-  maxMessages?: number;
-
-  /**
-   * Render the button inline instead of as a floating button.
-   * @default false
-   */
-  inlineButton?: boolean;
-
-  /**
-   * Variant of the default button.
-   * @default 'icon-label'
-   */
-  buttonVariant?: PeamButtonVariant;
-
-  /**
-   * Additional CSS classes to apply to the root container.
-   */
-  className?: string;
-
-  /**
-   * Custom button component.
-   *
-   * @example
-   * ```tsx
-   * <AskAI
-   *   type="dialog"
-   *   button={({ isOpen, toggle, open, close }) => (
-   *     <button onClick={toggle}>
-   *       {isOpen ? 'Close' : 'Open'} AI
-   *     </button>
-   *   )}
-   * />
-   * ```
-   */
-  button?: (props: { isOpen: boolean; toggle: () => void; open: () => void; close: () => void }) => ReactNode;
-}
-
-export type AskAIProps =
-  | ({ type?: 'chat' } & AskAIChatProps)
-  | ({ type: 'dialog' } & AskAIDialogProps)
-  | ({ type: 'sidepane' } & AskAISidepaneProps);
-
-export function AskAI({ type = 'chat', className, ...props }: AskAIProps) {
-  const isDarkMode = useDarkMode();
-
-  const content = (() => {
-    switch (type) {
-      case 'dialog':
-        return <AskAIDialog {...props} />;
-      case 'sidepane':
-        return <AskAISidepane {...props} />;
-      case 'chat':
-      default:
-        return <AskAIChat {...props} />;
-    }
-  })();
-
-  return <div className={cn('peam-root', isDarkMode && 'dark', className)}>{content}</div>;
-}
+export type { AskAIChatProps } from '@/ask-ai/chat';
+export type { AskAIDialogProps } from '@/ask-ai/dialog';
+export type { AskAIInlineProps } from '@/ask-ai/inline';
+export type { AskAIInputProps } from '@/ask-ai/input';
+export type { AskAIMessagesProps } from '@/ask-ai/messages';
+export type { AskAIRootProps } from '@/ask-ai/root';
+export type { AskAISidepaneProps } from '@/ask-ai/sidepane';
+export type { AskAIProps } from '@/ask-ai/simple';
