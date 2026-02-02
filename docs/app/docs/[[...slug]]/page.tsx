@@ -8,6 +8,7 @@ import {
   generateStaticPageParams,
 } from '@/components/geistdocs/docs-page';
 import { EditSource } from '@/components/geistdocs/edit-source';
+import { ExplainPage } from '@/components/geistdocs/explain-page';
 import { getMDXComponents } from '@/components/geistdocs/mdx-components';
 import { ScrollTop } from '@/components/geistdocs/scroll-top';
 import * as AccordionComponents from '@/components/ui/accordion';
@@ -43,6 +44,7 @@ const Page = async (props: PageProps<'/docs/[[...slug]]'>) => {
             <Separator />
             <EditSource path={page.path} />
             <ScrollTop />
+            <ExplainPage title={page.data.title} url={page.url} />
             <CopyPage text={markdown} />
           </div>
         ),

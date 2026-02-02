@@ -4,9 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { track } from '@vercel/analytics';
 import { ArrowRightIcon, CheckIcon, CopyIcon } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import Link from 'next/link';
-import { AskAI } from 'peam/client';
+import { useAskAI } from 'peam/client';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -17,7 +16,7 @@ type HeroProps = {
 
 export const Hero = ({ title, description: _description }: HeroProps) => {
   const [copied, setCopied] = useState(false);
-  const { resolvedTheme } = useTheme();
+  const { setOpen } = useAskAI();
 
   const handleCopy = () => {
     try {
@@ -37,7 +36,7 @@ export const Hero = ({ title, description: _description }: HeroProps) => {
   const Icon = copied ? CheckIcon : CopyIcon;
 
   return (
-    <section className="mt-[var(--fd-nav-height)] space-y-6 px-4 pt-16 sm:pt-24 pb-16 text-center">
+    <section className="mt-(--fd-nav-height) space-y-6 px-4 pt-16 sm:pt-24 pb-16 text-center">
       <div className="mx-auto w-full max-w-4xl space-y-5">
         <Link
           href="https://github.com/peam-ai/peam"
@@ -63,15 +62,9 @@ export const Hero = ({ title, description: _description }: HeroProps) => {
       </div>
       <div className="flex flex-col items-center gap-3">
         <div className="inline-flex w-fit mx-auto items-center gap-3">
-          <AskAI
-            type="sidepane"
-            className={resolvedTheme === 'dark' ? 'dark' : undefined}
-            button={({ toggle }) => (
-              <Button size="lg" className="h-[44px] text-base" onClick={toggle}>
-                Demo
-              </Button>
-            )}
-          />
+          <Button size="lg" className="h-11 text-base" onClick={() => setOpen(true)}>
+            Demo
+          </Button>
           <div className="relative bg-background border rounded-md overflow-hidden py-3 pl-4 pr-12 mx-auto inline-flex w-fit">
             <pre className="text-sm">
               <code>npm i peam</code>
