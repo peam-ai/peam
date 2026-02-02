@@ -15,5 +15,6 @@ export type {
   AskAIProviderProps,
   AskAIRootProps,
   AskAISidepaneProps,
+  AskAISuggestionsProps,
 } from '@/components/AskAI';
 export { useAskAI } from '@/hooks/useAskAI';

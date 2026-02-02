@@ -7,6 +7,7 @@ import { useId } from 'react';
 import { AskAIHeader } from './header';
 import { AskAIInput } from './input';
 import { AskAIMessages } from './messages';
+import { AskAISuggestions } from './suggestions';
 
 export interface AskAIDialogProps extends ComponentPropsWithoutRef<'div'> {
   children?: ReactNode;
@@ -44,6 +45,7 @@ export function AskAIDialog({ children, className, ...props }: AskAIDialogProps)
             <>
               <AskAIHeader titleId={titleId} closeLabel="Close dialog" />
               <AskAIMessages />
+              <AskAISuggestions />
               <AskAIInput />
             </>
           )}

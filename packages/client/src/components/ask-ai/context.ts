@@ -9,7 +9,6 @@ export interface AskAIContextValue {
   setOpen: (open: boolean) => void;
   toggleOpen: () => void;
   endpoint?: string;
-  suggestedPrompts?: string[];
   maxMessages?: number;
   input: string;
   setInput: (value: string) => void;

@@ -1,6 +1,6 @@
 'use client';
 
-import { PeamButton } from '@/components/PeamButton';
+import { PeamButton, type PeamButtonVariant } from '@/ask-ai/peam-button';
 import { useAskAI } from '@/hooks/useAskAI';
 import { cn } from '@/lib/utils';
 import { Slot } from '@radix-ui/react-slot';
@@ -10,10 +10,12 @@ import { forwardRef } from 'react';
 export interface AskAITriggerProps extends ComponentPropsWithoutRef<'button'> {
   asChild?: boolean;
   children?: ReactNode;
+  inlineButton?: boolean;
+  variant?: PeamButtonVariant;
 }
 
 export const AskAITrigger = forwardRef<HTMLButtonElement, AskAITriggerProps>(
-  ({ asChild = false, children, className, onClick, ...props }, ref) => {
+  ({ asChild = false, children, className, onClick, inlineButton, variant, ...props }, ref) => {
     const { open, toggleOpen } = useAskAI();
     const Comp = asChild ? Slot : 'button';
 
@@ -26,7 +28,15 @@ export const AskAITrigger = forwardRef<HTMLButtonElement, AskAITriggerProps>(
     };
 
     if (!asChild && !children) {
-      return <PeamButton onClick={toggleOpen} isOpen={open} className={className} />;
+      return (
+        <PeamButton
+          onClick={toggleOpen}
+          isOpen={open}
+          className={className}
+          inlineButton={inlineButton}
+          variant={variant}
+        />
+      );
     }
 
     return (

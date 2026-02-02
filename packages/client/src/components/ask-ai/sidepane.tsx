@@ -8,6 +8,7 @@ import { useEffect, useRef } from 'react';
 import { AskAIHeader } from './header';
 import { AskAIInput } from './input';
 import { AskAIMessages } from './messages';
+import { AskAISuggestions } from './suggestions';
 
 export interface AskAISidepaneProps extends ComponentPropsWithoutRef<'div'> {
   children?: ReactNode;
@@ -82,6 +83,7 @@ export function AskAISidepane({ children, className, ...props }: AskAISidepanePr
           <>
             <AskAIHeader titleId="ask-ai-sidepane-title" closeLabel="Close sidepane" />
             <AskAIMessages />
+            <AskAISuggestions />
             <AskAIInput />
           </>
         )}

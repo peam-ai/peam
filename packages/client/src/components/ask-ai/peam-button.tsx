@@ -4,14 +4,13 @@ import { PeamCloseIcon, PeamIcon } from '@/components/icons/peam';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import type { ComponentPropsWithoutRef } from 'react';
 
 export type PeamButtonVariant = 'icon' | 'iconLabel';
 
-export interface PeamButtonProps {
-  onClick: () => void;
+export interface PeamButtonProps extends ComponentPropsWithoutRef<'button'> {
   isOpen: boolean;
   inlineButton?: boolean;
-  className?: string;
   showCloseIcon?: boolean;
   variant?: PeamButtonVariant;
 }
@@ -28,24 +27,29 @@ export function PeamButton({
   onClick,
   isOpen,
   inlineButton = false,
-  className = '',
   showCloseIcon = true,
   variant = 'iconLabel',
+  type = 'button',
+  className,
+  ...props
 }: PeamButtonProps) {
+  const ariaLabel = props['aria-label'] ?? 'Ask AI';
+
   if (variant === 'icon') {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
           <button
-            type="button"
+            type={type}
             onClick={onClick}
             className={cn(
               inlineButton ? '' : 'fixed right-4 bottom-4',
               'hover:scale-110 active:scale-90 transition-transform flex items-center justify-center bg-transparent text-foreground p-0 border-0 filter-[drop-shadow(0_0_1px_rgba(255,255,255,0.8))_drop-shadow(0_1px_1px_rgba(0,0,0,0.3))]',
               className
             )}
-            aria-label="Ask AI"
             aria-expanded={isOpen}
+            aria-label={ariaLabel}
+            {...props}
           >
             <PeamButtonIcon isOpen={isOpen} showCloseIcon={showCloseIcon} className={'size-10'} />
           </button>
@@ -57,7 +61,7 @@ export function PeamButton({
 
   return (
     <Button
-      type="button"
+      type={type}
       onClick={onClick}
       variant={'default'}
       size={'default'}
@@ -66,8 +70,9 @@ export function PeamButton({
         'hover:scale-110 active:scale-90 transition-all gap-2 rounded-full bg-background text-foreground border border-border px-6 py-3 hover:bg-background',
         className
       )}
-      aria-label={'Ask AI'}
       aria-expanded={isOpen}
+      aria-label={ariaLabel}
+      {...props}
     >
       <PeamButtonIcon isOpen={isOpen} showCloseIcon={showCloseIcon} className={'size-4'} />
       {isOpen ? <span>Close</span> : <span>Ask AI</span>}

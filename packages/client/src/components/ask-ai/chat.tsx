@@ -6,6 +6,7 @@ import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { AskAIHeader } from './header';
 import { AskAIInput } from './input';
 import { AskAIMessages } from './messages';
+import { AskAISuggestions } from './suggestions';
 
 export interface AskAIChatProps extends ComponentPropsWithoutRef<'div'> {
   children?: ReactNode;
@@ -45,6 +46,7 @@ export function AskAIChat({ children, className, ...props }: AskAIChatProps) {
           <>
             <AskAIHeader titleId="ask-ai-chat-title" closeLabel="Close chat" />
             <AskAIMessages />
+            <AskAISuggestions />
             <AskAIInput />
           </>
         )}

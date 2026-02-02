@@ -16,7 +16,6 @@ import {
 import { Shimmer } from '@/components/ai-elements/shimmer';
 import { Source, Sources, SourcesContent, SourcesTrigger } from '@/components/ai-elements/sources';
 import { PeamIcon } from '@/components/icons/peam';
-import { SuggestedPrompts } from '@/components/SuggestedPrompts';
 import { useAskAI } from '@/hooks/useAskAI';
 import { cn } from '@/lib/utils';
 import { Check, Copy, RefreshCcw } from 'lucide-react';
@@ -26,19 +25,10 @@ import { useCallback, useMemo, useState } from 'react';
 export type AskAIMessagesProps = ComponentPropsWithoutRef<'div'>;
 
 export function AskAIMessages({ className, ...props }: AskAIMessagesProps) {
-  const { messages, status, error, isLoading, suggestedPrompts, sendMessage, regenerate } = useAskAI();
+  const { messages, status, error, isLoading, regenerate } = useAskAI();
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
   const isIdle = useMemo(() => status !== 'submitted' && status !== 'streaming', [status]);
-
-  const handleSuggestedPromptClick = useCallback(
-    (prompt: string) => {
-      sendMessage({
-        text: prompt,
-      });
-    },
-    [sendMessage]
-  );
 
   const handleCopy = useCallback(
     async (messageId: string, text: string) => {
@@ -86,7 +76,6 @@ export function AskAIMessages({ className, ...props }: AskAIMessagesProps) {
                   description="How can I help you today?"
                 />
               </div>
-              <SuggestedPrompts prompts={suggestedPrompts} onPromptClick={handleSuggestedPromptClick} />
             </>
           ) : (
             <>

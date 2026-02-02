@@ -25,10 +25,6 @@ export interface AskAIRootProps {
    */
   endpoint?: string;
   /**
-   * Array of suggested prompts to display to the user.
-   */
-  suggestedPrompts?: string[];
-  /**
    * Maximum number of messages to keep in context before summarizing.
    * @default 10
    */
@@ -54,7 +50,6 @@ export interface AskAIRootProps {
 export function AskAIRoot({
   children,
   endpoint,
-  suggestedPrompts,
   maxMessages,
   open,
   defaultOpen,
@@ -231,7 +226,6 @@ export function AskAIRoot({
       setOpen,
       toggleOpen,
       endpoint,
-      suggestedPrompts,
       maxMessages,
       input,
       setInput,
@@ -260,7 +254,6 @@ export function AskAIRoot({
       sendMessage,
       setOpen,
       status,
-      suggestedPrompts,
       toggleOpen,
     ]
   );

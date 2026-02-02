@@ -40,7 +40,6 @@ describe('useAskAI', () => {
       setOpen: vi.fn(),
       toggleOpen: vi.fn(),
       endpoint: '/api/ask',
-      suggestedPrompts: ['Hi'],
       maxMessages: 10,
       input: 'Hello',
       setInput: vi.fn(),
