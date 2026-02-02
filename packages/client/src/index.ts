@@ -8,7 +8,6 @@ export type {
   AskAIChatProps,
   AskAIDialogProps,
   AskAIHeaderProps,
-  AskAIInlineProps,
   AskAIInputProps,
   AskAIMessagesProps,
   AskAIProps,
