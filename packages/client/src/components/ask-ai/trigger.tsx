@@ -1,11 +1,11 @@
 'use client';
 
 import { PeamButton } from '@/components/PeamButton';
+import { useAskAI } from '@/hooks/useAskAI';
 import { cn } from '@/lib/utils';
 import { Slot } from '@radix-ui/react-slot';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { forwardRef } from 'react';
-import { useAskAIContext } from './context';
 
 export interface AskAITriggerProps extends ComponentPropsWithoutRef<'button'> {
   asChild?: boolean;
@@ -14,7 +14,7 @@ export interface AskAITriggerProps extends ComponentPropsWithoutRef<'button'> {
 
 export const AskAITrigger = forwardRef<HTMLButtonElement, AskAITriggerProps>(
   ({ asChild = false, children, className, onClick, ...props }, ref) => {
-    const { open, toggleOpen } = useAskAIContext();
+    const { open, toggleOpen } = useAskAI();
     const Comp = asChild ? Slot : 'button';
 
     const handleClick: ComponentPropsWithoutRef<'button'>['onClick'] = (event) => {

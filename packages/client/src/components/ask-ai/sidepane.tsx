@@ -1,10 +1,10 @@
 'use client';
 
+import { useAskAI } from '@/hooks/useAskAI';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { cn } from '@/lib/utils';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
-import { useAskAIContext } from './context';
 import { AskAIHeader } from './header';
 import { AskAIInput } from './input';
 import { AskAIMessages } from './messages';
@@ -14,7 +14,7 @@ export interface AskAISidepaneProps extends ComponentPropsWithoutRef<'div'> {
 }
 
 export function AskAISidepane({ children, className, ...props }: AskAISidepaneProps) {
-  const { open, setOpen } = useAskAIContext();
+  const { open, setOpen } = useAskAI();
   const isMobile = useIsMobile();
   const originalBodyStyles = useRef<{ marginRight: string; transition: string } | null>(null);
 

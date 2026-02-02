@@ -2,7 +2,7 @@
 
 import type { PromptInputMessage } from '@/components/ai-elements/prompt-input';
 import type { ChatStatus, UIMessage } from 'ai';
-import { createContext, useContext } from 'react';
+import { createContext } from 'react';
 
 export interface AskAIContextValue {
   open: boolean;
@@ -25,15 +25,5 @@ export interface AskAIContextValue {
 }
 
 const AskAIContext = createContext<AskAIContextValue | null>(null);
-
-export function useAskAIContext(): AskAIContextValue {
-  const context = useContext(AskAIContext);
-
-  if (!context) {
-    throw new Error('AskAI components must be used within <AskAI.Root>.');
-  }
-
-  return context;
-}
 
 export { AskAIContext };

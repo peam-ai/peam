@@ -1,8 +1,8 @@
 'use client';
 
+import { useAskAI } from '@/hooks/useAskAI';
 import { cn } from '@/lib/utils';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
-import { useAskAIContext } from './context';
 import { AskAIHeader } from './header';
 import { AskAIInput } from './input';
 import { AskAIMessages } from './messages';
@@ -12,7 +12,7 @@ export interface AskAIChatProps extends ComponentPropsWithoutRef<'div'> {
 }
 
 export function AskAIChat({ children, className, ...props }: AskAIChatProps) {
-  const { open, setOpen } = useAskAIContext();
+  const { open, setOpen } = useAskAI();
 
   if (!open) {
     return null;

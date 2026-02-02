@@ -1,9 +1,9 @@
 'use client';
 
 import { PeamIcon } from '@/components/icons/peam';
+import { useAskAI } from '@/hooks/useAskAI';
 import { Trash2, X } from 'lucide-react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
-import { useAskAIContext } from './context';
 
 export interface AskAIHeaderProps extends ComponentPropsWithoutRef<'div'> {
   titleId?: string;
@@ -12,7 +12,7 @@ export interface AskAIHeaderProps extends ComponentPropsWithoutRef<'div'> {
 }
 
 export function AskAIHeader({ titleId, heading = 'Ask AI', closeLabel = 'Close', ...props }: AskAIHeaderProps) {
-  const { setOpen, clearMessages, isLoading, initialMessages } = useAskAIContext();
+  const { setOpen, clearMessages, isLoading, initialMessages } = useAskAI();
 
   return (
     <div {...props}>

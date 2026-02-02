@@ -30,5 +30,6 @@ export type { AskAIHeaderProps } from '@/ask-ai/header';
 export type { AskAIInlineProps } from '@/ask-ai/inline';
 export type { AskAIInputProps } from '@/ask-ai/input';
 export type { AskAIMessagesProps } from '@/ask-ai/messages';
+export type { AskAIProviderProps } from '@/ask-ai/provider';
 export type { AskAIRootProps } from '@/ask-ai/root';
 export type { AskAISidepaneProps } from '@/ask-ai/sidepane';

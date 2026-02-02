@@ -10,16 +10,16 @@ import {
   type PromptInputMessage,
 } from '@/components/ai-elements/prompt-input';
 import { SpeechInput } from '@/components/ai-elements/speech-input';
+import { useAskAI } from '@/hooks/useAskAI';
 import { cn } from '@/lib/utils';
 import { MicIcon } from 'lucide-react';
 import type { ComponentPropsWithoutRef } from 'react';
 import { useCallback, useEffect, useRef } from 'react';
-import { useAskAIContext } from './context';
 
 export type AskAIInputProps = ComponentPropsWithoutRef<'div'>;
 
 export function AskAIInput({ className, ...props }: AskAIInputProps) {
-  const { input, setInput, status, handleSubmit } = useAskAIContext();
+  const { input, setInput, status, handleSubmit } = useAskAI();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const onSubmit = useCallback(

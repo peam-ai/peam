@@ -17,16 +17,16 @@ import { Shimmer } from '@/components/ai-elements/shimmer';
 import { Source, Sources, SourcesContent, SourcesTrigger } from '@/components/ai-elements/sources';
 import { PeamIcon } from '@/components/icons/peam';
 import { SuggestedPrompts } from '@/components/SuggestedPrompts';
+import { useAskAI } from '@/hooks/useAskAI';
 import { cn } from '@/lib/utils';
 import { Check, Copy, RefreshCcw } from 'lucide-react';
 import type { ComponentPropsWithoutRef } from 'react';
 import { useCallback, useMemo, useState } from 'react';
-import { useAskAIContext } from './context';
 
 export type AskAIMessagesProps = ComponentPropsWithoutRef<'div'>;
 
 export function AskAIMessages({ className, ...props }: AskAIMessagesProps) {
-  const { messages, status, error, isLoading, suggestedPrompts, sendMessage, regenerate } = useAskAIContext();
+  const { messages, status, error, isLoading, suggestedPrompts, sendMessage, regenerate } = useAskAI();
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
   const isIdle = useMemo(() => status !== 'submitted' && status !== 'streaming', [status]);
