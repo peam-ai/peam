@@ -2,7 +2,8 @@
 
 import { useDarkMode } from '@/hooks/useDarkMode';
 import { cn } from '@/lib/utils';
-import type { ReactNode } from 'react';
+import { Children, useContext, type ReactNode } from 'react';
+import { AskAIContext } from './context';
 import { AskAIDialog } from './dialog';
 import { AskAIRoot, type AskAIRootProps } from './root';
 import { AskAITrigger } from './trigger';
@@ -10,25 +11,32 @@ import { AskAITrigger } from './trigger';
 export interface AskAIProps extends AskAIRootProps {
   children?: ReactNode;
   className?: string;
+  /**
+   * When true, reuses an existing {@link AskAIContext} if present.
+   * @default true
+   */
+  reuseContext?: boolean;
 }
 
-export function AskAI({ children, className, ...props }: AskAIProps) {
+export function AskAI({ children, className, reuseContext = true, ...props }: AskAIProps) {
   const isDarkMode = useDarkMode();
+  const existingContext = useContext(AskAIContext);
+  const hasCustomChildren = Children.count(children) > 0;
 
-  const hasCustomChildren = Boolean(children);
+  const content = hasCustomChildren ? (
+    children
+  ) : (
+    <>
+      <AskAITrigger />
+      <AskAIDialog />
+    </>
+  );
+
+  const shouldProvide = reuseContext ? !existingContext : true;
 
   return (
     <div className={cn('peam-root', isDarkMode && 'dark', className)}>
-      <AskAIRoot {...props}>
-        {hasCustomChildren ? (
-          children
-        ) : (
-          <>
-            <AskAITrigger />
-            <AskAIDialog />
-          </>
-        )}
-      </AskAIRoot>
+      {shouldProvide ? <AskAIRoot {...props}>{content}</AskAIRoot> : content}
     </div>
   );
 }
