@@ -4,7 +4,7 @@ import { Suggestion, Suggestions } from '@/components/ai-elements/suggestion';
 import { useAskAI } from '@/hooks/useAskAI';
 import { cn } from '@/lib/utils';
 import type { ComponentPropsWithoutRef } from 'react';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 const DEFAULT_SUGGESTED_PROMPTS = ['Summarize this page', 'Where should I get started?', 'What can you help me with?'];
 
@@ -31,6 +31,7 @@ export function AskAISuggestions({
   ...props
 }: AskAISuggestionsProps) {
   const { messages, error, isLoading, sendMessage } = useAskAI();
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const shouldRender = useMemo(() => {
     if (!onlyWhenEmpty) {
@@ -52,12 +53,38 @@ export function AskAISuggestions({
     [onPromptClick, sendMessage]
   );
 
+  const handleWheel = useCallback((event: WheelEvent, viewport: HTMLElement) => {
+    const maxScrollLeft = viewport.scrollWidth - viewport.clientWidth;
+    if (maxScrollLeft <= 0) {
+      return;
+    }
+
+    const delta = event.deltaY || event.deltaX;
+    event.preventDefault();
+    event.stopPropagation();
+    viewport.scrollLeft += delta;
+  }, []);
+
+  useEffect(() => {
+    const viewport = containerRef.current?.querySelector<HTMLElement>('[data-slot="scroll-area-viewport"]');
+    if (!viewport) {
+      return undefined;
+    }
+
+    const onWheel = (event: WheelEvent) => handleWheel(event, viewport);
+    viewport.addEventListener('wheel', onWheel, { passive: false });
+
+    return () => {
+      viewport.removeEventListener('wheel', onWheel);
+    };
+  }, [handleWheel]);
+
   if (!shouldRender || !prompts?.length) {
     return null;
   }
 
   return (
-    <div className={cn('px-4', className)} {...props}>
+    <div ref={containerRef} className={cn('px-4 overscroll-x-contain overscroll-y-none', className)} {...props}>
       <Suggestions>
         {prompts.map((prompt) => (
           <AskAISuggestion
