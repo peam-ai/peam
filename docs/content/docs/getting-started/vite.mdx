@@ -8,7 +8,9 @@ import Link from 'fumadocs-core/link';
 
 # Overview
 
-This guide is based on the Vite + React example in <Link href="https://github.com/peam-ai/peam/tree/main/examples/vite-react" external>examples/vite-react</Link>.
+Add Peam to a Vite + React SSR app by mounting AskAI in your layout and wiring a simple API route.
+Your server calls `createChat()` per request, while the client streams results from `/api/peam`.
+It’s a lightweight setup that keeps your stack fast and flexible.
 
 <Steps>
   <Step>
