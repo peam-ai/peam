@@ -22,12 +22,14 @@ export function AskAIDialog({ children, className, ...props }: AskAIDialogProps)
 
   return (
     <>
-      <div className="fixed inset-0 z-40 bg-black/50 animate-in fade-in duration-200" aria-hidden="true" />
-
-      <div
-        className="cursor-pointer fixed z-100 inset-0 flex items-center justify-center p-4 md:p-0"
+      <button
+        type="button"
+        aria-label="Close dialog"
+        className="fixed inset-0 z-40 bg-black/50 animate-in fade-in duration-200"
         onClick={() => setOpen(false)}
-      >
+      />
+
+      <div className="fixed z-100 inset-0 flex items-center justify-center p-4 md:p-0">
         <div
           role="dialog"
           aria-modal="true"
@@ -36,7 +38,6 @@ export function AskAIDialog({ children, className, ...props }: AskAIDialogProps)
             'cursor-auto bg-background text-foreground flex flex-col w-full max-w-2xl h-[80vh] md:h-150 rounded-lg border border-border shadow-2xl animate-in zoom-in-95 duration-200 relative text-left',
             className
           )}
-          onClick={(e) => e.stopPropagation()}
           {...props}
         >
           {children ?? (

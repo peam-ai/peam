@@ -6,7 +6,6 @@
       "outputs": ["dist/**"]
     },
     "build:watch": {
-      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true,
       "interruptible": true
