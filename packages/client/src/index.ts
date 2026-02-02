@@ -6,6 +6,7 @@ export { AskAI } from '@/components/AskAI';
 export type {
   AskAIChatProps,
   AskAIDialogProps,
+  AskAIHeaderProps,
   AskAIInlineProps,
   AskAIInputProps,
   AskAIMessagesProps,

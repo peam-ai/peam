@@ -1,10 +1,9 @@
 'use client';
 
-import { PeamIcon } from '@/components/icons/peam';
 import { cn } from '@/lib/utils';
-import { Trash2, X } from 'lucide-react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { useAskAIContext } from './context';
+import { AskAIHeader } from './header';
 import { AskAIInput } from './input';
 import { AskAIMessages } from './messages';
 
@@ -13,7 +12,7 @@ export interface AskAIChatProps extends ComponentPropsWithoutRef<'div'> {
 }
 
 export function AskAIChat({ children, className, ...props }: AskAIChatProps) {
-  const { open, setOpen, clearMessages, isLoading, initialMessages } = useAskAIContext();
+  const { open, setOpen } = useAskAIContext();
 
   if (!open) {
     return null;
@@ -42,34 +41,9 @@ export function AskAIChat({ children, className, ...props }: AskAIChatProps) {
         )}
         {...props}
       >
-        <div className="absolute top-3 right-3 z-10 flex gap-1">
-          {!isLoading && initialMessages.length > 0 && (
-            <button
-              onClick={clearMessages}
-              className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
-              aria-label="Clear chat history"
-            >
-              <Trash2 className="size-4" />
-            </button>
-          )}
-          <button
-            onClick={() => setOpen(false)}
-            className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
-            aria-label="Close chat"
-          >
-            <X className="size-4" />
-          </button>
-        </div>
-
-        <div className="px-4 py-3 shrink-0 flex items-center gap-2">
-          <PeamIcon className="size-5" />
-          <h2 id="ask-ai-chat-title" className="text-lg font-semibold">
-            Ask AI
-          </h2>
-        </div>
-
         {children ?? (
           <>
+            <AskAIHeader titleId="ask-ai-chat-title" closeLabel="Close chat" />
             <AskAIMessages />
             <AskAIInput />
           </>

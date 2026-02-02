@@ -1,11 +1,10 @@
 'use client';
 
-import { PeamIcon } from '@/components/icons/peam';
 import { cn } from '@/lib/utils';
-import { Trash2, X } from 'lucide-react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 import { useId } from 'react';
 import { useAskAIContext } from './context';
+import { AskAIHeader } from './header';
 import { AskAIInput } from './input';
 import { AskAIMessages } from './messages';
 
@@ -14,7 +13,7 @@ export interface AskAIDialogProps extends ComponentPropsWithoutRef<'div'> {
 }
 
 export function AskAIDialog({ children, className, ...props }: AskAIDialogProps) {
-  const { open, setOpen, clearMessages, isLoading, initialMessages } = useAskAIContext();
+  const { open, setOpen } = useAskAIContext();
   const titleId = useId();
 
   if (!open) {
@@ -41,34 +40,9 @@ export function AskAIDialog({ children, className, ...props }: AskAIDialogProps)
           onClick={(e) => e.stopPropagation()}
           {...props}
         >
-          <div className="absolute top-3 right-3 z-10 flex gap-1">
-            {!isLoading && initialMessages.length > 0 && (
-              <button
-                onClick={clearMessages}
-                className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
-                aria-label="Clear chat history"
-              >
-                <Trash2 className="size-4" />
-              </button>
-            )}
-            <button
-              onClick={() => setOpen(false)}
-              className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
-              aria-label="Close dialog"
-            >
-              <X className="size-4" />
-            </button>
-          </div>
-
-          <div className="px-4 py-3 shrink-0 flex items-center gap-2">
-            <PeamIcon className="size-5" />
-            <h2 id={titleId} className="text-lg font-semibold">
-              Ask AI
-            </h2>
-          </div>
-
           {children ?? (
             <>
+              <AskAIHeader titleId={titleId} closeLabel="Close dialog" />
               <AskAIMessages />
               <AskAIInput />
             </>
