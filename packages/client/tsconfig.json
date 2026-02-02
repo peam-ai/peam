@@ -8,7 +8,9 @@
     "baseUrl": "./src",
     "paths": {
       "@/*": ["./*"],
-      "@/ask-ai/*": ["./components/ask-ai/*"]
+      "@/ask-ai/*": ["./components/ask-ai/*"],
+      "react": ["./node_modules/@types/react"],
+      "react-dom": ["./node_modules/@types/react-dom"]
     }
   },
   "include": ["src/**/*"],
