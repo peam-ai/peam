@@ -6,6 +6,7 @@
     "rootDir": "./src",
     "lib": ["ES2015", "DOM", "DOM.Iterable"],
     "baseUrl": "./src",
+    "skipLibCheck": true,
     "paths": {
       "@/*": ["./*"],
       "@/ask-ai/*": ["./components/ask-ai/*"],
