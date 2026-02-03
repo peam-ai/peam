@@ -8,15 +8,12 @@ export interface AskAIContextValue {
   open: boolean;
   setOpen: (open: boolean) => void;
   toggleOpen: () => void;
-  endpoint?: string;
-  maxMessages?: number;
   input: string;
   setInput: (value: string) => void;
   messages: UIMessage[];
   status: ChatStatus;
   error: Error | undefined;
   isLoading: boolean;
-  initialMessages: UIMessage[];
   sendMessage: (message: { text: string }) => void;
   handleSubmit: (message: PromptInputMessage) => void;
   regenerate: (options?: { messageId?: string }) => void;

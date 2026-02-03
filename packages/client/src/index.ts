@@ -17,3 +17,4 @@ export type {
   AskAISuggestionsProps,
 } from '@/components/AskAI';
 export { useAskAI } from '@/hooks/useAskAI';
+export { BoundedChatTransport } from '@/lib/BoundedChatTransport';
