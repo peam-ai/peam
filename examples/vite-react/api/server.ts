@@ -2,7 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { renderPage } from 'vike/server';
-import { createHandler } from 'peam/server';
+import type { ViteDevServer } from 'vite';
+import { createChat } from 'peam/server';
 
 dotenv.config({ path: '.env.local' });
 
@@ -24,7 +25,7 @@ app.post('/api/peam', async (req, res) => {
       body: JSON.stringify(req.body),
     });
 
-    const response = await createHandler()(request);
+    const response = await createChat().handler(request);
 
     response.headers.forEach((value, key) => {
       res.setHeader(key, value);
@@ -53,6 +54,8 @@ app.post('/api/peam', async (req, res) => {
   }
 });
 
+let viteDevServer: ViteDevServer | undefined;
+
 // Vite middleware
 if (isProduction) {
   // In production, serve pre-built assets
@@ -60,7 +63,7 @@ if (isProduction) {
 } else {
   // In development, use Vite dev server
   const vite = await import('vite');
-  const viteDevServer = await vite.createServer({
+  viteDevServer = await vite.createServer({
     server: { middlewareMode: true },
     appType: 'custom',
   });
@@ -75,6 +78,7 @@ app.use(async (req, res, next) => {
 
   const pageContextInit = {
     urlOriginal: req.originalUrl,
+    viteDevServer,
   };
 
   const pageContext = await renderPage(pageContextInit);
