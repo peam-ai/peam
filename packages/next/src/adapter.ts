@@ -1,6 +1,7 @@
 import type { NextAdapter } from 'next';
 import { SearchIndexBuilder } from 'peam/builder';
 import { loggers } from 'peam/logger';
+import { TextBasedSearchEngine } from 'peam/search';
 import { type ResolvedPeamAdapterConfig } from './config';
 
 const log = loggers.adapter;
@@ -67,7 +68,9 @@ export function createPeamAdapter(config: ResolvedPeamAdapterConfig): NextAdapte
       );
 
       log.debug('Building search index from prerender outputs...');
-      const searchIndexData = await pipeline.build();
+
+      // TODO: this is creating unnecessary coupling between builder and search, can we fix it?
+      const searchIndexData = await pipeline.build(new TextBasedSearchEngine());
 
       if (!searchIndexData) {
         log.warn('No search index data generated');

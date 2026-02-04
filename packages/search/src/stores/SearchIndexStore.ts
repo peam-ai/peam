@@ -1,4 +1,4 @@
-import type { SearchIndexData } from '../indexBuilder';
+import type { SearchIndexData } from '../types';
 
 export type StoreOptions = {
   /**

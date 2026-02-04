@@ -1,12 +1,7 @@
 import { loggers } from '@peam-ai/logger';
 import { Charset, Document } from 'flexsearch';
-import type { StructuredPageDocumentData } from './types';
-
-export interface TextSearchOptions {
-  limit?: number;
-  offset?: number;
-  suggest?: boolean;
-}
+import type { StructuredPageDocumentData } from '../types';
+import { SearchOptions } from './searchEngine';
 
 const PEAM_DOCUMENT_IDS_KEY = 'peam.documentIds';
 const MAX_DOCUMENTS_RETRIEVE = 25;
@@ -65,7 +60,7 @@ export class TextSearch {
 
   async search(
     query: string,
-    options: TextSearchOptions = {
+    options: SearchOptions = {
       limit: MAX_DOCUMENTS_RETRIEVE,
       offset: 0,
       suggest: true,

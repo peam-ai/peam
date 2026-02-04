@@ -17,3 +17,8 @@ export type StructuredPageDocumentData = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 };
+
+export type SearchIndexData = {
+  keys: string[];
+  data: Record<string, string>;
+};

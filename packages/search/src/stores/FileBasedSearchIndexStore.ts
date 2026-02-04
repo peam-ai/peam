@@ -2,7 +2,7 @@ import { loggers } from '@peam-ai/logger';
 import * as fsSync from 'fs';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import type { SearchIndexData } from '../indexBuilder';
+import { SearchIndexData } from '../types';
 import type { SearchIndexStore, StoreOptions } from './SearchIndexStore';
 
 const log = loggers.search;

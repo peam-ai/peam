@@ -1,9 +1,13 @@
 import { openai } from '@ai-sdk/openai';
 import { streamSearchText } from '@peam-ai/ai';
 import { loggers } from '@peam-ai/logger';
-import { FileBasedSearchIndexStore, SearchIndexStore } from '@peam-ai/search';
+import { FileBasedSearchIndexStore, type SearchEngine, type SearchIndexStore } from '@peam-ai/search';
 import { createUIMessageStream, createUIMessageStreamResponse, LanguageModel, UIMessage } from 'ai';
-import { ConversationSummarizer, SummarizationOptions, Summary } from '../summarization/ConversationSummarizer';
+import {
+  ConversationSummarizer,
+  type SummarizationOptions,
+  type Summary,
+} from '../summarization/ConversationSummarizer';
 import { WindowedConversationSummarizer } from '../summarization/WindowedConversationSummarizer';
 import { getCurrentPage } from '../utils/getCurrentPage';
 import { getSearchEngine } from '../utils/getSearchEngine';
@@ -33,6 +37,11 @@ export interface ChatRuntimeOptions {
   searchIndexStore?: SearchIndexStore;
 
   /**
+   * SearchEngine to use for retrieving relevant documents.
+   */
+  searchEngine?: SearchEngine;
+
+  /**
    * Options for message summarization.
    */
   summarization?: SummarizationOptions | false;
@@ -56,6 +65,7 @@ export class DefaultChatRuntime implements ChatRuntime {
   private readonly summarizer;
   private readonly searchIndexStore;
   private readonly maxMessageLength;
+  private readonly searchEngine?;
 
   constructor(options: ChatRuntimeOptions = {}) {
     this.model = options.model || openai('gpt-4o');
@@ -74,6 +84,8 @@ export class DefaultChatRuntime implements ChatRuntime {
       new FileBasedSearchIndexStore({
         indexPath: '.peam/index.json',
       });
+
+    this.searchEngine = options.searchEngine;
   }
 
   stream({ messages, summary, currentPage }: ChatStreamInput, { searchEngine }: ChatExecutionContext) {
@@ -108,11 +120,7 @@ export class DefaultChatRuntime implements ChatRuntime {
   }
 
   private async resolveExecutionContext() {
-    if (!this.searchIndexStore) {
-      throw new Error('Search index store not configured');
-    }
-
-    const searchEngine = await getSearchEngine(this.searchIndexStore);
+    const searchEngine = this.searchEngine ?? (await getSearchEngine(this.searchIndexStore));
 
     if (!searchEngine) {
       throw new Error('Search engine not available');

@@ -7,6 +7,7 @@ export interface PeamConfig {
    * @default { type: 'fileBased', config: { indexPath: '.peam/index.json' } }
    */
   searchStore?: SearchStoreConfig;
+
   /**
    * Path to a custom robots.txt file or false to disable robots.txt filtering
    * If undefined, the adapter will look for static or dynamic robots.txt files in standard locations
@@ -14,6 +15,7 @@ export interface PeamConfig {
    * @default undefined
    */
   robotsTxt?: string | boolean;
+
   /**
    * Array of wildcard patterns to exclude from indexing
    * Supports * (matches any characters except /), ** (matches any characters including /), and ? (single character)
@@ -39,10 +41,8 @@ const defaultConfig = {
 
 export function setNextConfig(nextConfig: NextConfig, peamConfig?: PeamConfig): void {
   const envVars = {
-    PEAM_SEARCH_STORE_TYPE: peamConfig?.searchStore?.type ?? defaultConfig.searchStore.type,
-    PEAM_SEARCH_STORE_CONFIG:
-      JSON.stringify(peamConfig?.searchStore?.config) ?? JSON.stringify(defaultConfig.searchStore.config),
-    PEAM_EXCLUDE: JSON.stringify(peamConfig?.exclude) ?? JSON.stringify(defaultConfig.exclude),
+    PEAM_SEARCH_STORE: JSON.stringify(peamConfig?.searchStore ? peamConfig.searchStore : defaultConfig.searchStore),
+    PEAM_EXCLUDE: JSON.stringify(peamConfig?.exclude ? peamConfig.exclude : defaultConfig.exclude),
     PEAM_ROBOTS_TXT: '',
   };
 
@@ -61,16 +61,13 @@ export function setNextConfig(nextConfig: NextConfig, peamConfig?: PeamConfig): 
 }
 
 export const getConfig = (): ResolvedPeamAdapterConfig => {
-  if (!process.env.PEAM_SEARCH_STORE_TYPE || !process.env.PEAM_SEARCH_STORE_CONFIG) {
+  if (!process.env.PEAM_SEARCH_STORE) {
     throw new Error(
       'Peam configuration not found. Make sure withPeam() is properly configured in your next.config file.'
     );
   }
 
-  const searchStoreConfig: SearchStoreConfig = {
-    type: process.env.PEAM_SEARCH_STORE_TYPE as SearchStoreConfig['type'],
-    config: JSON.parse(process.env.PEAM_SEARCH_STORE_CONFIG),
-  };
+  const searchStoreConfig: SearchStoreConfig = JSON.parse(process.env.PEAM_SEARCH_STORE);
 
   const resolvedConfig = {
     searchStore: searchStoreConfig,

@@ -1,9 +1,14 @@
 import { loggers } from '@peam-ai/logger';
-import { SearchEngine, type SearchIndexStore } from '@peam-ai/search';
+import { TextBasedSearchEngine, type SearchEngine, type SearchIndexStore } from '@peam-ai/search';
 
 const log = loggers.server;
 let searchEngine: SearchEngine | null = null;
 
+/**
+ * Retrieves the SearchEngine instance, loading it from the provided store if necessary.
+ * @param store The SearchIndexStore to load the index from.
+ * @returns The SearchEngine instance or undefined if loading failed.
+ */
 export async function getSearchEngine(store: SearchIndexStore): Promise<SearchEngine | undefined> {
   if (searchEngine) return searchEngine;
 
@@ -15,7 +20,7 @@ export async function getSearchEngine(store: SearchIndexStore): Promise<SearchEn
       return undefined;
     }
 
-    searchEngine = new SearchEngine();
+    searchEngine = new TextBasedSearchEngine();
     await searchEngine.import(async (key: string) => {
       return indexData.data[key];
     }, indexData.keys);

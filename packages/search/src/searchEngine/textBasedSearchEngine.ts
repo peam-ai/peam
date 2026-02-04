@@ -1,21 +1,22 @@
 import { loggers } from '@peam-ai/logger';
 import type { StructuredPage } from '@peam-ai/parser';
-import { TextSearch, type TextSearchOptions } from './textSearch';
-import type { StructuredPageDocumentData } from './types';
+import type { StructuredPageDocumentData } from '../types';
+import { SearchEngine, SearchOptions } from './searchEngine';
+import { TextSearch } from './textSearch';
 
 const log = loggers.search;
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface SearchEngineConfig {
+export interface TextBasedSearchEngineConfig {
   // Reserved for future configuration options
 }
 
-export class SearchEngine {
+export class TextBasedSearchEngine implements SearchEngine {
   private textSearch: TextSearch;
   private initialized: boolean;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(_config?: SearchEngineConfig) {
+  constructor(_config?: TextBasedSearchEngineConfig) {
     this.textSearch = new TextSearch();
     this.initialized = false;
   }
@@ -53,7 +54,7 @@ export class SearchEngine {
     log.debug('Page added to search engine:', path);
   }
 
-  async search(query: string, options: TextSearchOptions = {}): Promise<StructuredPageDocumentData[]> {
+  async search(query: string, options: SearchOptions = {}): Promise<StructuredPageDocumentData[]> {
     if (!this.initialized) {
       throw new Error('Search engine not initialized. Call initialize() first.');
     }

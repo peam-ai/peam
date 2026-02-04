@@ -3,7 +3,7 @@
  */
 
 import { SearchIndexBuilder } from '@peam-ai/builder';
-import { createStoreFromConfig, type SearchIndexData } from '@peam-ai/search';
+import { createStoreFromConfig, TextBasedSearchEngine, type SearchIndexData } from '@peam-ai/search';
 import chalk from 'chalk';
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -305,7 +305,9 @@ async function runPipeline(cli: z.infer<typeof CliSchema>): Promise<void> {
     exclude: cli.exclude,
     robotsTxt: cli.robotsTxt,
   });
-  const merged = await pipeline.build();
+
+  // TODO: this is creating unnecessary coupling between builder and search, can we fix it?
+  const merged = await pipeline.build(new TextBasedSearchEngine());
 
   if (!merged) {
     logger.error('No data generated');

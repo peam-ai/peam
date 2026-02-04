@@ -1,10 +1,6 @@
-export { buildSearchIndex, type PageToIndex, type SearchIndexData } from './indexBuilder';
-export { SearchEngine } from './searchEngine';
-export { TextSearch } from './textSearch';
-
-export type { StructuredPageDocumentData } from './types';
-
-export type { SearchEngineConfig } from './searchEngine';
+export type { SearchEngine, SearchOptions } from './searchEngine/searchEngine';
+export { TextBasedSearchEngine, type TextBasedSearchEngineConfig } from './searchEngine/textBasedSearchEngine';
+export type { SearchIndexData, StructuredPageDocumentData } from './types';
 
 export {
   FileBasedSearchIndexStore,

@@ -1,6 +1,6 @@
 import { loggers } from '@peam-ai/logger';
 import { parseHTML, type StructuredPage } from '@peam-ai/parser';
-import { buildSearchIndex, type PageToIndex, type SearchIndexData } from '@peam-ai/search';
+import { SearchEngine, type SearchIndexData } from '@peam-ai/search';
 import * as fs from 'fs/promises';
 import { createFiltersFromConfig, SearchIndexBuilderFilterConfig } from '../filters/config';
 import type { SearchIndexFilter } from '../filters/SearchIndexFilter';
@@ -10,10 +10,15 @@ import type { PageCandidate } from './types';
 
 const log = loggers.builder;
 
-export interface SearchIndexBuilderOptions {
+export type SearchIndexBuilderOptions = {
   sources: SearchIndexSource[];
   filters: SearchIndexFilter[];
-}
+};
+
+export type PageToIndex = {
+  path: string;
+  structuredPage: StructuredPage;
+};
 
 export class SearchIndexBuilder {
   private readonly sources: SearchIndexSource[];
@@ -88,7 +93,7 @@ export class SearchIndexBuilder {
     return results;
   }
 
-  async build(): Promise<SearchIndexData | null> {
+  async build(searchEngine: SearchEngine): Promise<SearchIndexData | null> {
     log.debug('Building search index via builder');
 
     const discovered = await this.discover();
@@ -105,11 +110,26 @@ export class SearchIndexBuilder {
 
     const structuredPages = await this.loadStructuredPages(filtered);
     if (structuredPages.length === 0) {
-      log.warn('No structured pages available to index');
+      log.warn('No pages available to index');
       return null;
     }
 
     log.debug('Creating search index from', structuredPages.length, 'pages');
-    return buildSearchIndex(structuredPages);
+
+    await searchEngine.initialize();
+
+    for (const page of structuredPages) {
+      await searchEngine.addPage(page.path, page.structuredPage);
+    }
+
+    const exportedData: Record<string, string> = {};
+    const result = await searchEngine.export(async (key, data) => {
+      exportedData[key] = data;
+    });
+
+    return {
+      keys: result.keys,
+      data: exportedData,
+    };
   }
 }
