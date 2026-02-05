@@ -18,6 +18,10 @@ This directory contains example applications demonstrating how to integrate Peam
 
 - **[Astro + React](./astro-react)** - Astro example with React islands and Peam integration
 
+### React Router
+
+- **[React Router](./react-router)** - React Router example with SSR and Peam integration
+
 ## Contributing
 
 Feel free to add more examples for other frameworks.
