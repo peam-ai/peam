@@ -1,6 +1,7 @@
 'use client';
 
 import { PeamIcon } from '@/components/icons/peam';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useAskAI } from '@/hooks/useAskAI';
 import { Trash2, X } from 'lucide-react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
@@ -18,13 +19,18 @@ export function AskAIHeader({ titleId, heading = 'Ask AI', closeLabel = 'Close',
     <div {...props}>
       <div className={'absolute top-3 right-3 z-10 flex gap-1'}>
         {!isLoading && messages.length > 0 && (
-          <button
-            onClick={clearMessages}
-            className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
-            aria-label="Clear chat history"
-          >
-            <Trash2 className="size-4" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={clearMessages}
+                className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
+                aria-label="Clear chat history"
+              >
+                <Trash2 className="size-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">Delete conversation</TooltipContent>
+          </Tooltip>
         )}
         <button
           onClick={() => setOpen(false)}
