@@ -17,7 +17,17 @@ export type AskAIProps = AskAIRootProps & {
   reuseContext?: boolean;
 } & ComponentPropsWithoutRef<'div'>;
 
-export function AskAI({ children, className, reuseContext = true, ...props }: AskAIProps) {
+export function AskAI({
+  children,
+  className,
+  reuseContext = true,
+  endpoint,
+  open,
+  defaultOpen,
+  chatTransport,
+  persistence,
+  ...divProps
+}: AskAIProps) {
   const isDarkMode = useDarkMode();
   const existingContext = useContext(AskAIContext);
   const hasCustomChildren = Children.count(children) > 0;
@@ -34,8 +44,20 @@ export function AskAI({ children, className, reuseContext = true, ...props }: As
   const shouldProvide = reuseContext ? !existingContext : true;
 
   return (
-    <div className={cn('peam-root', isDarkMode && 'dark', className)} {...props}>
-      {shouldProvide ? <AskAIRoot {...props}>{content}</AskAIRoot> : content}
+    <div className={cn('peam-root', isDarkMode && 'dark', className)} {...divProps}>
+      {shouldProvide ? (
+        <AskAIRoot
+          endpoint={endpoint}
+          open={open}
+          defaultOpen={defaultOpen}
+          chatTransport={chatTransport}
+          persistence={persistence}
+        >
+          {content}
+        </AskAIRoot>
+      ) : (
+        content
+      )}
     </div>
   );
 }
