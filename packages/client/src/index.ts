@@ -8,11 +8,11 @@ export type {
   AskAIChatProps,
   AskAIDialogProps,
   AskAIHeaderProps,
+  AskAIInlineProps,
   AskAIInputProps,
   AskAIMessagesProps,
   AskAIProps,
   AskAIProviderProps,
-  AskAIRootProps,
   AskAISidepaneProps,
   AskAISuggestionsProps,
 } from '@/components/AskAI';

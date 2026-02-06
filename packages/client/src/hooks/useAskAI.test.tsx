@@ -26,7 +26,7 @@ describe('useAskAI', () => {
     };
 
     // assert
-    expect(render).toThrow('AskAI components must be used within <AskAI.Root> or <AskAIProvider>.');
+    expect(render).toThrow('AskAI components must be used within <AskAI> or <AskAIProvider>.');
 
     root.unmount();
   });

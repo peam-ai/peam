@@ -7,12 +7,11 @@ import { Trash2, X } from 'lucide-react';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
 
 export interface AskAIHeaderProps extends ComponentPropsWithoutRef<'div'> {
-  titleId?: string;
   heading?: ReactNode;
   closeLabel?: string;
 }
 
-export function AskAIHeader({ titleId, heading = 'Ask AI', closeLabel = 'Close', ...props }: AskAIHeaderProps) {
+export function AskAIHeader({ heading = 'Ask AI', closeLabel = 'Close', ...props }: AskAIHeaderProps) {
   const { setOpen, clearMessages, isLoading, messages } = useAskAI();
 
   return (
@@ -24,7 +23,7 @@ export function AskAIHeader({ titleId, heading = 'Ask AI', closeLabel = 'Close',
               <button
                 onClick={clearMessages}
                 className="p-1 rounded-full border-0 bg-transparent hover:bg-muted cursor-pointer transition-colors"
-                aria-label="Clear chat history"
+                aria-label="Delete conversation"
               >
                 <Trash2 className="size-4" />
               </button>
@@ -43,9 +42,7 @@ export function AskAIHeader({ titleId, heading = 'Ask AI', closeLabel = 'Close',
 
       <div className={'px-4 py-3 shrink-0 flex items-center gap-2'}>
         <PeamIcon className="size-5" />
-        <h2 id={titleId} className="text-lg font-semibold">
-          {heading}
-        </h2>
+        <h2 className="text-lg font-semibold">{heading}</h2>
       </div>
     </div>
   );

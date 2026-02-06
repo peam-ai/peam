@@ -1,12 +1,9 @@
 'use client';
 
+import { AskAIInline } from '@/ask-ai/inline';
 import { useAskAI } from '@/hooks/useAskAI';
 import { cn } from '@/lib/utils';
 import type { ComponentPropsWithoutRef, ReactNode } from 'react';
-import { AskAIHeader } from './header';
-import { AskAIInput } from './input';
-import { AskAIMessages } from './messages';
-import { AskAISuggestions } from './suggestions';
 
 export interface AskAISidepaneProps extends ComponentPropsWithoutRef<'div'> {
   children?: ReactNode;
@@ -30,7 +27,7 @@ export function AskAISidepane({ children, className, ...props }: AskAISidepanePr
       <div
         role="dialog"
         aria-modal="true"
-        aria-labelledby="ask-ai-sidepane-title"
+        aria-label="Ask AI"
         className={cn(
           `fixed z-50 bg-background text-foreground flex flex-col text-left
             inset-x-0 bottom-0 h-[66vh] md:inset-auto
@@ -42,14 +39,7 @@ export function AskAISidepane({ children, className, ...props }: AskAISidepanePr
         )}
         {...props}
       >
-        {children ?? (
-          <>
-            <AskAIHeader titleId="ask-ai-sidepane-title" closeLabel="Close sidepane" />
-            <AskAIMessages />
-            <AskAISuggestions />
-            <AskAIInput />
-          </>
-        )}
+        {children ?? <AskAIInline />}
       </div>
     </>
   );
