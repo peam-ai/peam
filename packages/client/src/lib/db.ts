@@ -17,8 +17,8 @@ class ChatDatabase extends Dexie {
   messages!: EntityTable<StoredMessage, 'id'>;
   summaries!: EntityTable<ConversationSummary, 'id'>;
 
-  constructor() {
-    super('PeamChatMessages');
+  constructor(name = 'PeamChatMessages') {
+    super(name);
     this.version(1).stores({
       messages: 'id, timestamp, sequence',
       summaries: 'id, timestamp',
@@ -26,5 +26,16 @@ class ChatDatabase extends Dexie {
   }
 }
 
-export const db = new ChatDatabase();
+const dbCache = new Map<string, ChatDatabase>();
+
+export const getDb = (suffix?: string) => {
+  const name = suffix ? `PeamChatMessages-${suffix}` : 'PeamChatMessages';
+  const existing = dbCache.get(name);
+  if (existing) {
+    return existing;
+  }
+  const instance = new ChatDatabase(name);
+  dbCache.set(name, instance);
+  return instance;
+};
 export type { ConversationSummary, StoredMessage };

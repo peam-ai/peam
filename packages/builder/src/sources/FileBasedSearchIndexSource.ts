@@ -6,7 +6,7 @@ import type { PageCandidate } from '../builder/types';
 import type { SearchIndexSource } from './SearchIndexSource';
 
 const log = loggers.builder;
-const sourceDirsToProbe = ['.next', '.build', '.out', 'dist'];
+const sourceDirsToProbe = ['.next', '.build', 'build', '.out', 'dist'];
 const artifactPrefixes = [
   'server/pages/',
   'server/app/',

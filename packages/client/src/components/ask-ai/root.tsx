@@ -1,7 +1,7 @@
 'use client';
 
 import type { PromptInputMessage } from '@/components/ai-elements/prompt-input';
-import { useChatPersistence } from '@/hooks/useChatPersistence';
+import { ChatPersistenceConfig, useChatPersistence } from '@/hooks/useChatPersistence';
 import { BoundedChatTransport } from '@/lib/BoundedChatTransport';
 import { useChat } from '@ai-sdk/react';
 import { loggers } from '@peam-ai/logger';
@@ -40,16 +40,22 @@ export interface AskAIRootProps {
    * Override the default chat transport.
    */
   chatTransport?: HttpChatTransport<UIMessage>;
+
+  /**
+   * Configure chat persistence.
+   * @default true
+   */
+  persistence?: ChatPersistenceConfig;
 }
 
-export function AskAIRoot({ children, endpoint, open, defaultOpen, chatTransport }: AskAIRootProps) {
+export function AskAIRoot({ children, endpoint, open, defaultOpen, chatTransport, persistence }: AskAIRootProps) {
   const [input, setInput] = useState('');
   const [isInitialized, setIsInitialized] = useState(false);
   const [uncontrolledOpen, setUncontrolledOpen] = useState(defaultOpen ?? false);
   const isControlled = open !== undefined;
   const isOpen = isControlled ? open : uncontrolledOpen;
   const { initialMessages, isLoading, saveMessages, clearMessages, saveSummary, summary, lastSummarizedMessageId } =
-    useChatPersistence();
+    useChatPersistence(persistence);
 
   const transport = useMemo(
     () =>
