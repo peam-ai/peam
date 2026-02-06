@@ -22,7 +22,7 @@ export function AskAISidepane({ children, className, ...props }: AskAISidepanePr
   return (
     <>
       <div
-        className="fixed inset-0 z-40 bg-black/50 md:hidden animate-in fade-in duration-200"
+        className="fixed inset-0 z-40 bg-black/50 md:hidden animate-in fade-in duration-200 cursor-pointer"
         onClick={() => setOpen(false)}
         aria-hidden="true"
       />

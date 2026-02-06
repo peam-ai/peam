@@ -26,7 +26,7 @@ export function AskAIDialog({ children, className, ...props }: AskAIDialogProps)
       <button
         type="button"
         aria-label="Close dialog"
-        className="cursor-pointer fixed inset-0 z-40 bg-black/50 animate-in fade-in duration-200"
+        className="fixed inset-0 z-40 bg-black/50 animate-in fade-in duration-200 cursor-pointer"
         onClick={() => setOpen(false)}
       />
 
