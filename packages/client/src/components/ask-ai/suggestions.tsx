@@ -53,7 +53,12 @@ export function AskAISuggestions({
     [onPromptClick, sendMessage]
   );
 
-  const handleWheel = useCallback((event: WheelEvent, viewport: HTMLElement) => {
+  const handleWheel = useCallback((event: WheelEvent) => {
+    const viewport = containerRef.current?.querySelector<HTMLElement>('[data-slot="scroll-area-viewport"]');
+    if (!viewport) {
+      return;
+    }
+
     const maxScrollLeft = viewport.scrollWidth - viewport.clientWidth;
     if (maxScrollLeft <= 0) {
       return;
@@ -66,16 +71,14 @@ export function AskAISuggestions({
   }, []);
 
   useEffect(() => {
-    const viewport = containerRef.current?.querySelector<HTMLElement>('[data-slot="scroll-area-viewport"]');
-    if (!viewport) {
-      return undefined;
+    const container = containerRef.current;
+    if (!container) {
+      return;
     }
 
-    const onWheel = (event: WheelEvent) => handleWheel(event, viewport);
-    viewport.addEventListener('wheel', onWheel, { passive: false });
-
+    container.addEventListener('wheel', handleWheel, { passive: false });
     return () => {
-      viewport.removeEventListener('wheel', onWheel);
+      container.removeEventListener('wheel', handleWheel);
     };
   }, [handleWheel]);
 
