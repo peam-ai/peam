@@ -1,0 +1,109 @@
+---
+title: useAskAI
+description: Hook for controlling AskAI state and actions
+---
+
+# Overview
+
+Access and control the AskAI state from any component inside `AskAI`.
+
+## Example
+
+```tsx
+import { AskAI, useAskAI } from 'peam/client';
+
+function UseAskAIButton() {
+  const { setOpen, sendMessage } = useAskAI();
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        setOpen(true);
+        sendMessage({ text: 'Explain this page' });
+      }}
+    >
+      Explain this page
+    </button>
+  );
+}
+
+export default function Page() {
+  return (
+    <AskAI>
+      <AskAI.Trigger />
+      <AskAI.Dialog />
+      <UseAskAIButton />
+    </AskAI>
+  );
+}
+```
+
+## Example with `AskAIProvider`
+
+Use `AskAIProvider` in a layout and call `useAskAI` from a page or nested component.
+
+```tsx
+// app/layout.tsx
+import { AskAIProvider, AskAI } from 'peam/client';
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <AskAIProvider>
+          {children}
+          <AskAI />
+        </AskAIProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+```tsx
+// app/page.tsx
+import { useAskAI } from 'peam/client';
+
+function AskAICTA() {
+  const { setOpen, sendMessage } = useAskAI();
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        setOpen(true);
+        sendMessage({ text: 'Summarize this page' });
+      }}
+    >
+      Ask AI about this page
+    </button>
+  );
+}
+
+export default function Page() {
+  return (
+    <main>
+      <AskAICTA />
+    </main>
+  );
+}
+```
+
+## Returns
+
+| Value           | Type                                         | Description                                                            |
+| --------------- | -------------------------------------------- | ---------------------------------------------------------------------- |
+| `open`          | `boolean`                                    | Current open state.                                                    |
+| `setOpen`       | `(open: boolean) => void`                    | Set open state.                                                        |
+| `toggleOpen`    | `() => void`                                 | Toggle open state.                                                     |
+| `input`         | `string`                                     | Current input text.                                                    |
+| `setInput`      | `(value: string) => void`                    | Update input text.                                                     |
+| `messages`      | `UIMessage[]`                                | Current chat messages.                                                 |
+| `status`        | `ChatStatus`                                 | Streaming status.                                                      |
+| `error`         | `Error \| undefined`                         | Transport or streaming error.                                          |
+| `isLoading`     | `boolean`                                    | Loading persisted history.                                             |
+| `sendMessage`   | `({ text: string }) => void`                 | Send a message.                                                        |
+| `handleSubmit`  | `(message: PromptInputMessage) => void`      | Submit handler used by [`AskAI.Input`](/docs/components/ask-ai-input). |
+| `regenerate`    | `(options?: { messageId?: string }) => void` | Regenerate a response.                                                 |
+| `clearMessages` | `() => void \| Promise<void>`                | Clear message history.                                                 |

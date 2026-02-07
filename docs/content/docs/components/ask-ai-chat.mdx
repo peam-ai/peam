@@ -1,0 +1,36 @@
+---
+title: AskAI.Chat
+description: Floating chat surface that behaves like a sheet on mobile and a popup on desktop
+---
+
+import { Preview } from '@/components/preview';
+
+# Overview
+
+Floating chat surface that adapts to device size, sliding up as a bottom sheet on mobile and anchoring as a compact popup on desktop. Pair it with [`AskAI.Trigger`](/docs/components/ask-ai-trigger).
+
+## Demo
+
+<Preview path="ask-ai-chat" />
+
+## Usage
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI>
+      <AskAI.Trigger />
+      <AskAI.Chat />
+    </AskAI>
+  );
+}
+```
+
+## Props
+
+| Prop       | Type                   | Default     | Description                       |
+| ---------- | ---------------------- | ----------- | --------------------------------- |
+| `children` | `ReactNode`            | `undefined` | Custom chat contents.             |
+| _(all)_    | `HTMLDivElement` props | —           | Accepts all standard `div` props. |

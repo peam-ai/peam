@@ -1,0 +1,40 @@
+---
+title: AskAI.Sidepane
+description: Sliding sidepane surface that anchors to the right on desktop and the bottom on mobile
+---
+
+import { Preview } from '@/components/preview';
+
+# Overview
+
+Sidepane surface that slides in from the right on desktop and from the bottom on mobile, giving you a persistent chat surface without blocking the page. Pair it with [`AskAI.Trigger`](/docs/components/ask-ai-trigger).
+
+## Demo
+
+<Preview path="ask-ai-sidepane" />
+
+## Usage
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI>
+      <AskAI.Trigger />
+      <AskAI.Sidepane />
+    </AskAI>
+  );
+}
+```
+
+## Notes
+
+- Must be rendered inside `AskAI`.
+
+## Props
+
+| Prop       | Type                   | Default     | Description                       |
+| ---------- | ---------------------- | ----------- | --------------------------------- |
+| `children` | `ReactNode`            | `undefined` | Custom sidepane contents.         |
+| _(all)_    | `HTMLDivElement` props | —           | Accepts all standard `div` props. |

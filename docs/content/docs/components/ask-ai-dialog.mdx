@@ -1,0 +1,36 @@
+---
+title: AskAI.Dialog
+description: Centered modal surface that renders the AskAI chat UI in an overlay
+---
+
+import { Preview } from '@/components/preview';
+
+# Overview
+
+Centered modal surface that shows the AskAI chat UI in a focused overlay. Pair it with [`AskAI.Trigger`](/docs/components/ask-ai-trigger) or another custom control.
+
+## Demo
+
+<Preview path="ask-ai-dialog" />
+
+## Usage
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI>
+      <AskAI.Trigger />
+      <AskAI.Dialog />
+    </AskAI>
+  );
+}
+```
+
+## Props
+
+| Prop       | Type                   | Default     | Description                       |
+| ---------- | ---------------------- | ----------- | --------------------------------- |
+| `children` | `ReactNode`            | `undefined` | Custom dialog contents.           |
+| _(all)_    | `HTMLDivElement` props | —           | Accepts all standard `div` props. |

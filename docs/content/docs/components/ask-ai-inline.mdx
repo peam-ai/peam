@@ -1,0 +1,34 @@
+---
+title: AskAI.Inline
+description: Inline surface that renders the entire AskAI UI (header, messages, suggestions, input) in-place
+---
+
+import { Preview } from '@/components/preview';
+
+# Overview
+
+Render the entire chat surface ([`AskAI.Header`](/docs/components/ask-ai-header), [`AskAI.Messages`](/docs/components/ask-ai-messages), [`AskAI.Suggestions`](/docs/components/ask-ai-suggestions), [`AskAI.Input`](/docs/components/ask-ai-input)) inline within any container, without needing a separate dialog or sheet wrapper.
+
+## Demo
+
+<Preview path="ask-ai-inline" />
+
+## Usage
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI defaultOpen>
+      <AskAI.Inline />
+    </AskAI>
+  );
+}
+```
+
+## Props
+
+| Prop    | Type                   | Default | Description                       |
+| ------- | ---------------------- | ------- | --------------------------------- |
+| _(all)_ | `HTMLDivElement` props | —       | Accepts all standard `div` props. |

@@ -1,0 +1,38 @@
+---
+title: AskAI.Trigger
+description: Trigger control that toggles AskAI open state using the default Peam button or custom content
+---
+
+import { Preview } from '@/components/preview';
+
+# Overview
+
+Button-like trigger that toggles the open state for [`AskAI.Dialog`](/docs/components/ask-ai-dialog), [`AskAI.Chat`](/docs/components/ask-ai-chat), or [`AskAI.Sidepane`](/docs/components/ask-ai-sidepane). Use the default floating Peam button or pass custom content (including `asChild`) to integrate with your UI.
+
+## Demo
+
+<Preview path="ask-ai-trigger" />
+
+## Usage
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI>
+      <AskAI.Trigger inlineButton />
+      <AskAI.Dialog />
+    </AskAI>
+  );
+}
+```
+
+## Props
+
+| Prop           | Type                    | Default       | Description                                           |
+| -------------- | ----------------------- | ------------- | ----------------------------------------------------- |
+| `asChild`      | `boolean`               | `false`       | Use a custom element via Radix `Slot`.                |
+| `children`     | `ReactNode`             | `undefined`   | Custom trigger contents.                              |
+| `inlineButton` | `boolean`               | `false`       | Renders the default button without fixed positioning. |
+| `variant`      | `'icon' \| 'iconLabel'` | `'iconLabel'` | Default Peam button style.                            |

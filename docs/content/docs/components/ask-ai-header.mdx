@@ -1,0 +1,22 @@
+---
+title: AskAI.Header
+description: Header row for AskAI surfaces with brand icon, title, and close/clear actions
+---
+
+import { Preview } from '@/components/preview';
+
+# Overview
+
+Header row with the Peam icon, title, and close/clear actions, designed to sit at the top of AskAI surfaces like [`AskAI.Dialog`](/docs/components/ask-ai-dialog), [`AskAI.Chat`](/docs/components/ask-ai-chat), or [`AskAI.Sidepane`](/docs/components/ask-ai-sidepane).
+
+## Demo
+
+<Preview path="ask-ai-header" />
+
+## Props
+
+| Prop         | Type                   | Default    | Description                            |
+| ------------ | ---------------------- | ---------- | -------------------------------------- |
+| `heading`    | `ReactNode`            | `'Ask AI'` | Heading text or element.               |
+| `closeLabel` | `string`               | `'Close'`  | Accessible label for the close action. |
+| _(all)_      | `HTMLDivElement` props | —          | Accepts all standard `div` props.      |

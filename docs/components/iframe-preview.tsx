@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import { useTheme } from 'next-themes';
 import { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
@@ -13,6 +14,8 @@ export function IframePreview({ path, className }: IframePreviewProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const rootRef = useRef<ReactDOM.Root | null>(null);
   const [ready, setReady] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === 'dark';
 
   useEffect(() => {
     const iframe = iframeRef.current;
@@ -21,14 +24,18 @@ export function IframePreview({ path, className }: IframePreviewProps) {
     const doc = iframe.contentDocument;
     if (!doc) return;
 
+    const colorScheme = 'light';
+
     doc.open();
     doc.write(`
       <!DOCTYPE html>
       <html>
         <head>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <meta name="color-scheme" content="${colorScheme}" />
           <style>
             html, body, #root {
+              color-scheme: ${colorScheme};
               height: 100%;
               width: 100%;
               margin: 0;
@@ -50,7 +57,7 @@ export function IframePreview({ path, className }: IframePreviewProps) {
             }
           </style>
         </head>
-        <body>
+        <body class="bg-background text-foreground">
           <div id="root"></div>
         </body>
       </html>
@@ -79,6 +86,12 @@ export function IframePreview({ path, className }: IframePreviewProps) {
 
       rootRef.current = ReactDOM.createRoot(doc.getElementById('root')!);
       rootRef.current.render(<Component />);
+
+      requestAnimationFrame(() => {
+        const peamRoot = doc.querySelector<HTMLElement>('.peam-root');
+        peamRoot?.classList.toggle('dark', isDark);
+        doc.body.classList.toggle('dark', isDark);
+      });
     };
 
     mount();
@@ -92,6 +105,23 @@ export function IframePreview({ path, className }: IframePreviewProps) {
       }
     };
   }, [ready, path]);
+
+  useEffect(() => {
+    if (!ready) return;
+    const doc = iframeRef.current?.contentDocument;
+    if (!doc || !doc.body) return;
+
+    const colorScheme = isDark ? 'dark' : 'light';
+    const meta = doc.head.querySelector('meta[name="color-scheme"]');
+    if (meta) {
+      meta.setAttribute('content', colorScheme);
+    }
+
+    doc.documentElement.style.colorScheme = colorScheme;
+    doc.body.classList.toggle('dark', isDark);
+    const peamRoot = doc.querySelector<HTMLElement>('.peam-root');
+    peamRoot?.classList.toggle('dark', isDark);
+  }, [ready, isDark]);
 
   return (
     <div className={cn('relative isolate h-160 overflow-hidden bg-background', className)}>

@@ -1,0 +1,22 @@
+---
+title: AskAI.Suggestions
+description: Suggested prompt chips that help users start a conversation in AskAI
+---
+
+import { Preview } from '@/components/preview';
+
+# Overview
+
+Suggested prompt chips rendered above the input to help users start a conversation or explore common tasks. Usually paired with [`AskAI.Input`](/docs/components/ask-ai-input).
+
+## Demo
+
+<Preview path="ask-ai-suggestions" />
+
+## Props
+
+| Prop            | Type                       | Default                                                                                | Description                             |
+| --------------- | -------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------- |
+| `prompts`       | `string[]`                 | `['Summarize this page', 'Where should I get started?', 'What can you help me with?']` | Suggested prompts.                      |
+| `onPromptClick` | `(prompt: string) => void` | `undefined`                                                                            | Handle prompt clicks.                   |
+| `onlyWhenEmpty` | `boolean`                  | `true`                                                                                 | Render only when there are no messages. |

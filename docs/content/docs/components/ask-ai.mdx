@@ -1,0 +1,48 @@
+---
+title: AskAI
+description: Top-level AskAI preset that wires context, transport, and a default Trigger + Dialog surface
+---
+
+import { Preview } from '@/components/preview';
+
+# Overview
+
+The top-level component that wires context, transport, and persistence, then renders the default preset ([`AskAI.Trigger`](/docs/components/ask-ai-trigger) + [`AskAI.Dialog`](/docs/components/ask-ai-dialog)). Use it as-is for a drop-in chat UI or compose the underlying pieces for custom layouts.
+
+Here is a basic example using the default [`AskAI.Trigger`](/docs/components/ask-ai-trigger) and [`AskAI.Dialog`](/docs/components/ask-ai-dialog):
+
+```tsx
+<AskAI />
+```
+
+## Anatomy
+
+- `AskAI` provides state, transport, and context.
+- [`AskAI.Trigger`](/docs/components/ask-ai-trigger) toggles open state (defaults to the floating Peam button).
+- [`AskAI.Dialog`](/docs/components/ask-ai-dialog), [`AskAI.Chat`](/docs/components/ask-ai-chat), or [`AskAI.Sidepane`](/docs/components/ask-ai-sidepane) render the surface.
+- [`AskAI.Header`](/docs/components/ask-ai-header), [`AskAI.Messages`](/docs/components/ask-ai-messages), [`AskAI.Suggestions`](/docs/components/ask-ai-suggestions), and [`AskAI.Input`](/docs/components/ask-ai-input) are layout primitives.
+- [`AskAI.Inline`](/docs/components/ask-ai-inline) renders the full inline surface without another wrapper.
+
+```tsx
+<AskAI>
+  <AskAI.Trigger />
+  <AskAI.Dialog />
+</AskAI>
+```
+
+## Overview
+
+<Preview path="ask-ai" />
+
+## Props
+
+| Prop            | Type                           | Default       | Description                                                |
+| --------------- | ------------------------------ | ------------- | ---------------------------------------------------------- |
+| `endpoint`      | `string`                       | `'/api/peam'` | API endpoint used by the chat transport.                   |
+| `open`          | `boolean`                      | `undefined`   | Controlled open state.                                     |
+| `defaultOpen`   | `boolean`                      | `false`       | Uncontrolled initial open state.                           |
+| `chatTransport` | `HttpChatTransport<UIMessage>` | `undefined`   | Override the default transport.                            |
+| `persistence`   | `boolean \| { key?: string }`  | `true`        | Configure chat persistence or disable it.                  |
+| `reuseContext`  | `boolean`                      | `true`        | Reuse an existing `AskAIContext` if present.               |
+| `children`      | `ReactNode`                    | `undefined`   | Custom composition (if omitted, renders Trigger + Dialog). |
+| `className`     | `string`                       | `undefined`   | Class name applied to the root wrapper.                    |

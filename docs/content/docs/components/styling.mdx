@@ -1,0 +1,43 @@
+---
+title: Styling
+description: Customize AskAI appearance with CSS variables
+---
+
+import { Preview } from '@/components/preview';
+
+# Overview
+
+Peam client components are styled with shadcn/ui primitives and theme tokens. You can customize the look and feel by overriding the CSS variables listed below on any wrapper element (for example, the `AskAI` root). For dark mode, apply a `dark` class on the same element (or a parent) and override the variables again for the dark palette.
+
+## CSS variables
+
+| Variable                   | Purpose                             |
+| -------------------------- | ----------------------------------- |
+| `--background`             | Base surface background.            |
+| `--foreground`             | Base surface text color.            |
+| `--card`                   | Card/surface background for panels. |
+| `--card-foreground`        | Text color on cards/surfaces.       |
+| `--popover`                | Popover surface background.         |
+| `--popover-foreground`     | Text color on popovers.             |
+| `--primary`                | Primary brand/action color.         |
+| `--primary-foreground`     | Text color on primary elements.     |
+| `--secondary`              | Secondary surface/background color. |
+| `--secondary-foreground`   | Text color on secondary surfaces.   |
+| `--muted`                  | Muted surface/background color.     |
+| `--muted-foreground`       | Text color on muted surfaces.       |
+| `--accent`                 | Accent surface/background color.    |
+| `--accent-foreground`      | Text color on accent surfaces.      |
+| `--destructive`            | Destructive/action color.           |
+| `--destructive-foreground` | Text color on destructive elements. |
+| `--border`                 | Border color.                       |
+| `--input`                  | Input border color.                 |
+| `--ring`                   | Focus ring color.                   |
+| `--radius`                 | Base border radius.                 |
+
+## Dark mode
+
+To customize the dark theme, add a `dark` class and override the same variables for the dark palette. The preview below uses `.peam-root` for the light theme and `.peam-root.dark` for the dark theme.
+
+## Demo
+
+<Preview path="styling" />

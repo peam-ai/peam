@@ -1,0 +1,20 @@
+{
+  "title": "Components",
+  "pages": [
+    "--- Core ---",
+    "ask-ai",
+    "ask-ai-dialog",
+    "ask-ai-chat",
+    "ask-ai-sidepane",
+    "ask-ai-inline",
+    "styling",
+    "--- Elements ---",
+    "ask-ai-trigger",
+    "ask-ai-header",
+    "ask-ai-messages",
+    "ask-ai-suggestions",
+    "ask-ai-input",
+    "--- Hooks ---",
+    "use-ask-ai"
+  ]
+}

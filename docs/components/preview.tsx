@@ -17,7 +17,8 @@ interface ComponentPreviewProps {
 }
 
 export const Preview = async ({ path, className }: ComponentPreviewProps) => {
-  const code = await readFile(join(process.cwd(), 'components', 'previews', `${path}.tsx`), 'utf-8');
+  const rawCode = await readFile(join(process.cwd(), 'components', 'previews', `${path}.tsx`), 'utf-8');
+  const code = extractPreviewSnippet(rawCode);
 
   const highlightedCode = await codeToHtml(code, {
     lang: 'tsx',
@@ -52,4 +53,75 @@ export const Preview = async ({ path, className }: ComponentPreviewProps) => {
       </CodeBlockTab>
     </CodeBlockTabs>
   );
+};
+
+const extractPreviewSnippet = (rawCode: string) => {
+  const withoutUseClient = rawCode.replace(/^\s*['"]use client['"];?\s*\n+/m, '');
+  const importLines = withoutUseClient
+    .split('\n')
+    .filter((line) => line.trim().startsWith('import '))
+    .join('\n')
+    .trim();
+
+  const multilineMatch = withoutUseClient.match(/=>\s*\(([\s\S]*?)\);\s*export\s+default/s);
+  const singleLineMatch = withoutUseClient.match(/=>\s*([^\n;]+);\s*export\s+default/s);
+  const rawBody = multilineMatch?.[1] ?? singleLineMatch?.[1] ?? '';
+  const body = sanitizeSnippet(dedentSnippet(rawBody));
+
+  if (!importLines && !body) {
+    return withoutUseClient.trim();
+  }
+
+  return [importLines, body].filter(Boolean).join('\n\n');
+};
+
+const dedentSnippet = (snippet: string) => {
+  if (!snippet) {
+    return snippet;
+  }
+
+  const allLines = snippet.split('\n');
+  let start = 0;
+  let end = allLines.length;
+
+  while (start < end && allLines[start].trim().length === 0) {
+    start += 1;
+  }
+
+  while (end > start && allLines[end - 1].trim().length === 0) {
+    end -= 1;
+  }
+
+  const lines = allLines.slice(start, end);
+  const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
+  const minIndent = nonEmptyLines.reduce((min, line) => {
+    const match = line.match(/^(\s+)/);
+    if (!match) {
+      return 0;
+    }
+    return Math.min(min, match[1].length);
+  }, Number.POSITIVE_INFINITY);
+
+  if (!Number.isFinite(minIndent) || minIndent === 0) {
+    return snippet;
+  }
+
+  return lines.map((line) => (line.trim().length ? line.slice(minIndent) : line)).join('\n');
+};
+
+const sanitizeSnippet = (snippet: string) => {
+  let cleaned = snippet;
+
+  cleaned = cleaned.replace(/^\s*defaultOpen\s*\n/gm, '');
+  cleaned = cleaned.replace(/^\s*reuseContext=\{false\}\s*\n/gm, '');
+  cleaned = cleaned.replace(/^\s*persistence=\{\{\s*key:\s*'docs-preview'\s*\}\}\s*\n/gm, '');
+
+  cleaned = cleaned.replace(/\s+defaultOpen\b/g, '');
+  cleaned = cleaned.replace(/\s+reuseContext=\{false\}/g, '');
+  cleaned = cleaned.replace(/\s+persistence=\{\{\s*key:\s*'docs-preview'\s*\}\}/g, '');
+
+  cleaned = cleaned.replace(/<([^>]*?)\s+>/g, '<$1>');
+  cleaned = cleaned.replace(/<([^>]*?)\s+\/>/g, '<$1 />');
+
+  return cleaned;
 };
