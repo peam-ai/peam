@@ -9,16 +9,20 @@ export interface AskAIContextValue {
   setOpen: (open: boolean) => void;
   toggleOpen: () => void;
   input: string;
-  setInput: (value: string) => void;
+  setInput: (value: string, options?: AskAIActionOptions) => void;
   messages: UIMessage[];
   status: ChatStatus;
   error: Error | undefined;
   isLoading: boolean;
-  sendMessage: (message: { text: string }) => void;
+  sendMessage: (message: { text: string }, options?: AskAIActionOptions) => void;
   handleSubmit: (message: PromptInputMessage) => void;
   regenerate: (options?: { messageId?: string }) => void;
   clearMessages: () => void | Promise<void>;
 }
+
+export type AskAIActionOptions = {
+  open?: boolean;
+};
 
 const AskAIContext = createContext<AskAIContextValue | null>(null);
 

@@ -1,14 +1,14 @@
 'use client';
 
 import type { PromptInputMessage } from '@/components/ai-elements/prompt-input';
-import { type ChatPersistenceConfig, useChatPersistence } from '@/hooks/useChatPersistence';
+import { useChatPersistence, type ChatPersistenceConfig } from '@/hooks/useChatPersistence';
 import { BoundedChatTransport } from '@/lib/BoundedChatTransport';
 import { useChat } from '@ai-sdk/react';
 import { loggers } from '@peam-ai/logger';
 import type { HttpChatTransport, UIMessage } from 'ai';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AskAIContext } from './context';
+import { AskAIContext, type AskAIActionOptions } from './context';
 
 const log = loggers.ui;
 
@@ -143,8 +143,21 @@ export function AskAIRoot({
     setOpen(!isOpen);
   }, [isOpen, setOpen]);
 
+  const setInputWithOptions = useCallback(
+    (value: string, options?: AskAIActionOptions) => {
+      setInput(value);
+      if (options?.open ?? true) {
+        setOpen(true);
+      }
+    },
+    [setOpen]
+  );
+
   const sendMessage = useCallback(
-    (message: { text: string }) => {
+    (message: { text: string }, options?: AskAIActionOptions) => {
+      if (options?.open ?? true) {
+        setOpen(true);
+      }
       rawSendMessage(
         {
           ...message,
@@ -163,7 +176,7 @@ export function AskAIRoot({
         }
       );
     },
-    [rawSendMessage, summary, lastSummarizedMessageId]
+    [rawSendMessage, summary, lastSummarizedMessageId, setOpen]
   );
 
   const handleSubmit = useCallback(
@@ -262,7 +275,7 @@ export function AskAIRoot({
       setOpen,
       toggleOpen,
       input,
-      setInput,
+      setInput: setInputWithOptions,
       messages,
       status,
       error,
@@ -282,6 +295,7 @@ export function AskAIRoot({
       messages,
       regenerate,
       sendMessage,
+      setInputWithOptions,
       setOpen,
       status,
       toggleOpen,
