@@ -15,13 +15,12 @@ This is useful when you want global access to chat actions (open, send, clear) w
 import { AskAIProvider, AskAI, useAskAI } from 'peam/client';
 
 function AskAICTA() {
-  const { setOpen, sendMessage } = useAskAI();
+  const { sendMessage } = useAskAI();
 
   return (
     <button
       type="button"
       onClick={() => {
-        setOpen(true);
         sendMessage({ text: 'How can I install Peam?' });
       }}
     >

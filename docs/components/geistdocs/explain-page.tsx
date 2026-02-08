@@ -9,10 +9,9 @@ type ExplainPageProps = {
 };
 
 export const ExplainPage = ({ title, url }: ExplainPageProps) => {
-  const { setOpen, sendMessage } = useAskAI();
+  const { sendMessage } = useAskAI();
 
   const handleExplain = () => {
-    setOpen(true);
     sendMessage({ text: `Explain this page: ${title} (${url})` });
   };
 

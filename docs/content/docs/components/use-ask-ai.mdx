@@ -21,13 +21,12 @@ This demo uses `useAskAI` to open [`AskAI.Dialog`](/docs/components/ask-ai-dialo
 import { AskAI, useAskAI } from 'peam/client';
 
 function UseAskAIButton() {
-  const { setOpen, sendMessage } = useAskAI();
+  const { sendMessage } = useAskAI();
 
   return (
     <button
       type="button"
       onClick={() => {
-        setOpen(true);
         sendMessage({ text: 'How can I install Peam?' });
       }}
     >
@@ -74,13 +73,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 import { useAskAI } from 'peam/client';
 
 function AskAICTA() {
-  const { setOpen, sendMessage } = useAskAI();
+  const { sendMessage } = useAskAI();
 
   return (
     <button
       type="button"
       onClick={() => {
-        setOpen(true);
         sendMessage({ text: 'Summarize this page' });
       }}
     >
@@ -100,18 +98,18 @@ export default function Page() {
 
 ## Returns
 
-| Value           | Type                                         | Description                                                            |
-| --------------- | -------------------------------------------- | ---------------------------------------------------------------------- |
-| `open`          | `boolean`                                    | Current open state.                                                    |
-| `setOpen`       | `(open: boolean) => void`                    | Set open state.                                                        |
-| `toggleOpen`    | `() => void`                                 | Toggle open state.                                                     |
-| `input`         | `string`                                     | Current input text.                                                    |
-| `setInput`      | `(value: string) => void`                    | Update input text.                                                     |
-| `messages`      | `UIMessage[]`                                | Current chat messages.                                                 |
-| `status`        | `ChatStatus`                                 | Streaming status.                                                      |
-| `error`         | `Error \| undefined`                         | Transport or streaming error.                                          |
-| `isLoading`     | `boolean`                                    | Loading persisted history.                                             |
-| `sendMessage`   | `({ text: string }) => void`                 | Send a message.                                                        |
-| `handleSubmit`  | `(message: PromptInputMessage) => void`      | Submit handler used by [`AskAI.Input`](/docs/components/ask-ai-input). |
-| `regenerate`    | `(options?: { messageId?: string }) => void` | Regenerate a response.                                                 |
-| `clearMessages` | `() => void \| Promise<void>`                | Clear message history.                                                 |
+| Value           | Type                                                       | Description                                                            |
+| --------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `open`          | `boolean`                                                  | Current open state.                                                    |
+| `setOpen`       | `(open: boolean) => void`                                  | Set open state.                                                        |
+| `toggleOpen`    | `() => void`                                               | Toggle open state.                                                     |
+| `input`         | `string`                                                   | Current input text.                                                    |
+| `setInput`      | `(value: string, options?: { open?: boolean }) => void`    | Update input text and optionally open the surface.                     |
+| `messages`      | `UIMessage[]`                                              | Current chat messages.                                                 |
+| `status`        | `ChatStatus`                                               | Streaming status.                                                      |
+| `error`         | `Error \| undefined`                                       | Transport or streaming error.                                          |
+| `isLoading`     | `boolean`                                                  | Loading persisted history.                                             |
+| `sendMessage`   | `({ text: string }, options?: { open?: boolean }) => void` | Send a message and optionally open the surface.                        |
+| `handleSubmit`  | `(message: PromptInputMessage) => void`                    | Submit handler used by [`AskAI.Input`](/docs/components/ask-ai-input). |
+| `regenerate`    | `(options?: { messageId?: string }) => void`               | Regenerate a response.                                                 |
+| `clearMessages` | `() => void \| Promise<void>`                              | Clear message history.                                                 |
