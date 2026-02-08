@@ -1,0 +1,60 @@
+---
+title: Data flow
+description: How content is indexed and how queries become answers
+---
+
+# Overview
+
+Peam uses a two-phase workflow: **indexing** at build time and **querying** at runtime. The builder creates artifacts once; the runtime reuses them for fast, consistent answers.
+
+## Indexing flow
+
+<Mermaid
+  chart={`
+sequenceDiagram
+  autonumber
+  participant Sources as Content Sources
+  participant Source as Index Sources
+  participant Filters as Filters
+  participant Indexer as Indexers
+  participant Store as Index Stores
+
+Sources->>Source: Discover pages
+Source->>Filters: Apply filters
+Filters-->>Indexer: Filtered pages
+Filters->>Indexer: Normalize + chunk
+Indexer->>Indexer: Enrich metadata
+Indexer->>Store: Write index
+`}
+/>
+
+## Query flow
+
+<Mermaid
+  chart={`
+sequenceDiagram
+  autonumber
+  participant Client as Client UI
+  participant Server as Peam Server
+  participant Search as Search Engine
+  participant Store as Index Stores
+  participant Retriever as Retrieval
+  participant LLM as LLM
+
+Client->>Server: sendMessage()
+Server->>Search: search(query)
+Search->>Store: Load index artifacts
+Store-->>Search: Index data
+Search->>Retriever: Retrieve + rerank
+Retriever-->>Server: Ranked context
+Server->>LLM: Compose answer
+LLM-->>Client: Streamed response
+`}
+/>
+
+## Notes
+
+- Index sources define where content is discovered from.
+- Filters narrow the candidate set before indexing.
+- Index stores persist artifacts for runtime search.
+- Client surfaces stay thin: they render UI and send messages to the server.
