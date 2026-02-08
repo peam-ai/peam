@@ -3,7 +3,7 @@ title: WindowedConversationSummarizer
 description: Default summarizer for chat history
 ---
 
-# WindowedConversationSummarizer
+# Overview
 
 Summarizes conversations after a fixed number of messages to keep the context window bounded.
 
@@ -18,7 +18,39 @@ export class WindowedConversationSummarizer {
 }
 ```
 
+## Usage
+
+Create a summarizer and pass it to the chat runtime with `createChat`:
+
+```ts
+import { createChat, WindowedConversationSummarizer } from 'peam/server';
+import { openai } from '@ai-sdk/openai';
+
+const summarizer = new WindowedConversationSummarizer({
+  model: openai('gpt-4o'),
+  maxMessages: 12,
+});
+
+export const POST = createChat({
+  summarizer,
+}).handler;
+```
+
+You can also pass summarization options directly and let `createChat` construct it:
+
+```ts
+import { createChat } from 'peam/server';
+import { openai } from '@ai-sdk/openai';
+
+export const POST = createChat({
+  summarization: {
+    model: openai('gpt-4o'),
+    maxMessages: 12,
+  },
+}).handler;
+```
+
 ## Notes
 
-- Uses `maxMessages` with a default of $10$.
+- Uses `maxMessages` with a default of 10.
 - Used automatically by `DefaultChatRuntime` unless `summarization` is set to `false`.

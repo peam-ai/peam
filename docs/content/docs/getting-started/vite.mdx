@@ -76,6 +76,17 @@ It’s a lightweight setup that keeps your stack fast and flexible.
     ```
 
   </Step>
+
+  <Step>
+    ## Export the OpenAI API Key
+
+    Peam uses ChatGPT (OpenAI GPT-4o) by default, so `OPENAI_API_KEY` must be set in your environment.
+
+    ```bash
+    export OPENAI_API_KEY="your-api-key"
+    ```
+
+  </Step>
 </Steps>
 
 ## Examples
@@ -87,3 +98,16 @@ Browse the full app in:
   </Link>
 
 See the [API Reference](/docs/api-reference) for all available options.
+
+## Customize the model
+
+Pass a custom model to `createChat` when wiring your route. Peam uses the Vercel AI SDK, so import models from the provider package you choose. See the <Link href="https://ai-sdk.dev/docs/foundations/providers-and-models" external>providers and models guide</Link>.
+
+```ts
+import { createChat } from 'peam/server';
+import { openai } from '@ai-sdk/openai';
+
+const chat = createChat({
+  model: openai('gpt-4o-mini'),
+});
+```

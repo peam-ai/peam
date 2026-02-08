@@ -1,0 +1,32 @@
+---
+title: createChat
+description: Next.js-aware chat runtime factory
+---
+
+# Overview
+
+Creates a chat runtime that automatically injects the `searchIndexStore` resolved by `withPeam()`.
+
+## Type Definition
+
+```ts
+import type { ChatRuntimeOptions, DefaultChatRuntime } from 'peam/server';
+
+export function createChat(options?: ChatRuntimeOptions): DefaultChatRuntime;
+```
+
+## Usage
+
+```ts
+import { createChat } from '@peam-ai/next/route';
+import { openai } from '@ai-sdk/openai';
+
+export const POST = createChat({
+  model: openai('gpt-4o-mini'),
+}).handler;
+```
+
+## Notes
+
+- `withPeam()` must run during build so `searchIndexStore` can be resolved.
+- You can override `searchIndexStore` by passing it in `options`.

@@ -1,0 +1,26 @@
+---
+title: AskAI.Inline
+description: Inline AskAI layout composed of header, messages, suggestions, and input
+---
+
+# Overview
+
+Inline layout that composes `AskAI.Header`, `AskAI.Messages`, `AskAI.Suggestions`, and `AskAI.Input`.
+
+## Usage
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI>
+      <AskAI.Inline />
+    </AskAI>
+  );
+}
+```
+
+## Notes
+
+- Must be rendered inside `AskAI` or `AskAIProvider`.

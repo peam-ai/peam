@@ -1,0 +1,44 @@
+---
+title: AskAIProvider
+description: Context provider for AskAI surfaces
+---
+
+# Overview
+
+Provides AskAI context for composing surfaces manually or sharing context across multiple surfaces.
+
+## Type Definition
+
+```ts
+import type { ReactNode } from 'react';
+import type { HttpChatTransport, UIMessage } from 'ai';
+
+export type AskAIProviderProps = {
+  children?: ReactNode;
+  endpoint?: string;
+  open?: boolean;
+  defaultOpen?: boolean;
+  chatTransport?: HttpChatTransport<UIMessage>;
+  persistence?: boolean | { key?: string };
+};
+```
+
+## Usage
+
+```tsx
+import { AskAI, AskAIProvider } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAIProvider>
+      <AskAI.Trigger />
+      <AskAI.Sidepane />
+    </AskAIProvider>
+  );
+}
+```
+
+## Notes
+
+- `AskAIProvider` does not render UI. It only supplies context.
+- `AskAI.Trigger`, `AskAI.Dialog`, `AskAI.Chat`, `AskAI.Sidepane`, and `AskAI.Inline` all rely on this context.

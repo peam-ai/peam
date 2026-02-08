@@ -3,13 +3,27 @@
   "pages": [
     "---Client Components---",
     "client/ask-ai",
+    "client/ask-ai-trigger",
+    "client/ask-ai-inline",
+    "client/ask-ai-header",
+    "client/ask-ai-messages",
+    "client/ask-ai-suggestions",
+    "client/ask-ai-input",
+    "client/ask-ai-provider",
+    "client/use-ask-ai",
+    "client/bounded-chat-transport",
     "client/ask-ai-chat",
     "client/ask-ai-dialog",
     "client/ask-ai-sidepane",
     "---Server API---",
     "server/create-chat",
+    "server/default-chat-runtime",
+    "server/windowed-conversation-summarizer",
+    "server/get-search-engine",
+    "server/post",
     "---Next.js Integration---",
     "next/with-peam",
+    "next/create-chat",
     "next/route"
   ]
 }

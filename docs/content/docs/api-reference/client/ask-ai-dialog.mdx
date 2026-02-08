@@ -1,33 +1,28 @@
 ---
-title: AskAIDialog
-description: Modal dialog chat component
+title: AskAI.Dialog
+description: Modal dialog chat surface primitive
 ---
 
-# AskAIDialog
+# Overview
 
-Modal dialog chat UI. It shares the same base props as `AskAI`.
-
-## Type Definition
-
-```ts
-import type { AskAIBaseProps } from 'peam/client';
-
-export interface AskAIDialogProps extends AskAIBaseProps {}
-
-export function AskAIDialog(props?: AskAIDialogProps): JSX.Element;
-```
+Modal dialog chat surface. Pair it with `AskAI.Trigger`.
 
 ## Usage
 
 ```tsx
-import { AskAIDialog } from 'peam/client';
+import { AskAI } from 'peam/client';
 
 export default function Page() {
-  return <AskAIDialog />;
+  return (
+    <AskAI>
+      <AskAI.Trigger />
+      <AskAI.Dialog />
+    </AskAI>
+  );
 }
 ```
 
 ## Notes
 
-- Uses `AskAIBaseProps` (see [AskAI](/docs/api-reference/client/ask-ai)).
+- `AskAI.Dialog` must be rendered inside `AskAI`.
 - When `button` is not provided, the default floating `PeamButton` is used.

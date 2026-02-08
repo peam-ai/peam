@@ -1,0 +1,29 @@
+---
+title: AskAI.Messages
+description: Renders the conversation, sources, and message actions
+---
+
+# Overview
+
+Message list that renders conversation history, sources, and retry/copy actions.
+
+## Usage
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI>
+      <AskAI.Sidepane>
+        <AskAI.Messages />
+      </AskAI.Sidepane>
+    </AskAI>
+  );
+}
+```
+
+## Notes
+
+- Renders sources when `source-url` parts are present in the assistant response.
+- Shows a retry action when the response fails.

@@ -1,4 +1,4 @@
 {
   "title": "Server",
-  "pages": ["create-chat"]
+  "pages": ["create-chat", "default-chat-runtime", "windowed-conversation-summarizer", "get-search-engine", "post"]
 }

@@ -1,0 +1,42 @@
+---
+title: AskAI.Header
+description: Header bar with title and actions
+---
+
+# Overview
+
+Header bar that shows the AskAI title and actions (clear conversation, close).
+
+## Usage
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI>
+      <AskAI.Dialog>
+        <AskAI.Header />
+        <AskAI.Messages />
+        <AskAI.Input />
+      </AskAI.Dialog>
+    </AskAI>
+  );
+}
+```
+
+## Props
+
+```ts
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
+
+export interface AskAIHeaderProps extends ComponentPropsWithoutRef<'div'> {
+  heading?: ReactNode;
+  closeLabel?: string;
+}
+```
+
+## Notes
+
+- Uses `closeLabel` for the close button aria-label.
+- The delete button only shows when there are messages and the chat is idle.

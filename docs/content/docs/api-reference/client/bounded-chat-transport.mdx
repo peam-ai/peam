@@ -1,0 +1,46 @@
+---
+title: BoundedChatTransport
+description: Chat transport that keeps the context window bounded
+---
+
+# Overview
+
+A custom chat transport that sends only recent messages since the last summary, keeping the context window bounded.
+
+## Type Definition
+
+```ts
+import type { UIMessage } from 'ai';
+import { DefaultChatTransport } from 'ai';
+
+export interface BoundedChatTransportOptions {
+  endpoint: string;
+}
+
+export class BoundedChatTransport extends DefaultChatTransport<UIMessage> {
+  constructor(options: BoundedChatTransportOptions);
+}
+```
+
+## Usage
+
+```tsx
+import { AskAI, BoundedChatTransport } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI
+      chatTransport={
+        new BoundedChatTransport({
+          endpoint: '/api/peam',
+        })
+      }
+    />
+  );
+}
+```
+
+## Notes
+
+- This is the default transport used by `AskAI` when `chatTransport` is not provided.
+- It reads the summary markers in the request body to limit the message window.

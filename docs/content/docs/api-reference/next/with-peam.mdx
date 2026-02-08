@@ -3,7 +3,7 @@ title: withPeam
 description: Next.js configuration wrapper for Peam integration
 ---
 
-# withPeam
+# Overview
 
 Wraps your Next.js config to enable Peam content extraction during build. It sets configuration for the adapter, search store, and output file tracing.
 
@@ -21,7 +21,7 @@ export interface PeamConfig {
   searchStore?: SearchStoreConfig;
 
   /**
-   * Path to a custom robots.txt file or false to disable robots.txt filtering
+   * Auto-discover robots.txt when true, use a custom path when string, or false to disable
    * @default undefined
    */
   robotsTxt?: string | boolean;
@@ -122,7 +122,7 @@ Currently, the only supported store type is `fileBased`.
 
 ### robotsTxt
 
-Controls robots.txt filtering. If `false`, robots filtering is disabled.
+Controls robots.txt filtering. When `true`, Peam auto-discovers `robots.txt` in your project. When a string, it uses that path. If `false`, robots filtering is disabled.
 
 ```ts
 {
@@ -151,7 +151,7 @@ The `withPeam` function enhances your Next.js configuration by:
 ## Requirements
 
 - **Next.js 15+**: The adapter feature requires Next.js 15 or higher
-- For Next.js 14, use the postbuild CLI approach (see [Next.js guide](/docs/next))
+- For Next.js 14, use the postbuild CLI approach (see [Next.js guide](/docs/getting-started/next))
 
 ## Deployment
 
@@ -163,7 +163,7 @@ When deploying to Vercel or other platforms, the `withPeam` configuration ensure
 
 ## See Also
 
-- [Next.js guide](/docs/next)
+- [Next.js guide](/docs/getting-started/next)
 - [createChat](/docs/api-reference/server/create-chat)
 - [route](/docs/api-reference/next/route)
 - [Next.js Configuration](https://nextjs.org/docs/app/api-reference/next-config-js)

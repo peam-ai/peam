@@ -1,33 +1,28 @@
 ---
-title: AskAIChat
-description: Inline chat component
+title: AskAI.Chat
+description: Popup chat surface primitive
 ---
 
-# AskAIChat
+# Overview
 
-Inline chat UI that renders the Ask AI experience directly on the page. It shares the same base props as `AskAI`.
-
-## Type Definition
-
-```ts
-import type { AskAIBaseProps } from 'peam/client';
-
-export interface AskAIChatProps extends AskAIBaseProps {}
-
-export function AskAIChat(props?: AskAIChatProps): JSX.Element;
-```
+Popup chat surface that floats over the page. Pair it with `AskAI.Trigger`.
 
 ## Usage
 
 ```tsx
-import { AskAIChat } from 'peam/client';
+import { AskAI } from 'peam/client';
 
 export default function Page() {
-  return <AskAIChat />;
+  return (
+    <AskAI>
+      <AskAI.Trigger />
+      <AskAI.Chat />
+    </AskAI>
+  );
 }
 ```
 
 ## Notes
 
-- Uses `AskAIBaseProps` (see [AskAI](/docs/api-reference/client/ask-ai)).
-- The default button variant is `iconLabel` unless overridden with `buttonVariant`.
+- `AskAI.Chat` must be rendered inside `AskAI`.
+- For inline rendering, use `AskAI.Inline`.

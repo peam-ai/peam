@@ -1,0 +1,41 @@
+---
+title: AskAI.Suggestions
+description: Prompt suggestions list for quick questions
+---
+
+# Overview
+
+Renders a horizontal list of prompt suggestions that can be clicked to send a message.
+
+## Usage
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI>
+      <AskAI.Inline>
+        <AskAI.Suggestions />
+      </AskAI.Inline>
+    </AskAI>
+  );
+}
+```
+
+## Props
+
+```ts
+import type { ComponentPropsWithoutRef } from 'react';
+
+export interface AskAISuggestionsProps extends ComponentPropsWithoutRef<'div'> {
+  prompts?: string[];
+  onPromptClick?: (prompt: string) => void;
+  onlyWhenEmpty?: boolean;
+}
+```
+
+## Notes
+
+- Defaults to a small set of common prompts.
+- When `onlyWhenEmpty` is `true`, it renders only if there are no messages.

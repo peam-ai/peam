@@ -1,4 +1,18 @@
 {
   "title": "Client",
-  "pages": ["ask-ai", "ask-ai-chat", "ask-ai-dialog", "ask-ai-sidepane"]
+  "pages": [
+    "ask-ai",
+    "ask-ai-trigger",
+    "ask-ai-inline",
+    "ask-ai-header",
+    "ask-ai-messages",
+    "ask-ai-suggestions",
+    "ask-ai-input",
+    "ask-ai-provider",
+    "use-ask-ai",
+    "bounded-chat-transport",
+    "ask-ai-chat",
+    "ask-ai-dialog",
+    "ask-ai-sidepane"
+  ]
 }

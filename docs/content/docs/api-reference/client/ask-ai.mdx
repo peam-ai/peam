@@ -1,100 +1,58 @@
 ---
 title: AskAI
-description: AI chat component with chat, dialog, and sidepane modes
+description: Composable AI chat primitives inspired by Radix UI
 ---
 
-# AskAI
+# Overview
 
-The main AI chat component with multiple display modes.
+Composable AI chat primitives with a simple preset and full control through composition.
 
 ## Type Definition
 
 ```ts
 import type { ReactNode } from 'react';
-import type { AskAIChatProps, AskAIDialogProps, AskAISidepaneProps } from 'peam/client';
+import type { HttpChatTransport, UIMessage } from 'ai';
 
-export type AskAIType = 'chat' | 'dialog' | 'sidepane';
-
-export interface AskAIBaseProps {
-  /**
-   * API endpoint for handling AI requests.
-   * @default '/api/peam'
-   */
-  endpoint?: string;
-
-  /**
-   * Array of suggested prompts to display to the user.
-   */
-  suggestedPrompts?: string[];
-
-  /**
-   * Maximum number of messages to keep in context before summarizing.
-   * @default 10
-   */
-  maxMessages?: number;
-
-  /**
-   * Render the button inline instead of as a floating button.
-   * @default false
-   */
-  inlineButton?: boolean;
-
-  /**
-   * Variant of the default button.
-   * @default 'iconLabel'
-   */
-  buttonVariant?: 'icon' | 'iconLabel';
-
-  /**
-   * Additional CSS classes to apply to the root container.
-   */
+export interface AskAIProps {
+  children?: ReactNode;
   className?: string;
-
-  /**
-   * Custom button component.
-   */
-  button?: (props: { isOpen: boolean; toggle: () => void; open: () => void; close: () => void }) => ReactNode;
+  endpoint?: string;
+  open?: boolean;
+  defaultOpen?: boolean;
+  chatTransport?: HttpChatTransport<UIMessage>;
+  persistence?: boolean | { key?: string };
+  reuseContext?: boolean;
 }
-
-export type AskAIProps =
-  | ({ type?: 'chat' } & AskAIChatProps)
-  | ({ type: 'dialog' } & AskAIDialogProps)
-  | ({ type: 'sidepane' } & AskAISidepaneProps);
 ```
 
 ## Usage
 
-### Chat Mode (Default)
+### Preset (Trigger + Dialog)
 
 ```tsx
 import { AskAI } from 'peam/client';
 
 export default function Page() {
-  return <AskAI type="chat" />;
+  return <AskAI />;
 }
 ```
 
-### Dialog Mode
+### Sidepane Composition
 
 ```tsx
 import { AskAI } from 'peam/client';
 
 export default function Page() {
-  return <AskAI type="dialog" />;
+  return (
+    <AskAI>
+      <AskAI.Trigger />
+      <AskAI.Sidepane />
+    </AskAI>
+  );
 }
 ```
 
-### Sidepane Mode
-
-```tsx
-import { AskAI } from 'peam/client';
-
-export default function Page() {
-  return <AskAI type="sidepane" />;
-}
-```
-
-### With Custom Button
+### Custom Trigger (asChild)
 
 ```tsx
 import { AskAI } from 'peam/client';
@@ -102,46 +60,45 @@ import { Button } from '@/components/ui/button';
 
 export default function Page() {
   return (
-    <AskAI
-      type="dialog"
-      button={({ isOpen, toggle }) => <Button onClick={toggle}>{isOpen ? 'Close' : 'Ask a Question'}</Button>}
-    />
+    <AskAI>
+      <AskAI.Trigger asChild>
+        <Button>Ask a Question</Button>
+      </AskAI.Trigger>
+      <AskAI.Dialog />
+    </AskAI>
   );
 }
 ```
 
-### With Suggested Prompts
+### Inline Chat
 
 ```tsx
 import { AskAI } from 'peam/client';
 
 export default function Page() {
   return (
-    <AskAI
-      type="dialog"
-      suggestedPrompts={['How do I get started?', 'What models are supported?', 'How do I deploy?']}
-    />
+    <AskAI>
+      <AskAI.Inline />
+    </AskAI>
   );
 }
 ```
 
 ## Props
 
-| Prop               | Type                               | Default       | Description                                          |
-| ------------------ | ---------------------------------- | ------------- | ---------------------------------------------------- |
-| `type`             | `'chat' \| 'dialog' \| 'sidepane'` | `'chat'`      | Display mode for the chat interface                  |
-| `endpoint`         | `string`                           | `'/api/peam'` | API endpoint used by the chat transport              |
-| `suggestedPrompts` | `string[]`                         | `undefined`   | Suggested prompts to display to the user             |
-| `maxMessages`      | `number`                           | `10`          | Max messages before summarization (see Notes)        |
-| `inlineButton`     | `boolean`                          | `false`       | Render the default button inline instead of floating |
-| `buttonVariant`    | `'icon' \| 'iconLabel'`            | `'iconLabel'` | Variant for the default button                       |
-| `className`        | `string`                           | `undefined`   | Additional CSS classes for the root container        |
-| `button`           | `function`                         | `undefined`   | Custom button render function                        |
+### AskAI (Preset)
+
+| Prop            | Type                           | Default       | Description                                 |
+| --------------- | ------------------------------ | ------------- | ------------------------------------------- |
+| `endpoint`      | `string`                       | `'/api/peam'` | API endpoint used by the chat transport     |
+| `open`          | `boolean`                      | `undefined`   | Controlled open state                       |
+| `defaultOpen`   | `boolean`                      | `false`       | Uncontrolled initial open state             |
+| `chatTransport` | `HttpChatTransport<UIMessage>` | `undefined`   | Override the default chat transport         |
+| `persistence`   | `boolean \| { key?: string }`  | `true`        | Configure chat persistence or disable it    |
+| `reuseContext`  | `boolean`                      | `true`        | Reuse an existing `AskAIContext` if present |
+| `className`     | `string`                       | `undefined`   | Root wrapper class name                     |
 
 ## Notes
 
-- **Dialog mode** opens the chat in a modal overlay.
-- **Sidepane mode** slides the chat in from the side.
-- **Chat mode** displays the chat inline on the page.
-- `buttonVariant` is used by the default `PeamButton` in chat mode.
-- `maxMessages` is defined on the props type but is not currently wired into the client components.
+- `AskAI` renders a preset: `AskAI.Trigger` + `AskAI.Dialog`.
+- For other layouts, compose `AskAI` with the surface you want.

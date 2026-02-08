@@ -14,12 +14,9 @@ interface ImportMapping {
 const SYMBOL_IMPORTS: Record<string, ImportMapping> = {
   // From 'peam/client'
   AskAI: { module: 'peam/client' },
-  AskAIDialog: { module: 'peam/client' },
-  AskAISidepane: { module: 'peam/client' },
-  AskAIChat: { module: 'peam/client' },
-
   // Types from 'peam/client'
-  AskAIBaseProps: { module: 'peam/client', isType: true },
+  AskAIProps: { module: 'peam/client', isType: true },
+  AskAIInlineProps: { module: 'peam/client', isType: true },
 
   // From 'peam/server'
   createHandler: { module: 'peam/server' },

@@ -1,0 +1,29 @@
+---
+title: AskAI.Input
+description: Input composer for AskAI prompts
+---
+
+# Overview
+
+Text input for sending prompts, including optional speech input and submit button.
+
+## Usage
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI>
+      <AskAI.Dialog>
+        <AskAI.Input />
+      </AskAI.Dialog>
+    </AskAI>
+  );
+}
+```
+
+## Notes
+
+- Binds to the AskAI context `input` and `handleSubmit`.
+- Disables submit when the input is empty and not streaming.

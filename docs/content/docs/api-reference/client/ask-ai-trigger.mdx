@@ -1,0 +1,42 @@
+---
+title: AskAI.Trigger
+description: Trigger button for AskAI surfaces
+---
+
+# Overview
+
+Trigger button for opening and closing AskAI surfaces. Use it with `AskAI.Dialog`, `AskAI.Chat`, or `AskAI.Sidepane`.
+
+## Usage
+
+```tsx
+import { AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAI>
+      <AskAI.Trigger />
+      <AskAI.Dialog />
+    </AskAI>
+  );
+}
+```
+
+## Props
+
+```ts
+import type { ComponentPropsWithoutRef, ReactNode } from 'react';
+import type { PeamButtonVariant } from 'peam/client';
+
+export interface AskAITriggerProps extends ComponentPropsWithoutRef<'button'> {
+  asChild?: boolean;
+  children?: ReactNode;
+  inlineButton?: boolean;
+  variant?: PeamButtonVariant;
+}
+```
+
+## Notes
+
+- If `children` is not provided, a default floating button is rendered.
+- When `asChild` is `true`, the trigger renders a Radix `Slot`.
