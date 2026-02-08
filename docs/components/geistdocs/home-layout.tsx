@@ -1,6 +1,7 @@
 import { DocsLayout as FumadocsDocsLayout } from 'fumadocs-ui/layouts/docs';
 import type { CSSProperties } from 'react';
 import { source } from '@/lib/geistdocs/source';
+import { Sidebar } from '@/components/geistdocs/sidebar';
 
 export const HomeLayout = ({
   children,
@@ -22,6 +23,7 @@ export const HomeLayout = ({
     }}
     sidebar={{
       className: 'md:hidden',
+      component: <Sidebar />,
     }}
     tabMode="auto"
     themeSwitch={{

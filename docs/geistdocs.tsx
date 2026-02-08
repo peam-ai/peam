@@ -23,4 +23,16 @@ export const github = {
   repo: 'peam',
 };
 
+export const footerLinks = [
+  {
+    label: 'Documentation',
+    href: '/docs',
+  },
+  {
+    label: 'Issues',
+    href: 'https://github.com/peam-ai/peam/issues',
+    external: true,
+  },
+];
+
 export const title = 'Peam Documentation';
