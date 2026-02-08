@@ -1,10 +1,9 @@
 'use client';
 
 import { Badge } from '@/components/ui/badge';
-import { track } from '@vercel/analytics';
+import { Globe } from 'lucide-react';
 import Link from 'next/link';
 import type { ComponentProps } from 'react';
-import { toast } from 'sonner';
 
 export const Express = (props: ComponentProps<'svg'>) => (
   <svg width="999" height="223" viewBox="0 0 999 223" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -617,19 +616,12 @@ export const Next = (props: ComponentProps<'svg'>) => (
 );
 
 export const Frameworks = () => {
-  const handleRequest = (framework: string) => {
-    track('Framework requested', { framework: framework.toLowerCase() });
-    toast.success('Request received', {
-      description: `Thanks for expressing interest in ${framework}. We will be adding support for it soon.`,
-    });
-  };
-
   return (
     <div className="grid gap-12 px-4 py-8 sm:py-12 sm:px-12 items-start">
       <div className="flex flex-col gap-2">
         <h2 className="font-medium text-xl tracking-tight sm:text-2xl text-muted-foreground">
-          <span className="text-foreground">Universally compatible</span>. Works with the frameworks you already use
-          with more coming soon.
+          <span className="text-foreground">Integrate in minutes</span>. Ready for the frameworks you use today, with
+          more coming soon.
         </h2>
       </div>
       <div className="space-y-10 w-fit">
@@ -638,48 +630,33 @@ export const Frameworks = () => {
             href="/docs/next"
             className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out"
           >
-            <Next className="size-[56px] relative z-10" />
-            <Next className="size-[64px] absolute top-0 left-0 opacity-10 blur-md" />
+            <Next className="size-14 relative z-10" />
+            <Next className="size-16 absolute top-0 left-0 opacity-10 blur-md" />
           </Link>
           <Link
             href="/docs/vite"
             className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out"
           >
-            <Vite className="size-[56px] relative z-10" />
-            <Vite className="size-[64px] absolute top-0 left-0 opacity-10 blur-md" />
+            <Vite className="size-14 relative z-10" />
+            <Vite className="size-16 absolute top-0 left-0 opacity-10 blur-md" />
           </Link>
           <Link
             href="/docs/astro"
             className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out"
           >
-            <AstroDark className="size-[52px] relative z-10 hidden dark:block" />
-            <AstroLight className="size-[56px] relative z-10 dark:hidden" />
-            <AstroDark className="size-[60px] absolute top-0 left-0 opacity-10 blur-md hidden dark:block" />
-            <AstroLight className="size-[64px] absolute top-0 left-0 opacity-10 blur-md dark:hidden" />
+            <AstroDark className="size-13 relative z-10 hidden dark:block" />
+            <AstroLight className="size-14 relative z-10 dark:hidden" />
+            <AstroDark className="size-15 absolute top-0 left-0 opacity-10 blur-md hidden dark:block" />
+            <AstroLight className="size-16 absolute top-0 left-0 opacity-10 blur-md dark:hidden" />
           </Link>
-          <Link href="/docs" className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out">
-            <Express className="size-[64px] dark:invert relative z-10" />
-            <Express className="size-[72px] absolute top-0 left-0 opacity-10 blur-md dark:invert" />
-          </Link>
-          <Link href="/docs">
-            <Fastify className="size-[64px] dark:invert" />
-            <Fastify className="size-[72px] absolute top-0 left-0 opacity-10 blur-md dark:invert" />
-          </Link>
-          <Link href="/docs" className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out">
-            <Hono className="size-[56px] relative z-10" />
-            <Hono className="size-[64px] absolute top-0 left-0 opacity-10 blur-md" />
-          </Link>
-          <Link href="/docs" className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out">
-            <Nitro className="size-[56px] relative z-10" />
-            <Nitro className="size-[64px] absolute top-0 left-0 opacity-10 blur-md" />
-          </Link>
-          <Link href="/docs" className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out">
-            <Nuxt className="size-[56px] relative z-10" />
-            <Nuxt className="size-[64px] absolute top-0 left-0 opacity-10 blur-md" />
-          </Link>
-          <Link href="/docs" className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out">
-            <SvelteKit className="size-[56px] relative z-10" />
-            <SvelteKit className="size-[64px] absolute top-0 left-0 opacity-10 blur-md" />
+          <Link
+            href="/docs/react-router"
+            className="relative opacity-100 hover:opacity-70 transition-opacity duration-200 ease-out"
+          >
+            <ReactRouterDark className="size-14 relative z-10 hidden dark:block" />
+            <ReactRouterLight className="size-14 relative z-10 dark:hidden" />
+            <ReactRouterDark className="size-16 absolute top-0 left-0 opacity-10 blur-md hidden dark:block" />
+            <ReactRouterLight className="size-16 absolute top-0 left-0 opacity-10 blur-md dark:hidden" />
           </Link>
         </div>
         <div>
@@ -687,13 +664,13 @@ export const Frameworks = () => {
             Coming soon
           </Badge>
           <div className="flex flex-wrap gap-6 items-center mt-4">
-            <div className="group relative cursor-pointer" onClick={() => handleRequest('NestJS')}>
-              <NestGray className="size-[56px] opacity-70 transition-all duration-200 group-hover:opacity-0 ease-out" />
-              <Nest className="size-[56px] absolute inset-0 opacity-0 transition-all duration-200 group-hover:opacity-100 ease-out" />
+            <div className="relative opacity-70">
+              <Globe className="size-14 text-muted-foreground" />
+              <span className="sr-only">Any website</span>
             </div>
-            <div className="group relative cursor-pointer" onClick={() => handleRequest('TanStack')}>
-              <TanStackGray className="size-[56px] opacity-70 transition-all duration-200 group-hover:opacity-0 ease-out" />
-              <TanStack className="size-[56px] absolute inset-0 opacity-0 transition-all duration-200 group-hover:opacity-100 dark:invert ease-out" />
+            <div className="relative opacity-70">
+              <NuxtGray className="size-14" />
+              <span className="sr-only">Nuxt</span>
             </div>
           </div>
         </div>

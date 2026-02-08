@@ -68,11 +68,11 @@ const DeepSeek = (props: ComponentProps<'svg'>) => (
 
 const code = `// app/api/peam/route.ts
 import { openai } from '@ai-sdk/openai';
-import { createHandler } from 'peam/server';
+import { createChat } from '@peam-ai/next/route';
 
-export const POST = createHandler({
-  model: openai('gpt-5'),
-});`;
+export const POST = createChat({
+  model: openai('gpt-4o-mini'),
+}).handler;`;
 
 export const RunAnyModels = () => (
   <div className="px-4 py-8 sm:py-12 sm:px-12 grid gap-10 items-center overflow-hidden">
@@ -87,8 +87,8 @@ export const RunAnyModels = () => (
         {[OpenAI, Anthropic].map((Logo, index) => (
           <div
             className={cn(
-              'aspect-[244/189] flex items-center justify-center h-[180px] border rounded-md',
-              index ? 'bg-gradient-to-r from-background/30 to-transparent' : 'bg-background/30'
+              'aspect-244/189 flex items-center justify-center h-45 border rounded-md',
+              index ? 'bg-linear-to-r from-background/30 to-transparent' : 'bg-background/30'
             )}
             key={index}
           >
@@ -109,8 +109,8 @@ export const RunAnyModels = () => (
         {[Claude, DeepSeek].map((Logo, index) => (
           <div
             className={cn(
-              'aspect-[244/189] flex items-center justify-center h-[180px] border rounded-md',
-              index ? 'bg-background/30' : 'bg-gradient-to-l from-background/30 to-transparent'
+              'aspect-244/189 flex items-center justify-center h-45 border rounded-md',
+              index ? 'bg-background/30' : 'bg-linear-to-l from-background/30 to-transparent'
             )}
             key={index}
           >
