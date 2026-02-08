@@ -5,7 +5,7 @@ description: Default chat runtime implementation
 
 # Overview
 
-The default implementation of `ChatRuntime`. It powers the server-side chat behavior, including streaming responses and request handling.
+The default implementation of `ChatRuntime`. It powers the server-side chat behavior, including streaming responses and request handling. For most cases, use [createChat](/docs/api-reference/server/create-chat) to configure it.
 
 ## Type Definition
 
@@ -32,3 +32,4 @@ export const POST = runtime.handler;
 
 - If `searchIndexStore` is not provided, it uses a file-based store at `.peam/index.json`.
 - The handler expects the `ChatRequestBody` payload (see [createChat](/docs/api-reference/server/create-chat)).
+- Summarization defaults to [WindowedConversationSummarizer](/docs/api-reference/server/windowed-conversation-summarizer).

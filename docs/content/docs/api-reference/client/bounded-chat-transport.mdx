@@ -5,7 +5,7 @@ description: Chat transport that keeps the context window bounded
 
 # Overview
 
-A custom chat transport that sends only recent messages since the last summary, keeping the context window bounded.
+A custom chat transport that sends only recent messages since the last summary, keeping the context window bounded. It pairs with [AskAI](/docs/api-reference/client/ask-ai) via the `chatTransport` prop.
 
 ## Type Definition
 
@@ -42,5 +42,5 @@ export default function Page() {
 
 ## Notes
 
-- This is the default transport used by `AskAI` when `chatTransport` is not provided.
+- This is the default transport used by [AskAI](/docs/api-reference/client/ask-ai) when `chatTransport` is not provided.
 - It reads the summary markers in the request body to limit the message window.

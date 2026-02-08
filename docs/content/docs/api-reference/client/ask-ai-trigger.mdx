@@ -5,7 +5,7 @@ description: Trigger button for AskAI surfaces
 
 # Overview
 
-Trigger button for opening and closing AskAI surfaces. Use it with `AskAI.Dialog`, `AskAI.Chat`, or `AskAI.Sidepane`.
+Trigger button for opening and closing AskAI surfaces. Use it with [AskAI.Dialog](/docs/api-reference/client/ask-ai-dialog), [AskAI.Chat](/docs/api-reference/client/ask-ai-chat), or [AskAI.Sidepane](/docs/api-reference/client/ask-ai-sidepane).
 
 ## Usage
 
@@ -40,3 +40,4 @@ export interface AskAITriggerProps extends ComponentPropsWithoutRef<'button'> {
 
 - If `children` is not provided, a default floating button is rendered.
 - When `asChild` is `true`, the trigger renders a Radix `Slot`.
+- Must be rendered inside [AskAI](/docs/api-reference/client/ask-ai) or [AskAIProvider](/docs/api-reference/client/ask-ai-provider).

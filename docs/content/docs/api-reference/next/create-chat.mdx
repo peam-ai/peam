@@ -5,7 +5,7 @@ description: Next.js-aware chat runtime factory
 
 # Overview
 
-Creates a chat runtime that automatically injects the `searchIndexStore` resolved by `withPeam()`.
+Creates a chat runtime that automatically injects the `searchIndexStore` resolved by [withPeam](/docs/api-reference/next/with-peam). It pairs with the [route handler](/docs/api-reference/next/route) export.
 
 ## Type Definition
 
@@ -28,5 +28,5 @@ export const POST = createChat({
 
 ## Notes
 
-- `withPeam()` must run during build so `searchIndexStore` can be resolved.
+- [withPeam](/docs/api-reference/next/with-peam) must run during build so `searchIndexStore` can be resolved.
 - You can override `searchIndexStore` by passing it in `options`.

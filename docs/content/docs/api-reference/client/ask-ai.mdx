@@ -5,7 +5,7 @@ description: Composable AI chat primitives inspired by Radix UI
 
 # Overview
 
-Composable AI chat primitives with a simple preset and full control through composition.
+Composable AI chat primitives with a simple preset and full control through composition. Combine [AskAI.Trigger](/docs/api-reference/client/ask-ai-trigger) with surfaces like [AskAI.Dialog](/docs/api-reference/client/ask-ai-dialog), [AskAI.Chat](/docs/api-reference/client/ask-ai-chat), or [AskAI.Sidepane](/docs/api-reference/client/ask-ai-sidepane), or render an [AskAI.Inline](/docs/api-reference/client/ask-ai-inline) layout.
 
 ## Type Definition
 
@@ -101,4 +101,5 @@ export default function Page() {
 ## Notes
 
 - `AskAI` renders a preset: `AskAI.Trigger` + `AskAI.Dialog`.
-- For other layouts, compose `AskAI` with the surface you want.
+- For other layouts, compose `AskAI` with the surface you want, or provide context manually with [AskAIProvider](/docs/api-reference/client/ask-ai-provider).
+- Use [useAskAI](/docs/api-reference/client/use-ask-ai) for direct access to state and actions, and [BoundedChatTransport](/docs/api-reference/client/bounded-chat-transport) to override transport behavior.

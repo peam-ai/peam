@@ -20,7 +20,7 @@ export class WindowedConversationSummarizer {
 
 ## Usage
 
-Create a summarizer and pass it to the chat runtime with `createChat`:
+Create a summarizer and pass it to the chat runtime with [createChat](/docs/api-reference/server/create-chat):
 
 ```ts
 import { createChat, WindowedConversationSummarizer } from 'peam/server';
@@ -36,7 +36,7 @@ export const POST = createChat({
 }).handler;
 ```
 
-You can also pass summarization options directly and let `createChat` construct it:
+You can also pass summarization options directly and let [createChat](/docs/api-reference/server/create-chat) construct it:
 
 ```ts
 import { createChat } from 'peam/server';
@@ -53,4 +53,4 @@ export const POST = createChat({
 ## Notes
 
 - Uses `maxMessages` with a default of 10.
-- Used automatically by `DefaultChatRuntime` unless `summarization` is set to `false`.
+- Used automatically by [DefaultChatRuntime](/docs/api-reference/server/default-chat-runtime) unless `summarization` is set to `false`.

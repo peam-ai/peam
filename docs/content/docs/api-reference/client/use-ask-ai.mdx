@@ -5,7 +5,7 @@ description: Access AskAI state and actions
 
 # Overview
 
-Accesses the AskAI context for state, messages, and actions.
+Accesses the AskAI context for state, messages, and actions. Use it inside [AskAI](/docs/api-reference/client/ask-ai) or [AskAIProvider](/docs/api-reference/client/ask-ai-provider).
 
 ## Type Definition
 
@@ -59,4 +59,4 @@ export function AskButton() {
 ## Notes
 
 - `setInput` and `sendMessage` accept `options.open` (default `true`) to control whether the UI opens.
-- The hook must be used inside `AskAI` or `AskAIProvider`.
+- The hook must be used inside [AskAI](/docs/api-reference/client/ask-ai) or [AskAIProvider](/docs/api-reference/client/ask-ai-provider).

@@ -5,7 +5,7 @@ description: Create a chat runtime and HTTP handler for Peam
 
 # Overview
 
-Creates a `DefaultChatRuntime` instance with a `.handler` function for HTTP requests.
+Creates a [DefaultChatRuntime](/docs/api-reference/server/default-chat-runtime) instance with a `.handler` function for HTTP requests.
 
 ## Type Definition
 
@@ -115,6 +115,6 @@ export const POST = createChat({
 
 ## Notes
 
-- If `searchIndexStore` is not provided, `DefaultChatRuntime` uses a `FileBasedSearchIndexStore` pointing to `.peam/index.json`.
-- If `searchEngine` is provided, it is used directly instead of loading from a store.
-- If `summarization` is not set to `false`, `WindowedConversationSummarizer` is used with `maxMessages` defaulting to $10$.
+- If `searchIndexStore` is not provided, [DefaultChatRuntime](/docs/api-reference/server/default-chat-runtime) uses a `FileBasedSearchIndexStore` pointing to `.peam/index.json`.
+- If `searchEngine` is provided, it is used directly instead of loading from a store (see [getSearchEngine](/docs/api-reference/server/get-search-engine)).
+- If `summarization` is not set to `false`, [WindowedConversationSummarizer](/docs/api-reference/server/windowed-conversation-summarizer) is used with `maxMessages` defaulting to 10.

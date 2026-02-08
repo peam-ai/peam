@@ -5,7 +5,7 @@ description: Context provider for AskAI surfaces
 
 # Overview
 
-Provides AskAI context for composing surfaces manually or sharing context across multiple surfaces.
+Provides AskAI context for composing surfaces manually or sharing context across multiple surfaces. Pair it with [AskAI.Trigger](/docs/api-reference/client/ask-ai-trigger) and a surface like [AskAI.Sidepane](/docs/api-reference/client/ask-ai-sidepane).
 
 ## Type Definition
 
@@ -41,4 +41,4 @@ export default function Page() {
 ## Notes
 
 - `AskAIProvider` does not render UI. It only supplies context.
-- `AskAI.Trigger`, `AskAI.Dialog`, `AskAI.Chat`, `AskAI.Sidepane`, and `AskAI.Inline` all rely on this context.
+- [AskAI.Trigger](/docs/api-reference/client/ask-ai-trigger), [AskAI.Dialog](/docs/api-reference/client/ask-ai-dialog), [AskAI.Chat](/docs/api-reference/client/ask-ai-chat), [AskAI.Sidepane](/docs/api-reference/client/ask-ai-sidepane), and [AskAI.Inline](/docs/api-reference/client/ask-ai-inline) all rely on this context.
