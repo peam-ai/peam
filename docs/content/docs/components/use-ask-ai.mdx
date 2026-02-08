@@ -3,9 +3,17 @@ title: useAskAI
 description: Hook for controlling AskAI state and actions
 ---
 
+import { Preview } from '@/components/preview';
+
 # Overview
 
-Access and control the AskAI state from any component inside `AskAI`.
+Access and control the AskAI state from any component inside [`AskAI`](/docs/components/ask-ai), including surfaces like [`AskAI.Dialog`](/docs/components/ask-ai-dialog) or [`AskAI.Chat`](/docs/components/ask-ai-chat).
+
+## Demo
+
+This demo uses `useAskAI` to open [`AskAI.Dialog`](/docs/components/ask-ai-dialog) and send a predefined question when the button is clicked.
+
+<Preview path="use-ask-ai" />
 
 ## Example
 
@@ -20,10 +28,10 @@ function UseAskAIButton() {
       type="button"
       onClick={() => {
         setOpen(true);
-        sendMessage({ text: 'Explain this page' });
+        sendMessage({ text: 'How can I install Peam?' });
       }}
     >
-      Explain this page
+      Ask how to install Peam
     </button>
   );
 }
@@ -39,9 +47,9 @@ export default function Page() {
 }
 ```
 
-## Example with `AskAIProvider`
+## Example with [`AskAIProvider`](/docs/components/ask-ai-provider)
 
-Use `AskAIProvider` in a layout and call `useAskAI` from a page or nested component.
+Use [`AskAIProvider`](/docs/components/ask-ai-provider) in a layout and call `useAskAI` from a page or nested component, then render [`AskAI`](/docs/components/ask-ai) to provide the surfaces (like [`AskAI.Trigger`](/docs/components/ask-ai-trigger) and [`AskAI.Dialog`](/docs/components/ask-ai-dialog)).
 
 ```tsx
 // app/layout.tsx

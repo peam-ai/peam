@@ -1,0 +1,67 @@
+---
+title: AskAIProvider
+description: Provider that supplies AskAI context without rendering a preset surface
+---
+
+# Overview
+
+`AskAIProvider` supplies the AskAI context so you can render [`AskAI`](/docs/components/ask-ai) surfaces or call [`useAskAI`](/docs/components/use-ask-ai) anywhere in your tree without needing a preset surface wrapper.
+
+This is useful when you want global access to chat actions (open, send, clear) while keeping the UI surfaces in a fixed place, such as a layout footer or floating panel.
+
+## Usage
+
+```tsx
+import { AskAIProvider, AskAI, useAskAI } from 'peam/client';
+
+function AskAICTA() {
+  const { setOpen, sendMessage } = useAskAI();
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        setOpen(true);
+        sendMessage({ text: 'How can I install Peam?' });
+      }}
+    >
+      Ask how to install Peam
+    </button>
+  );
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <AskAIProvider>
+          {children}
+          <AskAI />
+          <AskAICTA />
+        </AskAIProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+## Context reuse
+
+By default, [`AskAI`](/docs/components/ask-ai) will reuse an existing provider when one is present. If you need a local, isolated chat state, set `reuseContext={false}` on a nested `AskAI`.
+
+```tsx
+import { AskAIProvider, AskAI } from 'peam/client';
+
+export default function Page() {
+  return (
+    <AskAIProvider>
+      <AskAI />
+      <AskAI reuseContext={false} />
+    </AskAIProvider>
+  );
+}
+```
+
+## Props
+
+`AskAIProvider` accepts the same props as [`AskAI`](/docs/components/ask-ai), including `endpoint`, `chatTransport`, and `persistence`.

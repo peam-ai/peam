@@ -67,12 +67,13 @@ const extractPreviewSnippet = (rawCode: string) => {
   const singleLineMatch = withoutUseClient.match(/=>\s*([^\n;]+);\s*export\s+default/s);
   const rawBody = multilineMatch?.[1] ?? singleLineMatch?.[1] ?? '';
   const body = sanitizeSnippet(dedentSnippet(rawBody));
+  const helpers = sanitizeSnippet(dedentSnippet(extractHelperCode(withoutUseClient)));
 
   if (!importLines && !body) {
     return withoutUseClient.trim();
   }
 
-  return [importLines, body].filter(Boolean).join('\n\n');
+  return [importLines, helpers, body].filter(Boolean).join('\n\n');
 };
 
 const dedentSnippet = (snippet: string) => {
@@ -124,4 +125,45 @@ const sanitizeSnippet = (snippet: string) => {
   cleaned = cleaned.replace(/<([^>]*?)\s+\/>/g, '<$1 />');
 
   return cleaned;
+};
+
+const extractHelperCode = (rawCode: string) => {
+  const exportMatch = rawCode.match(/export\s+default\s+(\w+)/);
+  const exportName = exportMatch?.[1];
+  let content = rawCode;
+
+  if (exportName) {
+    const safeExportName = exportName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    content = content.replace(new RegExp(`export\\s+default\\s+${safeExportName};?\\s*`, 'g'), '');
+    content = removeExportedComponent(content, exportName);
+    content = content.replace(
+      new RegExp(`function\\s+${safeExportName}\\s*\\([\\s\\S]*?\\)\\s*\\{[\\s\\S]*?\\}\\s*`, 'm'),
+      ''
+    );
+  }
+
+  const withoutImports = content
+    .split('\n')
+    .filter((line) => !line.trim().startsWith('import '))
+    .join('\n')
+    .trim();
+
+  return withoutImports;
+};
+
+const removeExportedComponent = (source: string, exportName: string) => {
+  const pattern = `const ${exportName}`;
+  const startIndex = source.indexOf(pattern);
+  if (startIndex === -1) {
+    return source;
+  }
+
+  const afterStart = source.slice(startIndex);
+  const endIndex = afterStart.indexOf(');');
+  if (endIndex === -1) {
+    return source;
+  }
+
+  const removeLength = endIndex + 2;
+  return source.slice(0, startIndex) + afterStart.slice(removeLength);
 };

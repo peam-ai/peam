@@ -7,6 +7,7 @@
     "ask-ai-chat",
     "ask-ai-sidepane",
     "ask-ai-inline",
+    "ask-ai-provider",
     "styling",
     "--- Elements ---",
     "ask-ai-trigger",
