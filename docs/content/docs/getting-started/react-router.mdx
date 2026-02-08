@@ -1,0 +1,79 @@
+---
+title: React Router
+description: Add Peam to a React Router app with a root AskAI and an API action route
+---
+
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import Link from 'fumadocs-core/link';
+
+# Overview
+
+Mount `AskAI` in your root route and expose a simple `/api/peam` action endpoint.
+Peam streams responses from the route action while keeping your React Router app fully client-driven.
+
+<Steps>
+  <Step>
+    ## Install Dependencies
+
+    ```bash
+    npm install peam
+    ```
+
+  </Step>
+
+  <Step>
+    ## Add AskAI to the Root Route
+
+    In `app/root.tsx`:
+
+    ```tsx
+    import { AskAI } from 'peam/client';
+
+    export default function App() {
+      return (
+        <div>
+          {/* ... */}
+          <Outlet />
+          // [!code highlight]
+          <AskAI />
+        </div>
+      );
+    }
+    ```
+
+  </Step>
+
+  <Step>
+    ## Add the Peam API Route
+
+    Create `app/routes/api.peam.ts` and add:
+
+    ```ts
+    import { createChat } from 'peam/server';
+
+    const handler = createChat().handler;
+
+    export async function action({ request }: { request: Request }) {
+      return handler(request);
+    }
+
+    export function loader() {
+      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+        status: 405,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    ```
+
+  </Step>
+</Steps>
+
+## Examples
+
+Browse the full app in:
+
+- <Link href="https://github.com/peam-ai/peam/tree/main/examples/react-router" external>
+    examples/react-router
+  </Link>
+
+See the [API Reference](/docs/api-reference) for all available options.

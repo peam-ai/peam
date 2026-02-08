@@ -4,8 +4,17 @@ description: Choose your framework to get Peam running quickly
 ---
 
 import { Card, Cards } from 'fumadocs-ui/components/card';
-import { AstroDark, AstroLight, Next, Vite } from '@/app/(home)/components/frameworks';
+import {
+  AstroDark,
+  AstroLight,
+  Next,
+  NuxtGray,
+  ReactRouterDark,
+  ReactRouterLight,
+  Vite,
+} from '@/app/(home)/components/frameworks';
 import Link from 'fumadocs-core/link';
+import { Globe } from 'lucide-react';
 
 # Frameworks
 
@@ -29,6 +38,27 @@ Pick a guide below, or browse the full examples folder on GitHub: <Link href="ht
       <AstroLight className="size-16 dark:hidden" />
       <AstroDark className="size-16 hidden dark:block" />
       <span className="font-medium">Astro</span>
+    </div>
+  </Card>
+  <Card href="/docs/react-router">
+    <div className="flex flex-col items-center justify-center gap-2">
+      <ReactRouterLight className="size-16 dark:hidden" />
+      <ReactRouterDark className="size-16 hidden dark:block" />
+      <span className="font-medium">React Router</span>
+    </div>
+  </Card>
+  <Card className="opacity-60" aria-disabled>
+    <div className="flex flex-col items-center justify-center gap-2">
+      <Globe className="size-16 text-muted-foreground" />
+      <span className="font-medium">Any website</span>
+      <span className="text-xs text-muted-foreground">Coming soon</span>
+    </div>
+  </Card>
+  <Card className="opacity-60" aria-disabled>
+    <div className="flex flex-col items-center justify-center gap-2">
+      <NuxtGray className="size-16" />
+      <span className="font-medium">Nuxt</span>
+      <span className="text-xs text-muted-foreground">Coming soon</span>
     </div>
   </Card>
 </Cards>
