@@ -1,0 +1,42 @@
+---
+title: File-based store
+description: Store index artifacts in a JSON file
+---
+
+# Overview
+
+The file-based store reads and writes index data to a JSON file on disk. Configure it through [withPeam](/docs/api-reference/next/with-peam) or the CLI. See [Storage](/docs/storage) for selecting a store.
+
+## Options (withPeam)
+
+| Option      | Type     | Default            | Description                                    |
+| ----------- | -------- | ------------------ | ---------------------------------------------- |
+| `baseDir`   | `string` | `process.cwd()`    | Base directory for the index file.             |
+| `indexPath` | `string` | `.peam/index.json` | Path to the index file, relative to `baseDir`. |
+
+## Example (Next.js)
+
+```ts
+// next.config.ts
+import withPeam from '@peam-ai/next';
+
+export default withPeam({
+  searchStore: {
+    type: 'fileBased',
+    config: { indexPath: '.peam/index.json' },
+  },
+})();
+```
+
+## Example (CLI)
+
+```bash
+peam \
+  --source fileBased --projectDir . --sourceDir dist \
+  --store fileBased --indexPath .peam/index.json
+```
+
+## Notes
+
+- `export` writes formatted JSON to disk.
+- `import` returns `null` if the index file is missing or invalid.

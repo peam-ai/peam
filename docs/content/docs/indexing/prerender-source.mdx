@@ -1,0 +1,30 @@
+---
+title: Prerender source
+description: Index prerendered routes from framework output
+---
+
+# Overview
+
+The prerender source indexes framework-provided prerender manifests. It expects an array of prerendered pages (or a JSON string) and maps them to file paths.
+
+It is primarily used by [withPeam](/docs/api-reference/next/with-peam) on Next.js 15+ for automatic page discovery, but you can also supply it directly via the CLI.
+
+## Options (CLI)
+
+| Option       | Type                        | Default | Description                          |
+| ------------ | --------------------------- | ------- | ------------------------------------ |
+| `prerenders` | `PrerenderPage[] \| string` | —       | Prerender pages list or JSON string. |
+| `projectDir` | `string`                    | —       | Project root directory.              |
+
+## Example (CLI)
+
+```bash
+peam \
+  --source prerender --projectDir . --prerenders ./out/prerender-manifest.json \
+  --store fileBased --indexPath .peam/index.json
+```
+
+## Notes
+
+- If a fallback file path ends with `/.html` (Next.js 15), it is normalized to `/index.html`.
+- Paths are derived from prerender entries rather than filesystem scanning.

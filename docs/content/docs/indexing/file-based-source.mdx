@@ -1,0 +1,29 @@
+---
+title: File-based source
+description: Scan build output directories for HTML files
+---
+
+# Overview
+
+The file-based source scans a build output directory for HTML files and turns them into page candidates. It is the default source for most static or pre-rendered sites. See [Index sources](/docs/indexing/sources) for how sources fit into the pipeline.
+
+## Options (CLI)
+
+| Option       | Type     | Default           | Description                     |
+| ------------ | -------- | ----------------- | ------------------------------- |
+| `projectDir` | `string` | `process.cwd()`   | Project root directory.         |
+| `sourceDir`  | `string` | auto-detected     | Build output directory to scan. |
+| `glob`       | `string` | `**/*.{html,htm}` | Glob pattern for HTML files.    |
+
+## Example (CLI)
+
+```bash
+peam \
+  --source fileBased --projectDir . --sourceDir dist --glob "**/*.html" \
+  --store fileBased --indexPath .peam/index.json
+```
+
+## Notes
+
+- The source auto-detects output folders like `.next`, `dist`, and `build` if `sourceDir` is not provided.
+- It normalizes paths by stripping common build prefixes and removing `.html` / `/index`.

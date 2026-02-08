@@ -1,0 +1,45 @@
+---
+title: Filters
+description: How Peam prunes and refines pages before indexing
+---
+
+# Overview
+
+Filters receive a list of page candidates and return a refined list. They run after [sources](/docs/indexing/sources) and before indexing. Configure them via [withPeam](/docs/api-reference/next/with-peam) or the CLI.
+
+## Built-in filters
+
+- **CommonFilter**: removes common framework error pages and internal routes.
+- **PrerenderPathFilter**: normalizes prerender paths (used when prerender sources are present).
+- **ExcludePatternFilter**: drops paths matching user-provided patterns.
+- **RobotsTxtFilter**: applies rules from `robots.txt` (optional, auto-discovered or custom path).
+
+## Configuration (Next.js)
+
+```ts
+// next.config.ts
+import withPeam from '@peam-ai/next';
+
+export default withPeam({
+  exclude: ['/private', '/drafts/**'],
+  robotsTxt: true,
+})();
+```
+
+When `robotsTxt` is `true`, Peam automatically discovers `robots.txt` in your project. To use a custom location, pass a path instead. See [`robotsTxt`](/docs/api-reference/next/with-peam#robotstxt).
+
+## Configuration (CLI)
+
+```bash
+peam \
+  --source fileBased --projectDir . --sourceDir dist \
+  --exclude /private --exclude /drafts/** \
+  --robotsTxt true \
+  --store fileBased --indexPath .peam/index.json
+```
+
+## Notes
+
+- `exclude` accepts a string or array, and supports glob-style patterns.
+- `robotsTxt` can be `true` for auto-discovery or a custom file path (for example, `--robotsTxt ./public/robots.txt`). See [`robotsTxt`](/docs/api-reference/next/with-peam#robotstxt).
+- If a prerender source is used, the prerender filter is added automatically.

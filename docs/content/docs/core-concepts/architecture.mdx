@@ -5,7 +5,7 @@ description: High-level view of how Peam builder, indexers, and runtime services
 
 # Overview
 
-Peam is organized around a build-time pipeline and a runtime query stack. The builder ingests your content through **index sources**, applies **filters**, and produces index artifacts that are written to **index stores**. At runtime, the search engine loads those artifacts to serve AI-powered answers to your client.
+Peam is organized around a build-time pipeline and a runtime query stack. The builder ingests your content through [index sources](/docs/indexing/sources), applies [filters](/docs/indexing/filters), and produces index artifacts that are written to [index stores](/docs/storage). At runtime, the search engine loads those artifacts to serve AI-powered answers to your client.
 
 ## High-level architecture
 
@@ -46,13 +46,13 @@ end
 
 ## What each part does
 
-- **Index sources** discover pages or content to index.
-- **Filters** prune or refine candidates before indexing.
+- **Index sources** discover pages or content to index. See [Index sources](/docs/indexing/sources).
+- **Filters** prune or refine candidates before indexing. See [Filters](/docs/indexing/filters).
 - **Peam Builder** orchestrates ingestion, normalization, and indexing.
 - **Indexers** parse and structure content, producing embeddings, metadata, and search artifacts.
-- **Index stores** persist index artifacts for runtime search.
+- **Index stores** persist index artifacts for runtime search. See [Storage](/docs/storage).
 - **Search engine** loads stored artifacts and powers retrieval.
 - **Runtime server** handles user queries, retrieval, and answer composition.
-- **Client** renders AskAI surfaces and sends messages to the runtime API.
+- **Client** renders [AskAI](/docs/components/ask-ai) surfaces and sends messages to the runtime API.
 
 Next, see [Data flow](/docs/core-concepts/data-flow) to understand how a single query moves through the system.

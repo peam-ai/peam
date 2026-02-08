@@ -1,0 +1,77 @@
+---
+title: Indexing
+description: How Peam discovers, filters, and indexes content
+---
+
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+# Overview
+
+Indexing is the build-time pipeline that turns your content into searchable artifacts. Most teams configure it via [withPeam](/docs/api-reference/next/with-peam) (Next.js) or the **Peam CLI**. The builder and indexers are managed for you.
+
+<Alert className="border-yellow-300 bg-yellow-50 text-yellow-900 dark:bg-yellow-950/40 dark:text-yellow-200">
+  <AlertTitle>Next.js 14 or older</AlertTitle>
+  <AlertDescription>
+    Automatic prerender discovery only works on Next.js 15+. For Next.js 14 (or older), add a `postbuild` script that
+    runs `peam` to discover pages after `next build`. See the [Next.js getting started
+    guide](/docs/getting-started/next).
+  </AlertDescription>
+</Alert>
+
+## Quick start (Next.js)
+
+```ts
+// next.config.ts
+import withPeam from '@peam-ai/next';
+
+export default withPeam({
+  exclude: ['/admin/**', '/private/**'],
+  robotsTxt: true,
+})();
+```
+
+## Quick start (CLI)
+
+```bash
+peam \
+	--source fileBased --projectDir . --sourceDir .next \
+	--exclude /admin/** \
+	--store fileBased --indexPath .peam/index.json
+```
+
+## How indexing runs
+
+At build time, Peam discovers pages via [index sources](/docs/indexing/sources), applies [filters](/docs/indexing/filters), then uses the indexing pipeline to produce artifacts that are exported to your configured [store](/docs/storage).
+
+## Continue with
+
+<div className="not-prose grid grid-cols-1 gap-4 sm:grid-cols-2">
+  <a
+    href="/docs/indexing/sources"
+    className="rounded-xl border bg-card p-4 text-card-foreground shadow-sm transition hover:border-foreground/30 hover:bg-muted/40"
+  >
+    <div className="text-sm font-medium">Sources</div>
+    <p className="mt-1 text-sm text-muted-foreground">Where Peam discovers pages to index.</p>
+  </a>
+  <a
+    href="/docs/indexing/file-based-source"
+    className="rounded-xl border bg-card p-4 text-card-foreground shadow-sm transition hover:border-foreground/30 hover:bg-muted/40"
+  >
+    <div className="text-sm font-medium">File-based source</div>
+    <p className="mt-1 text-sm text-muted-foreground">Scan build output directories for HTML files.</p>
+  </a>
+  <a
+    href="/docs/indexing/prerender-source"
+    className="rounded-xl border bg-card p-4 text-card-foreground shadow-sm transition hover:border-foreground/30 hover:bg-muted/40"
+  >
+    <div className="text-sm font-medium">Prerender source</div>
+    <p className="mt-1 text-sm text-muted-foreground">Index prerendered routes from framework output.</p>
+  </a>
+  <a
+    href="/docs/indexing/filters"
+    className="rounded-xl border bg-card p-4 text-card-foreground shadow-sm transition hover:border-foreground/30 hover:bg-muted/40"
+  >
+    <div className="text-sm font-medium">Filters</div>
+    <p className="mt-1 text-sm text-muted-foreground">Prune and refine pages before indexing.</p>
+  </a>
+</div>

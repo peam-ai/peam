@@ -1,0 +1,51 @@
+---
+title: Storage
+description: Persist and load search index artifacts
+---
+
+# Overview
+
+Storage is where index artifacts are persisted and later loaded at runtime. Configure it through [withPeam](/docs/api-reference/next/with-peam) (Next.js) or the **Peam CLI**.
+
+## Selecting a store
+
+Index stores define where Peam writes index artifacts and where the runtime reads them back. Use [`searchStore`](/docs/api-reference/next/with-peam#searchstore) (Next.js) or `--store` (CLI) to choose an implementation.
+
+## Quick start (Next.js)
+
+```ts
+// next.config.ts
+import withPeam from '@peam-ai/next';
+
+export default withPeam({
+  searchStore: {
+    type: 'fileBased',
+    config: { indexPath: '.peam/index.json' },
+  },
+})();
+```
+
+## Quick start (CLI)
+
+```bash
+peam \
+	--source fileBased --projectDir . --sourceDir dist \
+	--store fileBased --indexPath .peam/index.json
+```
+
+## Notes
+
+- `withPeam` uses a single [`searchStore`](/docs/api-reference/next/with-peam#searchstore) configuration at build time and runtime.
+- The CLI can export to multiple stores by repeating `--store` with different configs.
+
+## Continue with
+
+<div className="not-prose grid grid-cols-1 gap-4 sm:grid-cols-2">
+  <a
+    href="/docs/storage/file-based-store"
+    className="rounded-xl border bg-card p-4 text-card-foreground shadow-sm transition hover:border-foreground/30 hover:bg-muted/40"
+  >
+    <div className="text-sm font-medium">File-based store</div>
+    <p className="mt-1 text-sm text-muted-foreground">Store index artifacts in a JSON file.</p>
+  </a>
+</div>

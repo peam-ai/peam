@@ -3,11 +3,27 @@ title: Core concepts
 description: How Peam is structured and how data moves through the system
 ---
 
-# Core concepts
+# Overview
 
-This section explains how Peam is structured and how data moves through the platform. Start with the architecture overview, then dive into the data flow to understand indexing, retrieval, and runtime answers.
+This section explains how Peam is structured and how data moves through the platform. Start with the [architecture overview](/docs/core-concepts/architecture), then dive into the [data flow](/docs/core-concepts/data-flow) to understand [indexing](/docs/indexing), retrieval, and runtime answers.
 
-## Pages
+## Continue with
 
-- [Architecture](/docs/core-concepts/architecture)
-- [Data flow](/docs/core-concepts/data-flow)
+<div className="not-prose grid grid-cols-1 gap-4 sm:grid-cols-2">
+  <a
+    href="/docs/core-concepts/architecture"
+    className="rounded-xl border bg-card p-4 text-card-foreground shadow-sm transition hover:border-foreground/30 hover:bg-muted/40"
+  >
+    <div className="text-sm font-medium">Architecture</div>
+    <p className="mt-1 text-sm text-muted-foreground">
+      High-level view of how builder, indexers, and runtime services fit together.
+    </p>
+  </a>
+  <a
+    href="/docs/core-concepts/data-flow"
+    className="rounded-xl border bg-card p-4 text-card-foreground shadow-sm transition hover:border-foreground/30 hover:bg-muted/40"
+  >
+    <div className="text-sm font-medium">Data flow</div>
+    <p className="mt-1 text-sm text-muted-foreground">How content is indexed and how queries become answers.</p>
+  </a>
+</div>

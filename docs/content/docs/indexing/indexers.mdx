@@ -1,0 +1,27 @@
+---
+title: Indexers
+description: Convert structured content into searchable artifacts
+---
+
+# Overview
+
+Indexers take structured pages and produce searchable artifacts. In Peam, this is handled internally by the search engine implementation that the builder uses. Most users configure indexing through **withPeam** or the **CLI**, not by instantiating indexers directly.
+
+## Responsibilities
+
+- Normalize and chunk structured content.
+- Attach metadata and identifiers.
+- Produce index artifacts for storage.
+
+## Example (CLI)
+
+```bash
+peam \
+	--source fileBased --projectDir . --sourceDir dist \
+	--store fileBased --indexPath .peam/index.json
+```
+
+## Notes
+
+- The builder calls into the search engine for each structured page, then exports index data.
+- Different search engine implementations can change how indexing behaves.

@@ -5,7 +5,7 @@ description: How content is indexed and how queries become answers
 
 # Overview
 
-Peam uses a two-phase workflow: **indexing** at build time and **querying** at runtime. The builder creates artifacts once; the runtime reuses them for fast, consistent answers.
+Peam uses a two-phase workflow: [indexing](/docs/indexing) at build time and querying at runtime. The builder creates artifacts once; the runtime reuses them for fast, consistent answers.
 
 ## Indexing flow
 
@@ -54,7 +54,7 @@ LLM-->>Client: Streamed response
 
 ## Notes
 
-- Index sources define where content is discovered from.
-- Filters narrow the candidate set before indexing.
-- Index stores persist artifacts for runtime search.
-- Client surfaces stay thin: they render UI and send messages to the server.
+- Index sources define where content is discovered from. See [Index sources](/docs/indexing/sources).
+- Filters narrow the candidate set before indexing. See [Filters](/docs/indexing/filters).
+- Index stores persist artifacts for runtime search. See [Storage](/docs/storage).
+- Client surfaces stay thin: they render [AskAI](/docs/components/ask-ai) UI and send messages to the server.

@@ -1,0 +1,53 @@
+---
+title: Index sources
+description: Where Peam discovers pages to index
+---
+
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+# Overview
+
+Index sources discover pages or files that should be indexed. Each source produces a list of page candidates (path + file path) that the pipeline can [filter](/docs/indexing/filters) and index.
+
+Peam ships with two sources today:
+
+- [File-based source](/docs/indexing/file-based-source)
+- [Prerender source](/docs/indexing/prerender-source)
+
+The prerender source is primarily used by [withPeam](/docs/api-reference/next/with-peam) on Next.js 15+ to auto-discover pages, but it can also be selected manually via the CLI.
+
+<Alert className="border-yellow-300 bg-yellow-50 text-yellow-900 dark:bg-yellow-950/40 dark:text-yellow-200">
+  <AlertTitle>Next.js 14 or older</AlertTitle>
+  <AlertDescription>
+    Automatic prerender discovery only works on Next.js 15+. For Next.js 14 (or older), add a `postbuild` script that
+    runs `peam` to discover pages after `next build`. See the [Next.js getting started
+    guide](/docs/getting-started/next).
+  </AlertDescription>
+</Alert>
+
+## Configure sources
+
+### Next.js (withPeam)
+
+When using Next.js, [withPeam](/docs/api-reference/next/with-peam) auto-detects build output and wires the default source for you. You typically only set [filters](/docs/indexing/filters) and [storage](/docs/storage) options:
+
+```ts
+// next.config.ts
+import withPeam from '@peam-ai/next';
+
+export default withPeam({
+  exclude: ['/admin/**'],
+  robotsTxt: true,
+})();
+```
+
+### CLI
+
+Use the CLI to explicitly choose and configure sources:
+
+```bash
+peam \
+  --source fileBased --projectDir . --sourceDir dist --glob "**/*.html" \
+  --source prerender --projectDir . --prerenders ./out/prerender-manifest.json \
+  --store fileBased --indexPath .peam/index.json
+```

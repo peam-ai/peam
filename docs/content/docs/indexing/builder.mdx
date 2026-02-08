@@ -1,0 +1,49 @@
+---
+title: Builder
+description: Orchestrates discovery, filtering, and index creation
+---
+
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+# Overview
+
+The builder coordinates sources, filters, and indexers to produce exportable index data. You typically use it indirectly via **withPeam** (Next.js) or the **Peam CLI**.
+
+<Alert className="border-yellow-300 bg-yellow-50 text-yellow-900 dark:bg-yellow-950/40 dark:text-yellow-200">
+  <AlertTitle>Next.js 14 or older</AlertTitle>
+  <AlertDescription>
+    Automatic prerender discovery only works on Next.js 15+. For Next.js 14 (or older), add a `postbuild` script that
+    runs `peam` to discover pages after `next build`. See the [Next.js getting started
+    guide](/docs/getting-started/next).
+  </AlertDescription>
+</Alert>
+
+## How it works
+
+1. Discover pages from index sources.
+2. Apply filters to remove or normalize candidates.
+3. Parse and structure content.
+4. Feed pages into the search engine and export index artifacts.
+
+## Example (Next.js)
+
+```ts
+// next.config.ts
+import withPeam from '@peam-ai/next';
+
+export default withPeam({
+  exclude: ['/admin/**'],
+})();
+```
+
+## Example (CLI)
+
+```bash
+peam \
+  --source fileBased --projectDir . --sourceDir dist \
+  --store fileBased --indexPath .peam/index.json
+```
+
+## Output
+
+The builder exports `SearchIndexData`, which contains a list of keys and serialized index data blobs that can be persisted by index stores.
