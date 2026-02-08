@@ -46,7 +46,7 @@ const config: NextConfig = {
         permanent: true,
       },
       {
-        source: '/docs/:path(next|vite|astro)',
+        source: '/docs/:path(next|vite|astro|react-router)',
         destination: '/docs/getting-started/:path',
         permanent: true,
       },
