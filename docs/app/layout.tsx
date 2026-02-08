@@ -8,31 +8,12 @@ import type { Metadata } from 'next';
 import { AskAIProvider } from 'peam/client';
 import './global.css';
 
-const Logo = () => (
-  <span className="flex items-center gap-1.5 font-semibold text-foreground tracking-tight text-xl">
-    <span>Peam</span>
-  </span>
-);
-
-const links = [
-  {
-    label: 'Docs',
-    href: '/docs',
-  },
-  {
-    label: 'GitHub',
-    href: 'https://github.com/peam-ai/peam',
-  },
-];
-
 const Layout = ({ children }: LayoutProps<'/'>) => (
   <html className={cn(sans.variable, mono.variable, 'scroll-smooth antialiased')} lang="en" suppressHydrationWarning>
     <body>
       <AskAIProvider>
         <GeistdocsProvider>
-          <Navbar items={links}>
-            <Logo />
-          </Navbar>
+          <Navbar />
           {children}
           <ThemedAskAI />
           <Footer />

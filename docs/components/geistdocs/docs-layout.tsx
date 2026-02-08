@@ -1,6 +1,11 @@
 import { DocsLayout as FumadocsDocsLayout } from 'fumadocs-ui/layouts/docs';
-import { Folder, Item, Separator } from '@/components/geistdocs/sidebar';
 import { source } from '@/lib/geistdocs/source';
+import {
+  Folder,
+  Item,
+  Separator,
+  Sidebar,
+} from "@/components/geistdocs/sidebar";
 
 export const DocsLayout = ({
   children,
@@ -20,6 +25,7 @@ export const DocsLayout = ({
       className:
         'md:static md:sticky md:top-16 md:max-h-[calc(100vh-4rem)] md:overflow-y-auto md:w-auto! bg-background! md:bg-transparent! border-none transition-none',
       collapsible: false,
+      component: <Sidebar />,
       components: {
         Folder,
         Item,
