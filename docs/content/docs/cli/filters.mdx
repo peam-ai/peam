@@ -1,0 +1,42 @@
+---
+title: Filters
+description: Exclude paths and apply robots rules
+---
+
+# Overview
+
+Filters prune discovered pages before indexing. The CLI exposes `exclude` patterns and robots.txt filtering. This mirrors [indexing filters](/docs/indexing/filters).
+
+## Exclude patterns
+
+Use `--exclude` to drop paths that match glob patterns. You can repeat the flag:
+
+```bash
+peam \
+  --source fileBased --projectDir . --sourceDir dist \
+  --exclude /admin/** --exclude /private/** \
+  --store fileBased --indexPath .peam/index.json
+```
+
+## robots.txt filtering
+
+Enable robots.txt filtering or provide a custom path:
+
+```bash
+peam \
+  --source fileBased --projectDir . --sourceDir dist \
+  --robotsTxt true \
+  --store fileBased --indexPath .peam/index.json
+```
+
+```bash
+peam \
+  --source fileBased --projectDir . --sourceDir dist \
+  --robotsTxt ./public/robots.txt \
+  --store fileBased --indexPath .peam/index.json
+```
+
+## Notes
+
+- `--robotsTxt true` attempts to discover `robots.txt` automatically.
+- `--robotsTxt false` disables robots.txt filtering.

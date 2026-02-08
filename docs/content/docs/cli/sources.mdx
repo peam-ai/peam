@@ -1,0 +1,39 @@
+---
+title: Sources
+description: Configure where the CLI discovers pages to index
+---
+
+# Overview
+
+Sources discover pages or files to index. The CLI supports `fileBased` and `prerender` sources.
+
+## File-based source
+
+Scans a build output directory for HTML files. It matches the [file-based source](/docs/indexing/file-based-source) behavior.
+
+```bash
+peam \
+  --source fileBased --projectDir . --sourceDir dist --glob "**/*.html" \
+  --store fileBased --indexPath .peam/index.json
+```
+
+**Options**
+
+- `projectDir`: project root directory.
+- `sourceDir`: directory containing files to index (auto-detected if omitted).
+- `glob`: glob pattern for files (default `**/*.{html,htm}`).
+
+## Prerender source
+
+Uses framework prerender manifests. It matches the [prerender source](/docs/indexing/prerender-source) behavior.
+
+```bash
+peam \
+  --source prerender --projectDir . --prerenders ./out/prerender-manifest.json \
+  --store fileBased --indexPath .peam/index.json
+```
+
+**Options**
+
+- `projectDir`: project root directory.
+- `prerenders`: array of prerender pages (JSON) or a JSON string.

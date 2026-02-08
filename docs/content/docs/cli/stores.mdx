@@ -1,0 +1,34 @@
+---
+title: Stores
+description: Configure where the CLI exports index artifacts
+---
+
+# Overview
+
+Stores define where Peam writes the search index. The CLI currently supports `fileBased` stores.
+
+## File-based store
+
+Writes a JSON index file to disk. It matches the [file-based store](/docs/storage/file-based-store) behavior.
+
+```bash
+peam \
+  --source fileBased --projectDir . --sourceDir dist \
+  --store fileBased --indexPath .peam/index.json
+```
+
+**Options**
+
+- `indexPath`: path to the index file relative to `baseDir` (default `.peam/index.json`).
+- `baseDir`: base directory for the index file (defaults to `process.cwd()`).
+
+## Multiple stores
+
+Repeat `--store` to export to multiple destinations:
+
+```bash
+peam \
+  --source fileBased --projectDir . --sourceDir dist \
+  --store fileBased --indexPath .peam/index.json \
+  --store fileBased --indexPath public/.peam/index.json
+```

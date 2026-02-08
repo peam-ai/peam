@@ -1,0 +1,42 @@
+---
+title: Usage
+description: Common Peam CLI commands and patterns
+---
+
+# Overview
+
+The CLI builds a search index from one or more sources and exports it to one or more stores.
+
+## Basic usage
+
+```bash
+peam \
+  --source fileBased --projectDir . --sourceDir .next \
+  --exclude /admin/** \
+  --store fileBased --indexPath .peam/index.json
+```
+
+## Multiple sources and stores
+
+```bash
+peam \
+  --source fileBased --projectDir . --sourceDir dist \
+  --source prerender --projectDir . --prerenders ./out/prerender-manifest.json \
+  --exclude /drafts/** --exclude /private/** \
+  --store fileBased --indexPath .peam/index.json
+```
+
+## Help and discovery
+
+```bash
+peam --help
+peam --help sources
+peam --help stores
+peam --version
+```
+
+## Notes
+
+- When `--source` or `--store` is omitted, the CLI uses the default `fileBased` type.
+- `--exclude` can be repeated to add multiple patterns.
+- `--robotsTxt` accepts `true`, `false`, or a file path.
