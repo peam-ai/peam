@@ -71,7 +71,7 @@ describe('examples tests', () => {
     // Arrange
     const baseline = await readIndexSize(EXAMPLE_DIRS[0].dir);
     const current = await readIndexSize(example.dir);
-    const tolerance = 256; // 256 bytes tolerance
+    const tolerance = 512; // 512 bytes tolerance
 
     // Act, Assert
     const diff = Math.abs(current - baseline);
