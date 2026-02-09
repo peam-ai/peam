@@ -13,22 +13,24 @@ const { title, description } = Astro.props as Props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     {description ? <meta name="description" content={description} /> : null}
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
   </head>
-  <body class="antialiased">
-    <nav class="bg-gray-800 text-white">
-      <div class="container mx-auto px-4 py-4">
-        <div class="flex items-center justify-between">
-          <div class="text-xl font-bold">Peam Example</div>
-          <div class="flex gap-6">
-            <a href="/" class="hover:text-gray-300 transition">Home</a>
-            <a href="/about" class="hover:text-gray-300 transition">About</a>
-            <a href="/contact" class="hover:text-gray-300 transition">Contact</a>
-          </div>
-        </div>
-      </div>
+  <body>
+    <nav class="container">
+      <ul>
+        <li><strong>Peam Example</strong></li>
+      </ul>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
     </nav>
     <slot />
     <AskAI client:only="react" />

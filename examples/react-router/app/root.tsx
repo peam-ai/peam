@@ -6,11 +6,19 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  type LinksFunction,
 } from "react-router";
 import { AskAI } from "peam/client";
 
 import type { Route } from "./+types/root";
 import "./app.css";
+
+export const links: LinksFunction = () => [
+  {
+    rel: "stylesheet",
+    href: "https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css",
+  },
+];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,7 +29,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="antialiased">
+      <body>
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -33,23 +41,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <div>
-      <nav className="bg-gray-800 text-white">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="text-xl font-bold">Peam Example</div>
-            <div className="flex gap-6">
-              <Link to="/" className="hover:text-gray-300 transition">
-                Home
-              </Link>
-              <Link to="/about" className="hover:text-gray-300 transition">
-                About
-              </Link>
-              <Link to="/contact" className="hover:text-gray-300 transition">
-                Contact
-              </Link>
-            </div>
-          </div>
-        </div>
+      <nav className="container">
+        <ul>
+          <li>
+            <strong>Peam Example</strong>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/about">About</Link>
+          </li>
+          <li>
+            <Link to="/contact">Contact</Link>
+          </li>
+        </ul>
       </nav>
       <Outlet />
       <AskAI />
@@ -74,7 +82,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
+    <main className="container">
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (
