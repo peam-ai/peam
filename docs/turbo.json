@@ -3,7 +3,7 @@
   "extends": ["//"],
   "tasks": {
     "build": {
-      "outputs": [".next/**", ".source/**", "!.next/cache/**"]
+      "outputs": [".next/**", ".source/**", "!.next/cache/**", ".peam/**"]
     }
   }
 }
