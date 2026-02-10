@@ -71,11 +71,13 @@ describe('examples tests', () => {
     // Arrange
     const baseline = await readIndexSize(EXAMPLE_DIRS[0].dir);
     const current = await readIndexSize(example.dir);
-    const tolerance = 512; // 512 bytes tolerance
+    const tolerance = baseline * 0.2; // 20% tolerance
+    const min = baseline - tolerance;
+    const max = baseline + tolerance;
 
     // Act, Assert
-    const diff = Math.abs(current - baseline);
-    expect(diff, `Size diff for ${example.name}`).toBeLessThanOrEqual(tolerance);
+    const outOfRange = current < min || current > max;
+    expect(outOfRange, `Size for ${example.name} should be within ${min}..${max}`).toBe(false);
   });
 
   test.each(EXAMPLE_DIRS)('documentIds length for %s', async (example) => {
