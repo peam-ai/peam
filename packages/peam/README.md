@@ -1,67 +1,60 @@
-# Peam
+<div align="center">
+  <h1>Peam</h1>
+  <p>AI that knows your website.</p>
+  <p>
+    <a href="https://www.npmjs.com/package/peam">
+      <img
+        src="https://img.shields.io/npm/v/peam?style=for-the-badge&labelColor=000000"
+        alt="npm version"
+      />
+    </a>
+    <a href="https://www.npmjs.com/package/peam">
+      <img
+        src="https://img.shields.io/npm/l/peam.svg?style=for-the-badge&labelColor=000000"
+        alt="license"
+      />
+    </a>
+    <a href="https://github.com/peam-ai/peam/discussions">
+      <img
+        src="https://img.shields.io/badge/Join%20the%20community-blueviolet.svg?style=for-the-badge&logo=Github&labelColor=000000&logoWidth=20"
+        alt="join the community"
+      />
+    </a>
+  </p>
+</div>
 
-AI that knows your website.
+## Overview
 
-## Documentation
+Peam turns your site into a helpful, always-on guide. It reads your docs and pages, understands intent, and gives visitors instant, accurate answers with a friendly chat experience that fits your brand. Learn more at [Peam](https://peam.ai).
 
-For detailed documentation, visit [peam.ai/docs](https://peam.ai/docs)
+## Features
 
-## Installation
+- 🤖 Website-aware AI that understands your docs and pages
+- ⚡️ Fast, embedded chat experiences for visitors
+- 🧭 Guided onboarding and FAQs from your content
+- 🔌 Easy setup with modern frameworks
+- 🛠️ Customizable appearance and behavior
+
+## Getting Started
+
+Install the package, then follow the setup guides and examples in [Peam Docs](https://peam.ai/docs). The docs walk you through connecting your content, embedding the widget, and polishing the experience for your visitors.
 
 ```bash
 npm install peam
 ```
 
-## Usage
-
-### Client Components
-
-Add the `AskAI` component to your app (e.g. Next.js):
-
 ```tsx
-import { AskAI } from 'peam/client';
+import { AskAI } from "peam";
 
-export default function Layout({ children }) {
-  return (
-    <html>
-      <body>
-        {children}
-        <AskAI />
-      </body>
-    </html>
-  );
+export default function Page() {
+  return <AskAI />;
 }
 ```
 
-### Server Handler
+The docs include step-by-step setup guides, framework-specific examples, and best practices for deploying a great user experience. Start here: [Peam Docs](https://peam.ai/docs).
 
-Create an API route handler:
+## Contributing
 
-```typescript
-import { createHandler } from 'peam/server';
-import { openai } from '@ai-sdk/openai';
+Report issues and suggest improvements on GitHub: [Peam Issues](https://github.com/peam-ai/peam/issues).
 
-export const POST = createHandler({
-  model: openai('gpt-4o'),
-  getSearchEngine: async () => mySearchEngine,
-});
-```
-
-### CLI
-
-Extract and index your static site:
-
-```bash
-# Index your built site
-peam ./out
-
-# Exclude specific paths
-peam ./out --exclude "/admin/**,/api/*"
-
-# Specify output directory
-peam ./out --output .peam
-```
-
-## License
-
-Apache-2.0
+Join the community discussions: [Peam Discussions](https://github.com/peam-ai/peam/discussions).
