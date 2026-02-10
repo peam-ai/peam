@@ -49,14 +49,14 @@ npm install peam
 ```
 
 ```tsx
-import { AskAI } from "peam";
+import { AskAI } from "peam/client";
 
 export default function Page() {
   return <AskAI />;
 }
 ```
 
-The docs include step-by-step setup guides, framework-specific examples, and best practices for deploying a great user experience. Start here: [Peam Docs](https://peam.ai/docs).
+The [docs](https://peam.ai/docs) include step-by-step setup guides, framework-specific examples, and best practices for deploying a great user experience. Start here: [Peam Docs](https://peam.ai/docs).
 
 ## Contributing
 
