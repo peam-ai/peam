@@ -12,7 +12,7 @@ Creates a [DefaultChatRuntime](/docs/api-reference/server/default-chat-runtime) 
 ```ts
 import type { LanguageModel } from 'ai';
 import type { SearchEngine, SearchIndexStore } from '@peam-ai/search';
-import type { ConversationSummarizer, SummarizationOptions } from 'peam/server';
+import type { ConversationSummarizer, DefaultChatRuntime, SummarizationOptions } from 'peam/server';
 
 export interface ChatRuntimeOptions {
   /**
@@ -48,7 +48,7 @@ export interface ChatRuntimeOptions {
   summarizer?: ConversationSummarizer;
 }
 
-function createChat(options?: ChatRuntimeOptions): DefaultChatRuntime;
+export declare function createChat(options?: ChatRuntimeOptions): DefaultChatRuntime;
 ```
 
 ## Request Body

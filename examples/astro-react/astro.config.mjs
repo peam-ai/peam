@@ -6,4 +6,8 @@ export default defineConfig({
   output: 'static',
   adapter: node({ mode: 'standalone' }),
   integrations: [react()],
+  logLevel: 'error',
+  vite: {
+    logLevel: 'error',
+  },
 });

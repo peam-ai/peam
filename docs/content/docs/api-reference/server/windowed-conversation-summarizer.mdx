@@ -10,9 +10,9 @@ Summarizes conversations after a fixed number of messages to keep the context wi
 ## Type Definition
 
 ```ts
-import type { SummarizationOptions } from 'peam/server';
+import type { SummarizationOptions, SummarizerInput, SummaryUpdate } from 'peam/server';
 
-export class WindowedConversationSummarizer {
+export declare class WindowedConversationSummarizer {
   constructor(options: SummarizationOptions);
   summarize(input: SummarizerInput): Promise<SummaryUpdate | null>;
 }

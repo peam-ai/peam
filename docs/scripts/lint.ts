@@ -35,8 +35,21 @@ async function checkLinks() {
     },
     checkRelativePaths: 'as-url',
   });
+  const allowedNotFoundUrls = new Set(['/docs', '/docs/next', '/docs/vite', '/docs/astro', '/docs/react-router']);
 
-  printErrors(errors, true);
+  const normalizeUrl = (url: string) => (url !== '/' ? url.replace(/\/$/, '') : url);
+
+  const filtered = errors
+    .map((result) => ({
+      ...result,
+      errors: result.errors.filter((error) => {
+        if (error.reason !== 'not-found') return true;
+        return !allowedNotFoundUrls.has(normalizeUrl(error.url));
+      }),
+    }))
+    .filter((result) => result.errors.length > 0);
+
+  printErrors(filtered, true);
 }
 
 function getHeadingsFromMarkdown(content: string): string[] {

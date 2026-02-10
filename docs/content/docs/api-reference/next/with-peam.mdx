@@ -33,7 +33,7 @@ export interface PeamConfig {
   exclude?: string[];
 }
 
-function withPeam(peamConfig?: PeamConfig): (nextConfig?: NextConfig) => NextConfig;
+export declare function withPeam(peamConfig?: PeamConfig): (nextConfig?: NextConfig) => NextConfig;
 ```
 
 ## Usage Examples
@@ -110,14 +110,14 @@ Controls how the search index is stored during the build process.
 Currently, the only supported store type is `fileBased`.
 
 ```ts
-{
+const peamConfig: PeamConfig = {
   searchStore: {
     type: 'fileBased',
     config: {
       indexPath: '.peam/index.json',
     },
   },
-}
+};
 ```
 
 ### robotsTxt
@@ -125,9 +125,9 @@ Currently, the only supported store type is `fileBased`.
 Controls robots.txt filtering. When `true`, Peam auto-discovers `robots.txt` in your project. When a string, it uses that path. If `false`, robots filtering is disabled.
 
 ```ts
-{
+const peamConfig: PeamConfig = {
   robotsTxt: 'custom/robots.txt',
-}
+};
 ```
 
 ### exclude
@@ -135,9 +135,9 @@ Controls robots.txt filtering. When `true`, Peam auto-discovers `robots.txt` in 
 Wildcard patterns to exclude from indexing.
 
 ```ts
-{
+const peamConfig: PeamConfig = {
   exclude: ['/admin/**', '/api/*', '/private-*'],
-}
+};
 ```
 
 ## How It Works

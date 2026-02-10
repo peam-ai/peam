@@ -10,9 +10,10 @@ The default implementation of `ChatRuntime`. It powers the server-side chat beha
 ## Type Definition
 
 ```ts
-import type { ChatRuntime, ChatRuntimeOptions, ChatRequestBody } from 'peam/server';
+import type { ChatExecutionContext, ChatRuntime, ChatRuntimeOptions, ChatStreamInput } from 'peam/server';
+import type { InferUIMessageChunk, UIMessage } from 'ai';
 
-export class DefaultChatRuntime implements ChatRuntime {
+export declare class DefaultChatRuntime implements ChatRuntime {
   constructor(options?: ChatRuntimeOptions);
   stream(input: ChatStreamInput, context: ChatExecutionContext): ReadableStream<InferUIMessageChunk<UIMessage>>;
   handler(request: Request): Promise<Response>;
