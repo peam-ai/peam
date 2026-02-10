@@ -1,20 +1,25 @@
 <div align="center">
-  <h1>Peam</h1>
-  <p>AI that knows your website.</p>
+  <a href="https://peam.ai" target="_blank">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://www.peam.ai/peam-logo-title-dark.svg">
+      <img alt="Peam logo" src="https://www.peam.ai/peam-logo-title-dark.svg" height="110">
+    </picture>
+  </a>
+  <h1>AI that knows your website</h1>
   <p>
-    <a href="https://www.npmjs.com/package/peam">
+    <a href="https://www.npmjs.com/package/peam" target="_blank">
       <img
         src="https://img.shields.io/npm/v/peam?style=for-the-badge&labelColor=000000"
         alt="npm version"
       />
     </a>
-    <a href="https://www.npmjs.com/package/peam">
+    <a href="https://www.npmjs.com/package/peam" target="_blank">
       <img
         src="https://img.shields.io/npm/l/peam.svg?style=for-the-badge&labelColor=000000"
         alt="license"
       />
     </a>
-    <a href="https://github.com/peam-ai/peam/discussions">
+    <a href="https://github.com/peam-ai/peam/discussions" target="_blank">
       <img
         src="https://img.shields.io/badge/Join%20the%20community-blueviolet.svg?style=for-the-badge&logo=Github&labelColor=000000&logoWidth=20"
         alt="join the community"
