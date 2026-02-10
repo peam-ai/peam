@@ -2,7 +2,7 @@
   <a href="https://peam.ai" target="_blank">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://www.peam.ai/peam-logo-title-dark.svg">
-      <img alt="Peam logo" src="https://www.peam.ai/peam-logo-title-dark.svg" height="110">
+      <img alt="Peam logo" src="https://www.peam.ai/peam-logo-title-light.svg" height="110">
     </picture>
   </a>
   <h1>AI that knows your website</h1>
