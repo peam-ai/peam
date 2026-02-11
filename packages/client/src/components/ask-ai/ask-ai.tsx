@@ -6,6 +6,7 @@ import { Children, ComponentPropsWithoutRef, useContext, type ReactNode } from '
 import { AskAIContext } from './context';
 import { AskAIDialog } from './dialog';
 import { AskAIRoot, type AskAIRootProps } from './root';
+import { ShadowRootHost } from './shadow-root-host';
 import { AskAITrigger } from './trigger';
 
 export type AskAIProps = AskAIRootProps & {
@@ -44,7 +45,7 @@ export function AskAI({
   const shouldProvide = reuseContext ? !existingContext : true;
 
   return (
-    <div className={cn('peam-root', isDarkMode && 'dark', className)} {...divProps}>
+    <ShadowRootHost className={cn('peam-root', isDarkMode && 'dark', className)} {...divProps}>
       {shouldProvide ? (
         <AskAIRoot
           endpoint={endpoint}
@@ -58,6 +59,6 @@ export function AskAI({
       ) : (
         content
       )}
-    </div>
+    </ShadowRootHost>
   );
 }

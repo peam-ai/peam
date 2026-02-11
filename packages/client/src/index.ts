@@ -1,7 +1,5 @@
 'use client';
 
-import './global.css';
-
 export { AskAIProvider } from '@/ask-ai/provider';
 export { AskAI } from '@/components/AskAI';
 export type {
