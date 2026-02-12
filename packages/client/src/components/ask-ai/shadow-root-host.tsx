@@ -1,8 +1,8 @@
 'use client';
 
+import css from '@/global.css?inline';
 import { ComponentPropsWithoutRef, useEffect, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import css from '../../global.css?inline';
 
 type ShadowRootHostProps = ComponentPropsWithoutRef<'div'> & {
   children?: ReactNode;
@@ -24,6 +24,7 @@ export function ShadowRootHost({ children, ...divProps }: ShadowRootHostProps) {
     root.appendChild(styleEl);
 
     const mountEl = document.createElement('div');
+    mountEl.className = 'min-h-full h-full';
     mountEl.setAttribute('data-peam-mount', 'true');
     root.appendChild(mountEl);
 

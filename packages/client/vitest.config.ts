@@ -5,7 +5,7 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: /^@\/ask-ai\//, replacement: `${resolve(__dirname, './src/components/ask-ai')}/` },
-      { find: '@', replacement: resolve(__dirname, './src') },
+      { find: /^@\//, replacement: `${resolve(__dirname, './src')}/` },
     ],
   },
   test: {

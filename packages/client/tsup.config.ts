@@ -109,8 +109,15 @@ function cssToStringPlugin() {
     name: 'css-to-string-with-postcss-config',
     async setup(build: any) {
       const { plugins, options } = await loadPostcssConfig();
+      const srcRoot = path.resolve(process.cwd(), 'src');
 
       build.onResolve({ filter: /\.css\?inline$/ }, (args: any) => {
+        if (args.path.startsWith('@/')) {
+          return {
+            path: path.join(srcRoot, args.path.slice(2)),
+            namespace: 'css-inline',
+          };
+        }
         return {
           path: path.isAbsolute(args.path) ? args.path : path.join(args.resolveDir, args.path),
           namespace: 'css-inline',
