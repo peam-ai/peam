@@ -56,7 +56,9 @@ export default function Page() {
 }
 ```
 
-The [docs](https://peam.ai/docs) include step-by-step setup guides, framework-specific examples, and best practices for deploying a great user experience. Start here: [Peam Docs](https://peam.ai/docs).
+The [docs](https://peam.ai/docs) include step-by-step setup guides, framework-specific examples, and best practices for deploying a great user experience.
+
+Start here: [Peam Docs](https://peam.ai/docs) 🚀
 
 ## Contributing
 
