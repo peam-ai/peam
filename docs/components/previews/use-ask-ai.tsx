@@ -18,11 +18,11 @@ const AskAIInstallButton = () => {
   );
 };
 
-const UseAskAIPreview = () => (
+export const Example = () => (
   <AskAI reuseContext={false} persistence={{ key: 'docs-preview' }}>
     <AskAI.Dialog />
     <AskAIInstallButton />
   </AskAI>
 );
 
-export default UseAskAIPreview;
+export default Example;

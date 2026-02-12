@@ -2,6 +2,6 @@
 
 import { AskAI } from 'peam/client';
 
-const AskAIPreview = () => <AskAI defaultOpen reuseContext={false} persistence={{ key: 'docs-preview' }} />;
+export const Example = () => <AskAI defaultOpen reuseContext={false} persistence={{ key: 'docs-preview' }} />;
 
-export default AskAIPreview;
+export default Example;

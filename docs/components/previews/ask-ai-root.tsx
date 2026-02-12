@@ -2,10 +2,10 @@
 
 import { AskAI } from 'peam/client';
 
-const AskAIInlinePreview = () => (
+export const Example = () => (
   <AskAI defaultOpen persistence={{ key: 'docs-preview' }}>
     <AskAI.Inline />
   </AskAI>
 );
 
-export default AskAIInlinePreview;
+export default Example;

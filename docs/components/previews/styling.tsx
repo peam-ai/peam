@@ -2,7 +2,7 @@
 
 import { AskAI } from 'peam/client';
 
-const StylingPreview = () => (
+export const Example = () => (
   <>
     <style>{`
       .peam-root {
@@ -55,4 +55,4 @@ const StylingPreview = () => (
   </>
 );
 
-export default StylingPreview;
+export default Example;

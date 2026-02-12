@@ -2,7 +2,7 @@
 
 import { AskAI } from 'peam/client';
 
-const AskAIMessagesPreview = () => (
+export const Example = () => (
   <AskAI defaultOpen reuseContext={false} persistence={{ key: 'docs-preview' }}>
     <AskAI.Dialog>
       <AskAI.Header />
@@ -13,4 +13,4 @@ const AskAIMessagesPreview = () => (
   </AskAI>
 );
 
-export default AskAIMessagesPreview;
+export default Example;

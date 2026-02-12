@@ -2,11 +2,11 @@
 
 import { AskAI } from 'peam/client';
 
-const AskAITriggerPreview = () => (
+export const Example = () => (
   <AskAI defaultOpen reuseContext={false} persistence={{ key: 'docs-preview' }}>
     <AskAI.Trigger inlineButton variant="iconLabel" />
     <AskAI.Dialog />
   </AskAI>
 );
 
-export default AskAITriggerPreview;
+export default Example;
