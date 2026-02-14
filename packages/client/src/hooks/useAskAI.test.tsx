@@ -28,6 +28,7 @@ describe('useAskAI', () => {
     // assert
     expect(render).toThrow('AskAI components must be used within <AskAI> or <AskAIProvider>.');
 
+    // act
     root.unmount();
   });
 
@@ -71,6 +72,7 @@ describe('useAskAI', () => {
     // assert
     expect(onValue).toHaveBeenCalledWith(contextValue);
 
+    // act
     root.unmount();
   });
 });
