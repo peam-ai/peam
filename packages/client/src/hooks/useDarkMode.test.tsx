@@ -1,6 +1,5 @@
-// @vitest-environment happy-dom
-
-import { act, useEffect } from 'react';
+import { act } from '@testing-library/react';
+import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useDarkMode } from './useDarkMode';
@@ -47,9 +46,6 @@ describe('useDarkMode', () => {
 
     // assert
     expect(onValue).toHaveBeenCalledWith(true);
-
-    // act
-    root.unmount();
   });
 
   it('updates when matchMedia emits change', () => {
@@ -83,8 +79,5 @@ describe('useDarkMode', () => {
 
     // assert
     expect(onValue).toHaveBeenCalledWith(true);
-
-    // act
-    root.unmount();
   });
 });

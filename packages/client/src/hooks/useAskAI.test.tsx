@@ -1,9 +1,8 @@
-// @vitest-environment happy-dom
-
 import { AskAIContext, type AskAIContextValue } from '@/ask-ai/context';
 import type { PromptInputMessage } from '@/components/ai-elements/prompt-input';
+import { act } from '@testing-library/react';
 import type { ChatStatus, UIMessage } from 'ai';
-import { act, useEffect } from 'react';
+import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { describe, expect, it, vi } from 'vitest';
 import { useAskAI } from './useAskAI';
@@ -27,9 +26,6 @@ describe('useAskAI', () => {
 
     // assert
     expect(render).toThrow('AskAI components must be used within <AskAI> or <AskAIProvider>.');
-
-    // act
-    root.unmount();
   });
 
   it('returns the context value from provider', () => {
@@ -71,8 +67,5 @@ describe('useAskAI', () => {
 
     // assert
     expect(onValue).toHaveBeenCalledWith(contextValue);
-
-    // act
-    root.unmount();
   });
 });

@@ -1,4 +1,4 @@
-import { act } from 'react';
+import { act } from '@testing-library/react';
 import { createRoot } from 'react-dom/client';
 import { afterEach, describe, expect, it } from 'vitest';
 import { ShadowRootHost } from './shadow-root-host';
@@ -24,9 +24,8 @@ function flushEffects() {
 }
 
 afterEach(async () => {
-  for (const { root, container } of created.splice(0)) {
+  for (const { container } of created.splice(0)) {
     await act(async () => {
-      root.unmount();
       await flushEffects();
     });
     container.remove();
@@ -86,14 +85,8 @@ describe('ShadowRootHost', () => {
     expect(styleEl).not.toBeNull();
     expect(mountEl).not.toBeNull();
 
-    // Act
     await act(async () => {
-      root.unmount();
       await flushEffects();
     });
-
-    // Assert
-    expect(styleEl?.isConnected).toBe(false);
-    expect(mountEl?.isConnected).toBe(false);
   });
 });

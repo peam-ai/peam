@@ -1,7 +1,6 @@
-// @vitest-environment happy-dom
-
 import type { UIMessage } from '@ai-sdk/react';
-import { act, useEffect } from 'react';
+import { act } from '@testing-library/react';
+import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useChatPersistence } from './useChatPersistence';
@@ -55,9 +54,6 @@ describe('useChatPersistence', () => {
     expect(value.summary).toBeUndefined();
     expect(value.lastSummarizedMessageId).toBeUndefined();
     expect(getDb).not.toHaveBeenCalled();
-
-    // act
-    root.unmount();
   });
 
   it('hydrates initial messages and summary when enabled', () => {
@@ -96,9 +92,6 @@ describe('useChatPersistence', () => {
     expect(value.initialMessages).toEqual(storedMessages);
     expect(value.summary).toBe('Summary');
     expect(value.lastSummarizedMessageId).toBe('m2');
-
-    // act
-    root.unmount();
   });
 
   it('sets loading state while messages are unresolved', () => {
@@ -126,9 +119,6 @@ describe('useChatPersistence', () => {
     // assert
     const value = onValue.mock.calls[0][0];
     expect(value.isLoading).toBe(true);
-
-    // act
-    root.unmount();
   });
 
   it('saves messages with timestamps and sequence numbers', async () => {
@@ -197,7 +187,6 @@ describe('useChatPersistence', () => {
     ]);
 
     // act
-    root.unmount();
     vi.useRealTimers();
   });
 
@@ -265,7 +254,6 @@ describe('useChatPersistence', () => {
     expect(summariesTable.delete).toHaveBeenCalledWith('current');
 
     // act
-    root.unmount();
     vi.useRealTimers();
   });
 });

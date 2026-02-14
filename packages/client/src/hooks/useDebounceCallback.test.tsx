@@ -1,6 +1,5 @@
-// @vitest-environment happy-dom
-
-import { act, useEffect } from 'react';
+import { act } from '@testing-library/react';
+import { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useDebounceCallback } from './useDebounceCallback';
@@ -58,8 +57,5 @@ describe('useDebounceCallback', () => {
     // assert
     expect(handler).toHaveBeenCalledTimes(1);
     expect(handler).toHaveBeenCalledWith('second');
-
-    // act
-    root.unmount();
   });
 });
