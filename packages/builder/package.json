@@ -21,6 +21,7 @@
     "build:watch": "tsup --watch",
     "clean": "rm -rf dist",
     "format": "prettier --write \"src/**/*.ts*\"",
+    "test:unit": "vitest run",
     "test:lint": "eslint \"src/**/*.ts*\"",
     "test:format": "prettier --check \"src/**/*.ts*\""
   },
