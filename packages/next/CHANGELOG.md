@@ -1,5 +1,13 @@
 # @peam-ai/next
 
+## 0.1.8
+
+### Patch Changes
+
+- Separation of APIs and client improvements
+- Updated dependencies
+  - peam@0.1.5
+
 ## 0.1.7
 
 ### Patch Changes

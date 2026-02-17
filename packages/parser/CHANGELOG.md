@@ -1,5 +1,13 @@
 # @peam-ai/parser
 
+## 0.1.5
+
+### Patch Changes
+
+- Separation of APIs and client improvements
+- Updated dependencies
+  - @peam-ai/logger@0.1.5
+
 ## 0.1.4
 
 ### Patch Changes

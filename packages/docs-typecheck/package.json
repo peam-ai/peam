@@ -1,7 +1,7 @@
 {
   "name": "@peam-ai/docs-typecheck",
   "description": "Type-check documentation code samples",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "type": "module",
   "main": "./dist/index.js",

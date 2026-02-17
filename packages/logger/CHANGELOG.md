@@ -1,5 +1,11 @@
 # @peam-ai/logger
 
+## 0.1.5
+
+### Patch Changes
+
+- Separation of APIs and client improvements
+
 ## 0.1.4
 
 ### Patch Changes
